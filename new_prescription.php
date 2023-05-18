@@ -55,10 +55,9 @@ if(isset($_POST['submit'])) {
       $curQuantity = $quantities[$i];
       $curDosage = $dosages[$i];
 
-      $qeuryMedicationHistory = "INSERT INTO `patient_medication_history`(
-      `patient_visit_id`,
-      `medicine_details_id`, `quantity`, `dosage`)
-      VALUES($lastInsertId, $curMedicineDetailId, $curQuantity, $curDosage);";
+      $qeuryMedicationHistory = "INSERT INTO `patient_medication_history`
+                                    (`patient_visit_id`, `medicine_details_id`, `quantity`, `dosage`)
+                                    VALUES($lastInsertId, $curMedicineDetailId, $curQuantity, $curDosage);";
       $stmtDetails = $con->prepare($qeuryMedicationHistory);
       $stmtDetails->execute();
     }
@@ -219,12 +218,12 @@ include './config/sidebar.php';?>
 
     <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
       <label>Quantity</label>
-      <input id="quantity" class="form-control form-control-sm rounded-0" />
+      <input type="number" id="quantity" class="form-control form-control-sm rounded-0" />
     </div>
 
     <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
       <label>Dosage</label>
-      <input id="dosage" class="form-control form-control-sm rounded-0" />
+      <input type="number" id="dosage" class="form-control form-control-sm rounded-0" />
     </div>
 
     <div class="col-lg-1 col-md-1 col-sm-6 col-xs-12">

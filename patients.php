@@ -33,7 +33,7 @@ try {
 
   $con->commit();
 
-  $message = 'patient added successfully.';
+  $message = 'Patient Added Successfully.';
 
 } catch(PDOException $ex) {
   $con->rollback();

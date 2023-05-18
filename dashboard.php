@@ -119,7 +119,7 @@ include './config/sidebar.php';
             <!-- small box -->
             <div class="small-box bg-yellow">
               <div class="inner">
-                <h3><?php echo $currentWeekCount;?></h3>
+                <h3><?php echo "0"//$currentWeekCount;?></h3>
 
                 <p>To Be Expired</p>
               </div>
@@ -134,7 +134,7 @@ include './config/sidebar.php';
             <!-- small box -->
             <div class="small-box bg-info text-reset">
               <div class="inner">
-                <h3><?php echo $currentMonthCount;?></h3>
+                <h3><?php echo "0"//$currentMonthCount;?></h3>
 
                 <p>Total Medicine Stocks</p>
               </div>
@@ -149,7 +149,7 @@ include './config/sidebar.php';
             <!-- small box -->
             <div class="small-box bg-navy text-reset">
               <div class="inner">
-                <h3><?php echo $currentYearCount;?></h3>
+                <h3><?php echo "0"//$currentYearCount;?></h3>
 
                 <p>Total Equipments</p>
               </div>
