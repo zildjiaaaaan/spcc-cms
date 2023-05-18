@@ -16,3 +16,5 @@
  
 
 <link rel="stylesheet" href="dist/css/default.css" />
+
+<link rel="icon" type="image/x-icon" href="dist/img/logo1.png">
