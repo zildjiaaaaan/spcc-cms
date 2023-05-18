@@ -34,14 +34,13 @@ if(isset($_POST['submit'])) {
 }
 
 
-$medicines = getMedicines($con);
+$medicines = getActiveMedicines($con);
 
-$query = "select `m`.`medicine_name`, 
-`md`.`id`, `md`.`packing`,  `md`.`medicine_id` 
-from `medicines` as `m`, 
-`medicine_details` as `md` 
-where `m`.`id` = `md`.`medicine_id` 
-order by `m`.`id` asc, `md`.`id` asc;";
+$query = "SELECT `m`.`medicine_name`, `md`.`id`, `md`.`packing`,  `md`.`medicine_id` 
+          FROM `medicines` as `m`, `medicine_details` as `md` 
+          WHERE `m`.`id` = `md`.`medicine_id`
+            AND `m`.`is_del` = '0'
+          ORDER BY `m`.`id` ASC, `md`.`id` ASC;";
 
  try {
   
