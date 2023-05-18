@@ -123,14 +123,14 @@ include './config/sidebar.php';?>
 
           <table id="all_medicines" class="table table-striped dataTable table-bordered dtr-inline" role="grid" aria-describedby="all_medicines_info">
             <colgroup>
-              <col width="10%">
-              <col width="80%">
-              <col width="10%">
+              <col width="5%">
+              <col width="70%">
+              <col width="20%">
             </colgroup>
 
             <thead>
               <tr>
-                <th class="text-center">S.No</th>
+                <th class="text-center">#</th>
                 <th>Medicine Name</th>
                 <th class="text-center">Action</th>
               </tr>
@@ -149,6 +149,7 @@ include './config/sidebar.php';?>
                   <a href="update_medicine.php?id=<?php echo $row['id'];?>" class="btn btn-primary btn-sm btn-flat">
                     <i class="fa fa-edit"></i>
                   </a>
+                  <span>&nbsp;</span>
                   <a href="del_medicine.php?id=<?php echo $row['id'];?>" class="btn btn-danger btn-sm btn-flat">
                     <i class="fa fa-trash"></i>
                   </a>

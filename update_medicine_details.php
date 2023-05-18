@@ -102,7 +102,7 @@ include './config/sidebar.php';?>
                 </div>
 
                 <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                  <label>Packing</label>
+                  <label>Unit</label>
                   <input id="packing" name="packing" class="form-control form-control-sm rounded-0"  required="required" value="<?php echo $packing;?>" />
                 </div>
 

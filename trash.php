@@ -102,9 +102,9 @@ include './config/sidebar.php';?>
               
                 <thead>
                   <tr>
-                    <th>S.No</th>
+                    <th>#</th>
                     <th>Patient Name</th>
-                    <th>Patient ID</th>
+                    <th>Student ID</th>
                     <th>Address</th>
                     <th>Date Of Birth</th>
                     <th>Phone Number</th>
@@ -151,7 +151,7 @@ include './config/sidebar.php';?>
 
                 <thead>
                   <tr>
-                    <th class="text-center">S.No</th>
+                    <th class="text-center">#</th>
                     <th>Medicine Name</th>
                     <th class="text-center">Recover</th>
                   </tr>
@@ -226,7 +226,8 @@ include './config/sidebar.php';?>
    $(function () {
     $("#all_patients").DataTable({
       "responsive": true, "lengthChange": false, "autoWidth": false,
-      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+      //"buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+      "buttons": ["colvis"]
     }).buttons().container().appendTo('#all_patients_wrapper .col-md-6:eq(0)');
     
   });
@@ -234,7 +235,8 @@ include './config/sidebar.php';?>
   $(function () {
     $("#all_medicines").DataTable({
       "responsive": true, "lengthChange": false, "autoWidth": false,
-      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+      //"buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+      "buttons": ["colvis"]
     }).buttons().container().appendTo('#all_medicines_wrapper .col-md-6:eq(0)');
     
   });

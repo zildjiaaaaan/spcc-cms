@@ -109,7 +109,7 @@ include './config/sidebar.php';?>
                 </div>
 
                 <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                  <label>Packing</label>
+                  <label>Unit</label>
                   <input id="packing" name="packing" class="form-control form-control-sm rounded-0"  required="required" />
                 </div>
 
@@ -151,16 +151,16 @@ include './config/sidebar.php';?>
               class="table table-striped dataTable table-bordered dtr-inline" 
                role="grid" aria-describedby="medicine_details_info">
                 <colgroup>
-                  <col width="10%">
+                  <col width="5%">
                   <col width="50%">
                   <col width="30%">
                   <col width="10%">
                 </colgroup>
                 <thead>
                   <tr>
-                    <th>S.No</th>
+                    <th class="text-center">#</th>
                     <th>Medicine Name</th>
-                    <th>Packing</th>
+                    <th>Unit</th>
                     <th>Action</th>
                   </tr>
                 </thead>
