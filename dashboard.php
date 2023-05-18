@@ -119,7 +119,7 @@ include './config/sidebar.php';
             <!-- small box -->
             <div class="small-box bg-white">
               <div class="inner">
-                <h3><?php echo "0"//$currentWeekCount;?></h3>
+                <h3><?php echo $currentWeekCount;?></h3>
 
                 <p>Current Week</p>
               </div>
@@ -134,7 +134,7 @@ include './config/sidebar.php';
             <!-- small box -->
             <div class="small-box bg-white text-reset">
               <div class="inner">
-                <h3><?php echo "0"//$currentMonthCount;?></h3>
+                <h3><?php echo $currentMonthCount;?></h3>
 
                 <p>Current Month</p>
               </div>
@@ -149,7 +149,7 @@ include './config/sidebar.php';
             <!-- small box -->
             <div class="small-box bg-white text-reset">
               <div class="inner">
-                <h3><?php echo "0"//$currentYearCount;?></h3>
+                <h3><?php echo $currentYearCount;?></h3>
 
                 <p>Current Year</p>
               </div>
@@ -161,6 +161,25 @@ include './config/sidebar.php';
           </div>
         </div>
 
+        <?php
+
+          try {
+
+            $query = "SELECT count(*) AS `totalmed`
+                      FROM `medicines`
+                      WHERE `is_del` = '0';";
+            
+              $stmtMed = $con->prepare($query);
+              $stmtMed->execute();
+              $r = $stmtMed->fetch(PDO::FETCH_ASSOC);
+            
+            } catch(PDOException $ex) {
+              echo $ex->getMessage();
+              echo $ex->getTraceAsString();
+              exit;
+            }
+        ?>
+
         <!--------------------------------------------- MEDICINE -------------------------------------->
 
         <div class="row">
@@ -168,7 +187,7 @@ include './config/sidebar.php';
             <!-- small box -->
             <div class="small-box bg-yellow">
               <div class="inner">
-                <h3><?php echo $todaysCount;?></h3>
+                <h3><?php echo $r['totalmed'];?></h3>
 
                 <p>Total Medicine Stocks</p>
               </div>
@@ -200,7 +219,7 @@ include './config/sidebar.php';
               <div class="inner">
                 <h3><?php echo "0"//$currentMonthCount;?></h3>
 
-                <p>To Restock</p>
+                <p>Need To Restock</p>
               </div>
               <div class="icon">
                 <i class="fa fa-pills"></i>
@@ -289,14 +308,50 @@ include './config/sidebar.php';
           </div>
         </div>
 
-        <!--------------------------------------------- EQUIPMENT -------------------------------------->
+        <!--------------------------------------------- MAINTENANCE -------------------------------------->
+
+        <?php
+
+        try {
+
+            $queryDel = "SELECT COUNT(*) AS `deleted`
+                        FROM (
+                            SELECT `is_del` FROM `medicines`
+                            UNION ALL
+                            SELECT `is_del` FROM `patients`
+                        ) AS `combined`
+                        WHERE `is_del` = '1';
+                        ";
+
+            $queryUser = "SELECT COUNT(*) AS `attendant` FROM `users`";
+
+            $queryVisit = "SELECT `next_visit_date` AS `upcoming` FROM `patient_visits` WHERE `next_visit_date` > CURDATE() ORDER BY `next_visit_date` ASC LIMIT 1;";
+            
+              $stmtDel = $con->prepare($queryDel);
+              $stmtDel->execute();
+              $rDel = $stmtDel->fetch(PDO::FETCH_ASSOC);
+
+              $stmtUser = $con->prepare($queryUser);
+              $stmtUser->execute();
+              $rUser = $stmtUser->fetch(PDO::FETCH_ASSOC);
+
+              $stmtVisit = $con->prepare($queryVisit);
+              $stmtVisit->execute();
+              $rVisit = $stmtVisit->fetch(PDO::FETCH_ASSOC);
+            
+            } catch(PDOException $ex) {
+              echo $ex->getMessage();
+              echo $ex->getTraceAsString();
+              exit;
+            }
+        ?>
 
         <div class="row">
           <div class="col-lg-3 col-6">
             <!-- small box -->
             <div class="small-box bg-navy">
               <div class="inner">
-                <h3><?php echo $todaysCount;?></h3>
+                <h3><?php echo $rUser['attendant'];?></h3>
 
                 <p>Total Clinic Attendants</p>
               </div>
@@ -326,12 +381,16 @@ include './config/sidebar.php';
             <!-- small box -->
             <div class="small-box bg-navy text-reset">
               <div class="inner">
-                <h3><?php echo "0"//$currentMonthCount;?></h3>
+                <h3><?php
+                      $date = DateTime::createFromFormat('Y-m-d', $rVisit['upcoming']);
+                      $formattedDate = $date->format('F j, Y');
+                      echo $formattedDate;
+                    ?></h3>
 
-                <p>Total </p>
+                <p>Upcoming Visit</p>
               </div>
               <div class="icon">
-                <i class="fa fa-cog"></i>
+                <i class="fa fa-hospital"></i>
               </div>
              
             </div>
@@ -341,7 +400,7 @@ include './config/sidebar.php';
             <!-- small box -->
             <div class="small-box bg-navy text-reset">
               <div class="inner">
-                <h3><?php echo "0"//$currentYearCount;?></h3>
+                <h3><?php echo $rDel['deleted'];?></h3>
 
                 <p>Deleted Items</p>
               </div>

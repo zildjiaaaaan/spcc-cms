@@ -45,7 +45,7 @@ VALUES('$displayName', '$userName', '$encryptedPassword', '$targetFile');";
 
     $con->commit();
 
-    $message = 'user registered successfully';    
+    $message = 'User Registered Successfully';    
 
     } catch(PDOException $ex) {
       $con->rollback();
