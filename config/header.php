@@ -6,7 +6,7 @@
       <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
     </li>
   </ul>
-  <a href="index3.html" class="navbar-brand">
+  <a href="dashboard.php" class="navbar-brand">
     <span class="brand-text font-weight-light">Clinic's Patient Management System - PHP </span>
 </a>
   <!-- Right navbar links -->

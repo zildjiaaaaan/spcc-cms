@@ -5,20 +5,20 @@ if(!(isset($_SESSION['user_id']))) {
 }
 ?>
 <aside class="main-sidebar sidebar-dark-primary bg-black elevation-4">
-    <a href="./" class="brand-link logo-switch bg-black">
-      <h4 class="brand-image-xl logo-xs mb-0 text-center"><b>CMS</b></h4>
-      <h4 class="brand-image-xl logo-xl mb-0 text-center">Clinic's <b>CMS</b></h4>
+    <a href="#" class="brand-link logo-switch bg-black">
+      <!-- <h4 class="brand-image-xl logo-xs mb-0 text-center"><b>SPCC</b></h4> -->
+      <span><img style="padding-right: 0px;" src="dist/img/logo1.png" alt="Systems Plus Computer College" class="brand-image-xl logo-s"></span>
+      <h4 class="brand-image-xl logo-xl mb-0 text-center" style="margin: 5px 0 0 15px;"><b>SPCC Caloocan</b></h4>
     </a>
 
     <!-- Sidebar -->
     <div class="sidebar">
       <!-- Sidebar user (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-        <div class="image">
-          <img 
-          src="user_images/<?php echo $_SESSION['profile_picture'];?>" class="img-circle elevation-2" alt="User Image" />
+        <div class="image" style="margin-top: 10px;">
+          <img src="user_images/<?php echo $_SESSION['profile_picture'];?>" class="img-circle elevation-2" alt="User Image" />
         </div>
-        <div class="info">
+        <div class="info" style="margin-top: 10px;">
           <a href="#" class="d-block"><?php echo $_SESSION['display_name'];?></a>
         </div>
       </div>
@@ -43,9 +43,8 @@ if(!(isset($_SESSION['user_id']))) {
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-user-injured"></i>
               <p>
-                <i class="fas "></i>
                 Patients
-                <i class="right fas fa-angle-left"></i>
+                <i class="fas fa-angle-left right"></i>
               </p>
             </a>
             <ul class="nav nav-treeview">
@@ -121,24 +120,14 @@ if(!(isset($_SESSION['user_id']))) {
               </li>
               
             </ul>
-          </li> 
-
-          <li class="nav-item" id="mnu_users">
-            <a href="users.php" class="nav-link">
-              <i class="nav-icon fa fa-users"></i>
-              <p>
-                Users
-              </p>
-            </a>
           </li>
 
           <li class="nav-item" id="mnu_trash">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-trash"></i>
               <p>
-                <i class="fas "></i>
                 Recover
-                <i class="right fas fa-angle-left"></i>
+                <i class="fas fa-angle-left right"></i>
               </p>
             </a>
             <ul class="nav nav-treeview">
@@ -160,6 +149,15 @@ if(!(isset($_SESSION['user_id']))) {
             </ul>
           </li>
 
+          <li class="nav-item" id="mnu_users">
+            <a href="users.php" class="nav-link">
+              <i class="nav-icon fa fa-users"></i>
+              <p>
+                Users
+              </p>
+            </a>
+          </li>
+  
           <li class="nav-item">
             <a href="logout.php" class="nav-link">
               <i class="nav-icon fa fa-sign-out-alt"></i>
