@@ -21,12 +21,9 @@ if (isset($_POST['save_Patient'])) {
     $address = ucwords(strtolower($address));
 
     $gender = $_POST['gender'];
-if ($patientName != '' && $address != '' && 
-  $cnic != '' && $dateBirth != '' && $phoneNumber != '' && $gender != '') {
-      $query = "INSERT INTO `patients`(`patient_name`, 
-    `address`, `cnic`, `date_of_birth`, `phone_number`, `gender`)
-VALUES('$patientName', '$address', '$cnic', '$dateBirth',
-'$phoneNumber', '$gender');";
+if ($patientName != '' && $address != '' && $cnic != '' && $dateBirth != '' && $phoneNumber != '' && $gender != '') {
+      $query = "INSERT INTO `patients`(`patient_name`, `address`, `cnic`, `date_of_birth`, `phone_number`, `gender`, `is_del`)
+                VALUES('$patientName', '$address', '$cnic', '$dateBirth', '$phoneNumber', '$gender', '0');";
 try {
 
   $con->beginTransaction();
@@ -54,10 +51,12 @@ try {
 
 try {
 
-$query = "SELECT `id`, `patient_name`, `address`, 
-`cnic`, date_format(`date_of_birth`, '%d %b %Y') as `date_of_birth`, 
-`phone_number`, `gender` 
-FROM `patients` order by `patient_name` asc;";
+$query = "SELECT `id`, `patient_name`, `address`, `cnic`, date_format(`date_of_birth`, '%d %b %Y')
+          AS `date_of_birth`, `phone_number`, `gender`
+          FROM `patients`
+          WHERE `is_del` = '0'
+          ORDER BY `patient_name` ASC;";
+          
 
   $stmtPatient1 = $con->prepare($query);
   $stmtPatient1->execute();

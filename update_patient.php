@@ -185,6 +185,9 @@ include './config/sidebar.php';?>
               <div class="col-lg-1 col-md-2 col-sm-2 col-xs-2">
                 <button type="submit" id="save_Patient" 
                 name="save_Patient" class="btn btn-primary btn-sm btn-flat btn-block">Save</button>
+                <a href="del_patient.php?id=<?php echo $row['id'];?>" class = "btn btn-danger btn-sm btn-flat btn-block">
+                  Delete
+                </a>
               </div>
             </div>
           </form>
