@@ -1,4 +1,9 @@
 <?php 
+// $host = "localhost";
+// $user = "id20772349_root";
+// $password = "HelloWorld.18";
+// $db = "id20772349_pms_db";
+
 $host = "localhost";
 $user = "root";
 $password = "";

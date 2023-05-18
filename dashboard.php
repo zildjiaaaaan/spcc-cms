@@ -117,14 +117,142 @@ include './config/sidebar.php';
           <!-- ./col -->
           <div class="col-lg-3 col-6">
             <!-- small box -->
+            <div class="small-box bg-white">
+              <div class="inner">
+                <h3><?php echo "0"//$currentWeekCount;?></h3>
+
+                <p>Current Week</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-calendar-week"></i>
+              </div>
+             
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-white text-reset">
+              <div class="inner">
+                <h3><?php echo "0"//$currentMonthCount;?></h3>
+
+                <p>Current Month</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-calendar"></i>
+              </div>
+             
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-white text-reset">
+              <div class="inner">
+                <h3><?php echo "0"//$currentYearCount;?></h3>
+
+                <p>Current Year</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-user-injured"></i>
+              </div>
+             
+            </div>
+          </div>
+        </div>
+
+        <!--------------------------------------------- MEDICINE -------------------------------------->
+
+        <div class="row">
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-yellow">
+              <div class="inner">
+                <h3><?php echo $todaysCount;?></h3>
+
+                <p>Total Medicine Stocks</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-pills"></i>
+              </div>
+             
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
             <div class="small-box bg-yellow">
               <div class="inner">
                 <h3><?php echo "0"//$currentWeekCount;?></h3>
 
-                <p>To Be Expired</p>
+                <p>Medicines To Be Expired</p>
               </div>
               <div class="icon">
-                <i class="fa fa-calendar-week"></i>
+                <i class="fa fa-pills"></i>
+              </div>
+             
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-yellow text-reset">
+              <div class="inner">
+                <h3><?php echo "0"//$currentMonthCount;?></h3>
+
+                <p>To Restock</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-pills"></i>
+              </div>
+             
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-yellow text-reset">
+              <div class="inner">
+                <h3><?php echo "0"//$currentYearCount;?></h3>
+
+                <p>Expired Medicines</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-pills"></i>
+              </div>
+             
+            </div>
+          </div>
+        </div>
+
+        <!--------------------------------------------- EQUIPMENT -------------------------------------->
+
+        <div class="row">
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-info">
+              <div class="inner">
+                <h3><?php echo $todaysCount;?></h3>
+
+                <p>Total Equipments</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-tools"></i>
+              </div>
+             
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-info">
+              <div class="inner">
+                <h3><?php echo "0"//$currentWeekCount;?></h3>
+
+                <p>Defective Equipments</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-tools"></i>
               </div>
              
             </div>
@@ -136,10 +264,74 @@ include './config/sidebar.php';
               <div class="inner">
                 <h3><?php echo "0"//$currentMonthCount;?></h3>
 
-                <p>Total Medicine Stocks</p>
+                <p>To Restock</p>
               </div>
               <div class="icon">
-                <i class="fa fa-calendar"></i>
+                <i class="fa fa-tools"></i>
+              </div>
+             
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-info text-reset">
+              <div class="inner">
+                <h3><?php echo "0"//$currentYearCount;?></h3>
+
+                <p>Expired Medicines</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-tools"></i>
+              </div>
+             
+            </div>
+          </div>
+        </div>
+
+        <!--------------------------------------------- EQUIPMENT -------------------------------------->
+
+        <div class="row">
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-navy">
+              <div class="inner">
+                <h3><?php echo $todaysCount;?></h3>
+
+                <p>Total Clinic Attendants</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-user"></i>
+              </div>
+             
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-navy">
+              <div class="inner">
+                <h3><?php echo "0"//$currentWeekCount;?></h3>
+
+                <p>Total Medicine Brands</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-tag"></i>
+              </div>
+             
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-navy text-reset">
+              <div class="inner">
+                <h3><?php echo "0"//$currentMonthCount;?></h3>
+
+                <p>Total </p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-cog"></i>
               </div>
              
             </div>
@@ -151,17 +343,15 @@ include './config/sidebar.php';
               <div class="inner">
                 <h3><?php echo "0"//$currentYearCount;?></h3>
 
-                <p>Total Equipments</p>
+                <p>Deleted Items</p>
               </div>
               <div class="icon">
-                <i class="fa fa-user-injured"></i>
+                <i class="fa fa-trash"></i>
               </div>
              
             </div>
           </div>
         </div>
-
-        <!-- MEDICINE -->
 
       </div>
     </section>
