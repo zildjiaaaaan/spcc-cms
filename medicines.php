@@ -36,8 +36,7 @@ exit;
 }
 
 try {
-  $query = "select `id`, `medicine_name` from `medicines` 
-  order by `medicine_name` asc;";
+  $query = "select `id`, `medicine_name` from `medicines` where `is_del` = '0' order by `medicine_name` asc;";
   $stmt = $con->prepare($query);
   $stmt->execute();
 
@@ -152,6 +151,10 @@ include './config/sidebar.php';?>
               <a href="update_medicine.php?id=<?php echo $row['id'];?>" 
                class="btn btn-primary btn-sm btn-flat">
                <i class="fa fa-edit"></i>
+             </a>
+             <a href="del_medicine.php?id=<?php echo $row['id'];?>" 
+               class="btn btn-danger btn-sm btn-flat">
+               <i class="fa fa-trash"></i>
              </a>
            </td>
          </tr>
