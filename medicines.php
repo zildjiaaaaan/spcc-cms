@@ -119,50 +119,46 @@ include './config/sidebar.php';?>
           </div>
         </div>
         <div class="card-body">
-         <div class="row table-responsive">
+          <div class="row table-responsive">
 
-          <table id="all_medicines" 
-          class="table table-striped dataTable table-bordered dtr-inline" 
-          role="grid" aria-describedby="all_medicines_info">
-          <colgroup>
-            <col width="10%">
-            <col width="80%">
-            <col width="10%">
-          </colgroup>
+          <table id="all_medicines" class="table table-striped dataTable table-bordered dtr-inline" role="grid" aria-describedby="all_medicines_info">
+            <colgroup>
+              <col width="10%">
+              <col width="80%">
+              <col width="10%">
+            </colgroup>
 
-          <thead>
-            <tr>
-             <th class="text-center">S.No</th>
-             <th>Medicine Name</th>
-             <th class="text-center">Action</th>
-           </tr>
-         </thead>
+            <thead>
+              <tr>
+                <th class="text-center">S.No</th>
+                <th>Medicine Name</th>
+                <th class="text-center">Action</th>
+              </tr>
+            </thead>
 
-         <tbody>
-          <?php 
-          $serial = 0;
-          while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-           $serial++;
-           ?>
-           <tr>
-             <td class="text-center"><?php echo $serial;?></td>
-             <td><?php echo $row['medicine_name'];?></td>
-             <td class="text-center">
-              <a href="update_medicine.php?id=<?php echo $row['id'];?>" 
-               class="btn btn-primary btn-sm btn-flat">
-               <i class="fa fa-edit"></i>
-             </a>
-             <a href="del_medicine.php?id=<?php echo $row['id'];?>" 
-               class="btn btn-danger btn-sm btn-flat">
-               <i class="fa fa-trash"></i>
-             </a>
-           </td>
-         </tr>
-       <?php } ?>
-     </tbody>
-   </table>
- </div>
-</div>
+            <tbody>
+              <?php 
+                $serial = 0;
+                while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $serial++;
+              ?>
+              <tr>
+                <td class="text-center"><?php echo $serial;?></td>
+                <td><?php echo $row['medicine_name'];?></td>
+                <td class="text-center">
+                  <a href="update_medicine.php?id=<?php echo $row['id'];?>" class="btn btn-primary btn-sm btn-flat">
+                    <i class="fa fa-edit"></i>
+                  </a>
+                  <a href="del_medicine.php?id=<?php echo $row['id'];?>" class="btn btn-danger btn-sm btn-flat">
+                    <i class="fa fa-trash"></i>
+                  </a>
+                </td>
+              </tr>
+              <?php } ?>
+            </tbody>
+          </table>
+          </div>
+        </div>
 
 <!-- /.card-footer-->
 </div>

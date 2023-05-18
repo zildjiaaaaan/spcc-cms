@@ -29,7 +29,7 @@
       while($r = $stmt->fetch(PDO::FETCH_ASSOC)) {
         $del = '';
         if ($r['is_del'] == 1) {
-          $del = '(deleted)';
+          $del = '(item deleted)';
         }
 
         $i++;

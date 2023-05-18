@@ -132,6 +132,34 @@ if(!(isset($_SESSION['user_id']))) {
             </a>
           </li>
 
+          <li class="nav-item" id="mnu_trash">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-trash"></i>
+              <p>
+                <i class="fas "></i>
+                Recover
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="trash.php?recover=patient" class="nav-link" 
+                id="mi_trash_patient">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Patient Info</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="trash.php?recover=medicine" class="nav-link" 
+                id="mi_trash_med">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Medicine Item</p>
+                </a>
+              </li>
+              
+            </ul>
+          </li>
+
           <li class="nav-item">
             <a href="logout.php" class="nav-link">
               <i class="nav-icon fa fa-sign-out-alt"></i>
