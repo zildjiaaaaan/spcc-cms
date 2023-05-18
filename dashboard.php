@@ -86,7 +86,10 @@ include './config/sidebar.php';
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Dashboard</h1>
+            <h1><?php 
+            date_default_timezone_set("Asia/Singapore");
+            echo "Today is ".date("M d, Y")." — ".date("h:ia"); ?>
+            </h1>
           </div>
         </div>
       </div><!-- /.container-fluid -->
@@ -118,7 +121,7 @@ include './config/sidebar.php';
               <div class="inner">
                 <h3><?php echo $currentWeekCount;?></h3>
 
-                <p>Current Week</p>
+                <p>To Be Expired</p>
               </div>
               <div class="icon">
                 <i class="fa fa-calendar-week"></i>
@@ -133,7 +136,7 @@ include './config/sidebar.php';
               <div class="inner">
                 <h3><?php echo $currentMonthCount;?></h3>
 
-                <p>Current Month</p>
+                <p>Total Medicine Stocks</p>
               </div>
               <div class="icon">
                 <i class="fa fa-calendar"></i>
@@ -148,7 +151,7 @@ include './config/sidebar.php';
               <div class="inner">
                 <h3><?php echo $currentYearCount;?></h3>
 
-                <p>Current Year</p>
+                <p>Total Equipments</p>
               </div>
               <div class="icon">
                 <i class="fa fa-user-injured"></i>
@@ -157,6 +160,9 @@ include './config/sidebar.php';
             </div>
           </div>
         </div>
+
+        <!-- MEDICINE -->
+
       </div>
     </section>
 
