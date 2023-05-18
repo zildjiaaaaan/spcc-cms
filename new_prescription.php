@@ -88,7 +88,7 @@ $medicines = getActiveMedicines($con);
  <?php include './config/site_css_links.php' ?>
 
  <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
- <title>New Prescription - Clinic's Patient Management System in PHP</title>
+ <title>New Prescription - SPCC Caloocan Clinic</title>
 
 </head>
 <body class="hold-transition sidebar-mini dark-mode layout-fixed layout-navbar-fixed">
@@ -129,10 +129,10 @@ include './config/sidebar.php';?>
             <!-- best practices-->
             <form method="post">
               <div class="row">
-                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                <div class="col-lg-5 col-md-4 col-sm-6 col-xs-12">
                   <label>Select Patient</label>
                   <select id="patient" name="patient" class="form-control form-control-sm rounded-0" 
-                  required="required">
+                  required="required" autofocus>
                   <?php echo $patients; ?>
                 </select>
               </div>
@@ -175,18 +175,25 @@ include './config/sidebar.php';?>
       <div class="clearfix">&nbsp;</div>
 
       <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
-        <label>BP</label>
-        <input id="bp" class="form-control form-control-sm rounded-0" name="bp" required="required" />
+        <label>Blood Pressure</label>
+        <input id="bp" class="form-control form-control-sm rounded-0" name="bp" required="required" placeholder="e.g. 120/80"/>
       </div>
       
       <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
         <label>Weight</label>
-        <input id="weight" name="weight" class="form-control form-control-sm rounded-0" required="required" />
+        <input id="weight" name="weight" class="form-control form-control-sm rounded-0" required="required" placeholder="e.g. 50 kg"/>
       </div>
 
       <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12">
-        <label>Disease</label>
-        <input id="disease" required="required" name="disease" class="form-control form-control-sm rounded-0" />
+        <label>Disease / Illness</label>
+        <input id="disease" required="required" name="disease" class="form-control form-control-sm rounded-0" placeholder="e.g. Diarrhea"/>
+      </div>
+
+      <div class="clearfix">&nbsp;</div>
+
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <label>Remarks</label>
+        <textarea id="remarks" name="remarks" class="form-control form-control-sm rounded-0" placeholder="e.g. Take this medicine 3x a day..."></textarea>
       </div>
 
 
@@ -204,7 +211,7 @@ include './config/sidebar.php';?>
     </div>
 
     <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-      <label>Select Packing</label>
+      <label>Select Unit</label>
       <select id="packing" class="form-control form-control-sm rounded-0">
 
       </select>
@@ -233,19 +240,19 @@ include './config/sidebar.php';?>
   <div class="row table-responsive">
     <table id="medication_list" class="table table-striped table-bordered">
       <colgroup>
-        <col width="10%">
+        <col width="3%">
         <col width="50%">
-        <col width="10%">
+        <col width="15%">
         <col width="10%">
         <col width="15%">
         <col width="5%">
       </colgroup>
       <thead class="bg-primary">
         <tr>
-          <th>S.No</th>
+          <th>#</th>
           <th>Medicine Name</th>
-          <th>Packing</th>
-          <th>QTY</th>
+          <th>Unit</th>
+          <th>Qty</th>
           <th>Dosage</th>
           <th>Action</th>
         </tr>

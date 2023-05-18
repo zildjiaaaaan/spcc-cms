@@ -62,7 +62,7 @@ $queryMonth = "SELECT count(*) as `month`
 <html lang="en">
 <head>
  <?php include './config/site_css_links.php';?>
- <title>Dashboard - Clinic's Patient Management System in PHP</title>
+ <title>Dashboard - SPCC Caloocan Clinic</title>
 <style>
   .dark-mode .bg-fuchsia, .dark-mode .bg-maroon {
     color: #fff!important;
@@ -99,7 +99,7 @@ include './config/sidebar.php';
         <div class="row">
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-info">
+            <div class="small-box bg-white">
               <div class="inner">
                 <h3><?php echo $todaysCount;?></h3>
 
@@ -114,7 +114,7 @@ include './config/sidebar.php';
           <!-- ./col -->
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-purple">
+            <div class="small-box bg-yellow">
               <div class="inner">
                 <h3><?php echo $currentWeekCount;?></h3>
 
@@ -129,7 +129,7 @@ include './config/sidebar.php';
           <!-- ./col -->
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-fuchsia text-reset">
+            <div class="small-box bg-info text-reset">
               <div class="inner">
                 <h3><?php echo $currentMonthCount;?></h3>
 
@@ -144,7 +144,7 @@ include './config/sidebar.php';
           <!-- ./col -->
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-maroon text-reset">
+            <div class="small-box bg-navy text-reset">
               <div class="inner">
                 <h3><?php echo $currentYearCount;?></h3>
 

@@ -9,7 +9,7 @@ $patients = getActivePatients($con);
 <html lang="en">
 <head>
  <?php include './config/site_css_links.php';?>
- <title>Patient History - Clinic's Patient Management System in PHP</title>
+ <title>Patient History - SPCC Caloocan Clinic</title>
 
 </head>
 <body class="hold-transition sidebar-mini dark-mode layout-fixed layout-navbar-fixed">
@@ -68,7 +68,7 @@ include './config/sidebar.php';?>
               <div class="col-md-12 table-responsive">
                 <table id="patient_history" class="table table-striped table-bordered">
                   <colgroup>
-                    <col width="10%">
+                    <col width="3%">
                     <col width="15%">
                     <col width="15%">
                     <col width="40%">
@@ -78,12 +78,12 @@ include './config/sidebar.php';?>
                   </colgroup>
                   <thead>
                     <tr class="bg-gradient-primary text-light">
-                      <th class="p-1 text-center">S.No</th>
+                      <th class="p-1 text-center">#</th>
                       <th class="p-1 text-center">Visit Date</th>
                       <th class="p-1 text-center">Disease</th>
-                      <th class="p-1 text-center">Medicine</th>
-                      <th class="p-1 text-center">Packing</th>
-                      <th class="p-1 text-center">QTY</th>
+                      <th class="p-1 text-center">Prescribed Medicine</th>
+                      <th class="p-1 text-center">Unit</th>
+                      <th class="p-1 text-center">Qty</th>
                       <th class="p-1 text-center">Dosage</th>
                     </tr>
                   </thead>

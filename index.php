@@ -1,5 +1,6 @@
 <?php 
-	include './config/connection.php';
+
+include './config/connection.php';
 
 $message = '';
 
@@ -42,6 +43,12 @@ try {
 
 		
 	}
+
+if (isset($_SESSION['user_id'])) {
+  header("location:dashboard.php");
+  exit;
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -78,8 +85,8 @@ try {
 <body class="hold-transition login-page dark-mode">
 <div class="login-box">
   <div class="login-logo mb-4">
-    <img src="dist/img/logo.jpg" class="img-thumbnail p-0 border rounded-circle" id="system-logo">
-    <div class="text-center h2 mb-0">Clinic's Patient Management System - PHP</div>
+    <img src="dist/img/logo1.png" class="img-thumbnail p-0 border rounded-circle" id="system-logo">
+    <div class="text-center h2 mb-0">SPCC Caloocan Clinic</div>
   </div>
   <!-- /.login-logo -->
   <div class="card card-outline card-primary rounded-0 shadow">

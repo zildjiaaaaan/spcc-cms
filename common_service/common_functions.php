@@ -116,7 +116,7 @@ from `patients` order by `patient_name` asc;";
 }
 
 function getActivePatients($con) {
-	$query = "select `id`, `patient_name`, `phone_number` 
+	$query = "select `id`, `patient_name`, `cnic` 
 	from `patients` where `is_del` = '0' order by `patient_name` asc;";
 	
 	$stmt = $con->prepare($query);
@@ -132,7 +132,7 @@ function getActivePatients($con) {
 	$data = '<option value="">Select Patient</option>';
 
 	while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-		$data = $data.'<option value="'.$row['id'].'">'.$row['patient_name'].' ('.$row['phone_number'].')'.'</option>';
+		$data = $data.'<option value="'.$row['id'].'">'.$row['patient_name'].' ('.$row['cnic'].')'.'</option>';
 	}
 
 	return $data;

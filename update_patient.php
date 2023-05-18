@@ -85,7 +85,7 @@ $dob = $row['date_of_birth'];
  <?php include './config/data_tables_css.php';?>
 
   <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
-  <title>Update Pateint Details - Clinic's Patient Management System in PHP</title>
+  <title>Update Patient Details - SPCC Caloocan Clinic</title>
 
 </head>
 <body class="hold-transition sidebar-mini dark-mode layout-fixed layout-navbar-fixed">
@@ -141,7 +141,7 @@ include './config/sidebar.php';?>
                 class="form-control form-control-sm rounded-0" value="<?php echo $row['address'];?>" />
               </div>
               <div class="col-lg-4 col-md-4 col-sm-4 col-xs-10">
-                <label>CNIC</label>
+                <label>Student ID</label>
                 <input type="text" id="cnic" name="cnic" required="required"
                 class="form-control form-control-sm rounded-0" value="<?php echo $row['cnic'];?>" />
               </div>

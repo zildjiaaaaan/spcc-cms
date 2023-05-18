@@ -76,7 +76,7 @@ $query = "SELECT `id`, `patient_name`, `address`, `cnic`, date_format(`date_of_b
  <?php include './config/data_tables_css.php';?>
 
   <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
-  <title>Patients - Clinic's Patient Management System in PHP</title>
+  <title>Patients  - SPCC Caloocan Clinic</title>
 
 </head>
 <body class="hold-transition sidebar-mini dark-mode layout-fixed layout-navbar-fixed">
@@ -118,8 +118,7 @@ include './config/sidebar.php';?>
             <div class="row">
               <div class="col-lg-4 col-md-4 col-sm-4 col-xs-10">
               <label>Patient Name</label>
-              <input type="text" id="patient_name" name="patient_name" required="required"
-                class="form-control form-control-sm rounded-0"/>
+              <input type="text" id="patient_name" name="patient_name" required="required" class="form-control form-control-sm rounded-0" placeholder="Enter full name" autofocus/>
               </div>
               <br>
               <br>
@@ -130,7 +129,7 @@ include './config/sidebar.php';?>
                 class="form-control form-control-sm rounded-0"/>
               </div>
               <div class="col-lg-4 col-md-4 col-sm-4 col-xs-10">
-                <label>CNIC</label>
+                <label>Student ID</label>
                 <input type="text" id="cnic" name="cnic" required="required"
                 class="form-control form-control-sm rounded-0"/>
               </div>
@@ -207,12 +206,12 @@ include './config/sidebar.php';?>
               
                 <thead>
                   <tr>
-                    <th>S.No</th>
+                    <th>#</th>
                     <th>Patient Name</th>
                     <th>Address</th>
-                    <th>CNIC</th>
-                    <th>Date Of Birth</th>
-                    <th>Phone Number</th>
+                    <th>Student ID</th>
+                    <th>Birthdate</th>
+                    <th>Contact</th>
                     <th>Gender</th>
                     <th>Action</th>
                   </tr>
@@ -232,7 +231,7 @@ include './config/sidebar.php';?>
                     <td><?php echo $row['date_of_birth'];?></td>
                     <td><?php echo $row['phone_number'];?></td>
                     <td><?php echo $row['gender'];?></td>
-                    <td>
+                    <td class="text-center">
                       <a href="update_patient.php?id=<?php echo $row['id'];?>" class = "btn btn-primary btn-sm btn-flat">
                       <i class="fa fa-edit"></i>
                       </a>
