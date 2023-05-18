@@ -60,7 +60,7 @@ $query = "SELECT `m`.`medicine_name`, `md`.`id`, `md`.`packing`,  `md`.`medicine
 <head>
  <?php include './config/site_css_links.php';?>
  <?php include './config/data_tables_css.php';?>
- <title>Medicine Details - Clinic's Patient Management System in PHP</title>
+ <title>Medicine Details - SPCC Caloocan Clinic</title>
 
 </head>
 <body class="hold-transition sidebar-mini dark-mode layout-fixed layout-navbar-fixed">

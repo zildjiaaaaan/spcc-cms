@@ -18,10 +18,10 @@ $pdf->SetMargins(15, 10);
 $pdf->AliasNbPages();
 $pdf->AddPage();
 
-$titlesArr = array('S.No', 'Visit Date', 'Patient Name', 
-'Address', 'Contact#', 'Disease');
+$titlesArr = array('#', 'Visit Date', 'Patient Name', 
+'Address', 'Contact', 'Disease / Illness');
 
-$pdf->SetWidths(array(15, 25, 50, 70, 30, 70));
+$pdf->SetWidths(array(5, 25, 50, 80, 30, 70));
 $pdf->SetAligns(array('L', 'L', 'L', 'L', 'L', 'L'));
 // $pdf->Ln();
 // $pdf->Ln();
