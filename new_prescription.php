@@ -78,8 +78,8 @@ if(isset($_POST['submit'])) {
   header("location:congratulation.php?goto_page=new_prescription.php&message=$message");
   exit;
 }
-$patients = getPatients($con);
-$medicines = getMedicines($con);
+$patients = getActivePatients($con);
+$medicines = getActiveMedicines($con);
 
 ?>
 <!DOCTYPE html>
@@ -133,7 +133,7 @@ include './config/sidebar.php';?>
                   <label>Select Patient</label>
                   <select id="patient" name="patient" class="form-control form-control-sm rounded-0" 
                   required="required">
-                  <?php echo $patients;?>
+                  <?php echo $patients; ?>
                 </select>
               </div>
 

@@ -62,11 +62,63 @@ function getMedicines($con, $medicineId = 0) {
 	
 }
 
+function getActiveMedicines($con, $medicineId = 0) {
+
+	$query = "select `id`, `medicine_name` from `medicines` where `is_del` = '0' order by `medicine_name` asc;";
+
+	$stmt = $con->prepare($query);
+	try {
+		$stmt->execute();
+
+	} catch(PDOException $ex) {
+		echo $ex->getTraceAsString();
+		echo $ex->getMessage();
+		exit;
+	}
+
+	$data = '<option value="">Select Medicine</option>';
+
+	while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+		if($medicineId == $row['id']) {
+			$data = $data.'<option selected="selected" value="'.$row['id'].'">'.$row['medicine_name'].'</option>';
+
+		} else {
+		$data = $data.'<option value="'.$row['id'].'">'.$row['medicine_name'].'</option>';
+		}
+	}
+
+	return $data;
+	
+}
+
 
 function getPatients($con) {
 $query = "select `id`, `patient_name`, `phone_number` 
 from `patients` order by `patient_name` asc;";
 
+	$stmt = $con->prepare($query);
+	try {
+		$stmt->execute();
+
+	} catch(PDOException $ex) {
+		echo $ex->getTraceAsString();
+		echo $ex->getMessage();
+		exit;
+	}
+
+	$data = '<option value="">Select Patient</option>';
+
+	while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+		$data = $data.'<option value="'.$row['id'].'">'.$row['patient_name'].' ('.$row['phone_number'].')'.'</option>';
+	}
+
+	return $data;
+}
+
+function getActivePatients($con) {
+	$query = "select `id`, `patient_name`, `phone_number` 
+	from `patients` where `is_del` = '0' order by `patient_name` asc;";
+	
 	$stmt = $con->prepare($query);
 	try {
 		$stmt->execute();
