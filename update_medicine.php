@@ -5,13 +5,15 @@ include './config/connection.php';
 if(isset($_POST['save_medicine'])) {
     $medicineName = trim($_POST['medicine_name']);
     $medicineName = ucwords(strtolower($medicineName));
+    $medicineBrand = trim($_POST['medicine_brand']);
+    $medicineBrand = ucwords(strtolower($medicineBrand));
    
    $id = $_POST['hidden_id'];
     if($medicineName !== '') {
       
         $query = "UPDATE `medicines` 
-        set `medicine_name` ='$medicineName' 
-        where `id`= $id";   
+        set `medicine_name` ='$medicineName', `medicine_brand` ='$medicineBrand'
+        where `id`= $id";
     try{
     	$con->beginTransaction();
 
@@ -37,7 +39,7 @@ exit;
 try {
 
  $id = $_GET['id'];
-	$query = "SELECT `id`, `medicine_name` from `medicines`
+	$query = "SELECT `id`, `medicine_name`, `medicine_brand` from `medicines`
 	          where `id` = $id";
 	$stmt = $con->prepare($query);
 	$stmt->execute();
@@ -101,10 +103,19 @@ include './config/sidebar.php';?>
               id="hidden_id" value="<?php echo $id;?>" />
 
           		<div class="col-lg-4 col-md-4 col-sm-4 col-xs-10">
+                <label>Medicine Name</label>
           			<input type="text" id="medicine_name" name="medicine_name" required="required"
           			class="form-control form-control-sm rounded-0" value="<?php echo $row['medicine_name'];?>" />
           		</div>
+
+              <div class="col-lg-4 col-md-4 col-sm-4 col-xs-10">
+                <label>Brand</label>
+          			<input type="text" id="medicine_brand" name="medicine_brand" required="required"
+          			class="form-control form-control-sm rounded-0" value="<?php echo $row['medicine_brand'];?>" />
+          		</div>
+
           		<div class="col-lg-1 col-md-2 col-sm-2 col-xs-2">
+                <label>&nbsp;</label>
           			<button type="submit" id="save_medicine" 
           			name="save_medicine" class="btn btn-primary btn-sm btn-flat btn-block">Update</button>
           		</div>
@@ -130,6 +141,77 @@ include './config/sidebar.php';?>
 <!-- ./wrapper -->
 
 <?php include './config/site_js_links.php'; ?>
+<script>
+$(document).ready(function() {
+
+$("#medicine_brand").blur(function() {
+  var medicineBrand = $(this).val().trim();
+  var medicineName = $("#medicine_name").val().trim();
+  $(this).val(medicineBrand);
+  $("#medicine_name").val(medicineName);
+
+  if(medicineBrand !== '') {
+    $.ajax({
+      url: "ajax/check_medicine_name.php",
+      type: 'GET', 
+      data: {
+        'medicine_name': medicineName,
+        'medicine_brand': medicineBrand,
+        'update_id': <?php echo $id;?>,
+      },
+      cache:false,
+      async:false,
+      success: function (count, status, xhr) {
+        if(count > 0) {
+          showCustomMessage("This medicine name has already been stored. Please choose another brand.");
+          $("#save_medicine").attr("disabled", "disabled");
+        } else {
+          $("#save_medicine").removeAttr("disabled");
+        }
+      },
+      error: function (jqXhr, textStatus, errorMessage) {
+        showCustomMessage(errorMessage);
+      }
+    });
+  }
+
+});
+
+$("#medicine_name").blur(function() {
+  var medicineName = $(this).val().trim();
+  var medicineBrand = $("#medicine_brand").val().trim();
+  $(this).val(medicineName);
+  $("#medicine_brand").val(medicineBrand);
+
+  if(medicineName !== '') {
+    $.ajax({
+      url: "ajax/check_medicine_name.php",
+      type: 'GET', 
+      data: {
+        'medicine_name': medicineName,
+        'medicine_brand': medicineBrand,
+        'update_id': <?php echo $id;?>,
+      },
+      cache:false,
+      async:false,
+      success: function (count, status, xhr) {
+        if(count > 0) {
+          showCustomMessage("This medicine name has already been stored. Please choose another name.");
+          $("#save_medicine").attr("disabled", "disabled");
+        } else {
+          $("#save_medicine").removeAttr("disabled");
+        }
+      },
+      error: function (jqXhr, textStatus, errorMessage) {
+        showCustomMessage(errorMessage);
+      }
+    });
+  }
+
+});
+});
+
+</script>
 
 </body>
 </html>

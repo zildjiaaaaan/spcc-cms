@@ -5,10 +5,12 @@ $message = '';
 if(isset($_POST['save_medicine'])) {
   $message = '';
   $medicineName = trim($_POST['medicine_name']);
+  $medicineBrand = trim($_POST['medicine_brand']);
   $medicineName = ucwords(strtolower($medicineName));
-  if($medicineName != '') {
-   $query = "INSERT INTO `medicines`(`medicine_name`)
-   VALUES('$medicineName');";
+  $medicineBrand = ucwords(strtolower($medicineBrand));
+  if($medicineName != '' && $medicineBrand != '') {
+   $query = "INSERT INTO `medicines`(`medicine_name`, `medicine_brand`)
+   VALUES('$medicineName', '$medicineBrand');";
    
    try {
 
@@ -19,7 +21,7 @@ if(isset($_POST['save_medicine'])) {
 
     $con->commit();
 
-    $message = 'Medicine added successfully.';
+    $message = 'Medicine Added Successfully.';
   }catch(PDOException $ex) {
    $con->rollback();
 
@@ -36,7 +38,7 @@ exit;
 }
 
 try {
-  $query = "select `id`, `medicine_name` from `medicines` where `is_del` = '0' order by `medicine_name` asc;";
+  $query = "select `id`, `medicine_name`, `medicine_brand` from `medicines` where `is_del` = '0' order by `medicine_name` asc;";
   $stmt = $con->prepare($query);
   $stmt->execute();
 
@@ -50,7 +52,7 @@ try {
 <html lang="en">
 <head>
  <?php include './config/site_css_links.php';?>
-
+ <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
  
  <?php include './config/data_tables_css.php';?>
  <title>Medicines - SPCC Caloocan Clinic</title>
@@ -88,12 +90,18 @@ include './config/sidebar.php';?>
           <div class="card-body">
             <form method="post">
              <div class="row">
-              <div class="col-lg-4 col-md-4 col-sm-4 col-xs-10">
+              <div class="col-lg-4 col-md-6 col-sm-6 col-xs-10">
                 <label>Medicine Name</label>
-                <input type="text" id="medicine_name" name="medicine_name" required="required"
+                <input type="text" id="medicine_name" name="medicine_name" required="required" placeholder="e.g. Paracetamol"
                 class="form-control form-control-sm rounded-0" />
               </div>
-              <div class="col-lg-1 col-md-2 col-sm-2 col-xs-2">
+
+              <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                  <label>Brand</label>
+                  <input id="medicine_brand" name="medicine_brand" class="form-control form-control-sm rounded-0" placeholder="e.g. Biogesic" required="required" />
+              </div>
+
+              <div class="col-lg-1 col-md-12 col-sm-12 col-xs-2">
                 <label>&nbsp;</label>
                 <button type="submit" id="save_medicine" 
                 name="save_medicine" class="btn btn-primary btn-sm btn-flat btn-block">Save</button>
@@ -124,14 +132,16 @@ include './config/sidebar.php';?>
           <table id="all_medicines" class="table table-striped dataTable table-bordered dtr-inline" role="grid" aria-describedby="all_medicines_info">
             <colgroup>
               <col width="5%">
-              <col width="70%">
-              <col width="20%">
+              <col width="35%">
+              <col width="35%">
+              <col width="10%">
             </colgroup>
 
             <thead>
               <tr>
                 <th class="text-center">#</th>
                 <th>Medicine Name</th>
+                <th>Medicine Brand</th>
                 <th class="text-center">Action</th>
               </tr>
             </thead>
@@ -145,6 +155,7 @@ include './config/sidebar.php';?>
               <tr>
                 <td class="text-center"><?php echo $serial;?></td>
                 <td><?php echo $row['medicine_name'];?></td>
+                <td><?php echo $row['medicine_brand'];?></td>
                 <td class="text-center">
                   <a href="update_medicine.php?id=<?php echo $row['id'];?>" class="btn btn-primary btn-sm btn-flat">
                     <i class="fa fa-edit"></i>
@@ -184,6 +195,9 @@ if(isset($_GET['message'])) {
 <?php include './config/site_js_links.php'; ?>
 <?php include './config/data_tables_js.php'; ?>
 
+<script src="plugins/moment/moment.min.js"></script>
+<script src="plugins/daterangepicker/daterangepicker.js"></script>
+<script src="plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
 
 <script>
   showMenuSelected("#mnu_medicines", "#mi_medicines");
@@ -202,24 +216,32 @@ if(isset($_GET['message'])) {
     
   });
 
+  $('#expiry').datetimepicker({
+    minDate:new Date(),
+    format: 'L'
+  });
+
   $(document).ready(function() {
 
-    $("#medicine_name").blur(function() {
-      var medicineName = $(this).val().trim();
-      $(this).val(medicineName);
+    $("#medicine_brand").blur(function() {
+      var medicineBrand = $(this).val().trim();
+      var medicineName = $("#medicine_name").val().trim();
+      $(this).val(medicineBrand);
+      $("#medicine_name").val(medicineName);
 
-      if(medicineName !== '') {
+      if(medicineBrand !== '') {
         $.ajax({
           url: "ajax/check_medicine_name.php",
           type: 'GET', 
           data: {
-            'medicine_name': medicineName
+            'medicine_name': medicineName,
+            'medicine_brand': medicineBrand
           },
           cache:false,
           async:false,
           success: function (count, status, xhr) {
             if(count > 0) {
-              showCustomMessage("This medicine name has already been stored. Please choose another name");
+              showCustomMessage("This medicine name has already been stored. Please choose another brand.");
               $("#save_medicine").attr("disabled", "disabled");
             } else {
               $("#save_medicine").removeAttr("disabled");
@@ -231,7 +253,39 @@ if(isset($_GET['message'])) {
         });
       }
 
-    });    
+    });
+
+    $("#medicine_name").blur(function() {
+      var medicineName = $(this).val().trim();
+      var medicineBrand = $("#medicine_brand").val().trim();
+      $(this).val(medicineName);
+      $("#medicine_brand").val(medicineBrand);
+
+      if(medicineName !== '') {
+        $.ajax({
+          url: "ajax/check_medicine_name.php",
+          type: 'GET', 
+          data: {
+            'medicine_name': medicineName,
+            'medicine_brand': medicineBrand
+          },
+          cache:false,
+          async:false,
+          success: function (count, status, xhr) {
+            if(count > 0) {
+              showCustomMessage("This medicine name has already been stored. Please choose another name.");
+              $("#save_medicine").attr("disabled", "disabled");
+            } else {
+              $("#save_medicine").removeAttr("disabled");
+            }
+          },
+          error: function (jqXhr, textStatus, errorMessage) {
+            showCustomMessage(errorMessage);
+          }
+        });
+      }
+
+    });
   });
 </script>
 </body>

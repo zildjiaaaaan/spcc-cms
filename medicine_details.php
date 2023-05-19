@@ -60,6 +60,7 @@ $query = "SELECT `m`.`medicine_name`, `md`.`id`, `md`.`packing`,  `md`.`medicine
 <head>
  <?php include './config/site_css_links.php';?>
  <?php include './config/data_tables_css.php';?>
+ <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
  <title>Medicine Details - SPCC Caloocan Clinic</title>
 
 </head>
@@ -111,6 +112,21 @@ include './config/sidebar.php';?>
                 <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                   <label>Unit</label>
                   <input id="packing" name="packing" class="form-control form-control-sm rounded-0"  required="required" />
+                </div>
+
+                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-10">
+                  <div class="form-group">
+                    <label>Expiration Date</label>
+                    <div class="input-group date" id="expiry" 
+                        data-target-input="nearest">
+                        <input type="text" class="form-control form-control-sm rounded-0 datetimepicker-input" data-target="#expiry" name="expiry" required="required" data-toggle="datetimepicker" autocomplete="off"/>
+                        <div class="input-group-append" 
+                        data-target="#expiry" 
+                        data-toggle="datetimepicker">
+                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <div class="col-lg-1 col-md-2 col-sm-4 col-xs-12">
@@ -211,6 +227,10 @@ if(isset($_GET['message'])) {
 
 <?php include './config/site_js_links.php'; ?>
 <?php include './config/data_tables_js.php'; ?>
+
+<script src="plugins/moment/moment.min.js"></script>
+<script src="plugins/daterangepicker/daterangepicker.js"></script>
+<script src="plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
 <script>
   showMenuSelected("#mnu_medicines", "#mi_medicine_details");
 
