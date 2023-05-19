@@ -12,6 +12,7 @@ if(isset($_POST['submit'])) {
   $bp = $_POST['bp'];
   $weight = $_POST['weight'];
   $disease = $_POST['disease'];
+  $remarks = $_POST['remarks'];
 
   $medicineDetailIds = $_POST['medicineDetailIds'];
 
@@ -35,10 +36,10 @@ if(isset($_POST['submit'])) {
       //first to store a row in patient visit
 
      $queryVisit = "INSERT INTO `patient_visits`(`visit_date`, 
-    `next_visit_date`, `bp`, `weight`, `disease`, `patient_id`) 
+    `next_visit_date`, `bp`, `weight`, `disease`, `pres_remarks`, `patient_id`) 
     VALUES('$visitDate', 
     nullif('$nextVisitDate', ''), 
-    '$bp', '$weight', '$disease', $patientId);";
+    '$bp', '$weight', '$disease', '$remarks', $patientId);";
     $stmtVisit = $con->prepare($queryVisit);
     $stmtVisit->execute();
 

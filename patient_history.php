@@ -69,11 +69,12 @@ include './config/sidebar.php';?>
                 <table id="patient_history" class="table table-striped table-bordered">
                   <colgroup>
                     <col width="3%">
+                    <col width="7%">
                     <col width="15%">
-                    <col width="15%">
-                    <col width="40%">
+                    <col width="35%">
                     <col width="10%">
-                    <col width="10%">
+                    <col width="5%">
+                    <col width="5%">
                     <col width="10%">
                   </colgroup>
                   <thead>
@@ -85,6 +86,7 @@ include './config/sidebar.php';?>
                       <th class="p-1 text-center">Unit</th>
                       <th class="p-1 text-center">Qty</th>
                       <th class="p-1 text-center">Dosage</th>
+                      <th class="p-1 text-center">View Full Prescription</th>
                     </tr>
                   </thead>
 

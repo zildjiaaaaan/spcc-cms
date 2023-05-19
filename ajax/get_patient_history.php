@@ -42,6 +42,11 @@
         $data = $data.'<td class="px-2 py-1 align-middle text-right">'.$r['packing'].'</td>';
         $data = $data.'<td class="px-2 py-1 align-middle text-right">'.$r['quantity'].'</td>';
         $data = $data.'<td class="px-2 py-1 align-middle text-right">'.$r['dosage'].'</td>';
+        $data = $data.'<td class="px-2 py-1 align-middle text-center">
+          <a href="#" class = "btn btn-primary btn-sm btn-flat">
+            <i class="fa fa-eye"></i>
+          </a>
+        </td>';
 
         $data = $data.'</tr>';
       }
