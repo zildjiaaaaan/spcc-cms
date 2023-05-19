@@ -35,6 +35,7 @@ if(isset($_POST['submit'])) {
 
 
 $medicines = getActiveMedicines($con);
+//$brands = getBrands($con);
 
 $query = "SELECT `m`.`medicine_name`, `md`.`id`, `md`.`packing`,  `md`.`medicine_id` 
           FROM `medicines` as `m`, `medicine_details` as `md` 
@@ -102,19 +103,26 @@ include './config/sidebar.php';?>
           <div class="card-body">
             <form method="post">
               <div class="row">
-                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <label>Select Medicine</label>
                   <select id="medicine" name="medicine" class="form-control form-control-sm rounded-0" required="required">
                     <?php echo $medicines;?>
                   </select>
                 </div>
 
-                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                  <label>Unit</label>
-                  <input id="packing" name="packing" class="form-control form-control-sm rounded-0"  required="required" />
+                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                  <label>Select Brand</label>
+                  <select id="brand" name="brand" class="form-control form-control-sm rounded-0" required="required">
+                    
+                  </select>
                 </div>
 
-                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-10">
+                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                  <label>Unit</label>
+                  <input id="packing" name="packing" class="form-control form-control-sm rounded-0"  required="required" placeholder="e.g. Tablet, Capsule, Syrup, etc."/>
+                </div>
+
+                <div class="col-lg-2 col-md-6 col-sm-6 col-xs-10">
                   <div class="form-group">
                     <label>Expiration Date</label>
                     <div class="input-group date" id="expiry" 
@@ -129,7 +137,7 @@ include './config/sidebar.php';?>
                   </div>
                 </div>
 
-                <div class="col-lg-1 col-md-2 col-sm-4 col-xs-12">
+                <div class="col-lg-1 col-md-2 col-sm-6 col-xs-12">
                   <label>&nbsp;</label>
                   <button type="submit" id="submit" name="submit" 
                   class="btn btn-primary btn-sm btn-flat btn-block">Save</button>
@@ -239,6 +247,40 @@ if(isset($_GET['message'])) {
   if(message !== '') {
     showCustomMessage(message);
   }
+
+  $(document).ready(function() {
+        
+    $('#expiry').datetimepicker({
+      format: 'L',
+      minDate:new Date()
+    });
+
+
+    $("#medicine").change(function() {
+
+      // var medicineId = $("#medicine").val();
+      var medicineId = $(this).val();
+
+      if(medicineId !== '') {
+        $.ajax({
+          url: "ajax/get_brands.php",
+          type: 'GET', 
+          data: {
+            'medicine_id': medicineId
+          },
+          cache:false,
+          async:false,
+          success: function (data, status, xhr) {
+            $("#brand").html(data);
+          },
+          error: function (jqXhr, textStatus, errorMessage) {
+            showCustomMessage(errorMessage);
+          }
+        });
+      }
+    });
+  });
+
   $(function () {
     $("#medicine_details").DataTable({
       "responsive": true, "lengthChange": false, "autoWidth": false,
