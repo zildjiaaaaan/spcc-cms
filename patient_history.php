@@ -107,7 +107,17 @@ include './config/sidebar.php';?>
   </div>
   <!-- /.content-wrapper -->
 
-<?php include './config/footer.php' ?>  
+<?php 
+include './config/footer.php';
+$message = '';
+if(isset($_GET['message'])) {
+  if (!empty($_GET['message'])) {
+    $message = $_GET['message'];  
+  } else {
+    $message = "No Remarks";
+  }
+}
+?>  
   <!-- /.control-sidebar -->
 </div>
 <!-- ./wrapper -->
@@ -116,6 +126,21 @@ include './config/sidebar.php';?>
 
 <script>
   showMenuSelected("#mnu_patients", "#mi_patient_history");
+
+  function showPrescription(rem) {
+    $.alert({
+        confirmButton: 'Ok',
+        confirmButtonClass: "btn-sm btn-flat rounded-0 btn-info",
+        title: 'Prescription Remarks',
+        content: rem
+    });
+  }
+
+  var remarks = '<?php echo $message;?>';
+
+  if(remarks !== '') {
+    showPrescription(remarks);
+  }
 
   $(document).ready(function() {
 

@@ -12,7 +12,7 @@
 
     */
     $query = "SELECT `m`.`medicine_name`, `m`.`is_del`, `md`.`packing`, 
-    `pv`.`visit_date`, `pv`.`disease`, `pmh`.`quantity`, `pmh`.`dosage` 
+    `pv`.`visit_date`, `pv`.`disease`, `pmh`.`quantity`, `pmh`.`dosage`, `pv`.`id`
     from `medicines` as `m`, `medicine_details` as `md`, 
     `patient_visits` as `pv`, `patient_medication_history` as `pmh` 
     where `m`.`id` = `md`.`medicine_id` and 
@@ -37,8 +37,8 @@
         
         $data = $data.'<td class="px-2 py-1 align-middle text-center">'.$i.'</td>';
         $data = $data.'<td class="px-2 py-1 align-middle">'.date("M d, Y", strtotime($r['visit_date'])).'</td>';
-        $data = $data.'<td class="px-2 py-1 align-middle">'.$r['disease'].'</td>';
-        $data = $data.'<td class="px-2 py-1 align-middle">'.$r['medicine_name'].' <i>'.$del.'</i></td>';
+        $data = $data.'<td class="px-2 py-1 align-middle"><a href="view_prescription.php?pres_id='.$r['id'].'&goto_page=patient_history.php">'.$r['disease'].'</a></td>';
+        $data = $data.'<td class="px-2 py-1 align-middle">'.$r['medicine_name'].'<i>'.$del.'</i></td>';
         $data = $data.'<td class="px-2 py-1 align-middle text-right">'.$r['packing'].'</td>';
         $data = $data.'<td class="px-2 py-1 align-middle text-right">'.$r['quantity'].'</td>';
         $data = $data.'<td class="px-2 py-1 align-middle text-right">'.$r['dosage'].'</td>';
