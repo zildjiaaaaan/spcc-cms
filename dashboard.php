@@ -204,7 +204,7 @@ include './config/sidebar.php';
               <div class="inner">
                 <h3><?php echo "0"//$currentWeekCount;?></h3>
 
-                <p>Medicines To Be Expired</p>
+                <p>To Be Expired (in 1 month)</p>
               </div>
               <div class="icon">
                 <i class="fa fa-pills"></i>

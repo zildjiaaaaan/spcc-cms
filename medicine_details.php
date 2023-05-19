@@ -7,9 +7,13 @@ $message = '';
 if(isset($_POST['submit'])) {
   $medicineId = $_POST['medicine'];
   $packing = $_POST['packing'];
+  $quantity = $_POST['quantity'];
+
+  $expDateArr = explode("/", $_POST['expiry']);
+  $expDate = $expDateArr[2].'-'.$expDateArr[0].'-'.$expDateArr[1];
   
 
-  $query = "insert into `medicine_details` (`medicine_id`, `packing`) values($medicineId, '$packing');";
+  $query = "insert into `medicine_details` (`medicine_id`, `packing`, `exp_date`, `quantity`) values('$medicineId', '$packing', '$expDate', '$quantity');";
   try {
 
     $con->beginTransaction();
@@ -19,7 +23,7 @@ if(isset($_POST['submit'])) {
 
     $con->commit();
 
-    $message = 'Packing saved successfully.';
+    $message = 'Medicine Details Saved Successfully.';
 
   } catch(PDOException $ex) {
 
@@ -34,10 +38,10 @@ if(isset($_POST['submit'])) {
 }
 
 
-$medicines = getActiveMedicines($con);
+$medicines = getUniqueMedicines($con);
 //$brands = getBrands($con);
 
-$query = "SELECT `m`.`medicine_name`, `md`.`id`, `md`.`packing`,  `md`.`medicine_id` 
+$query = "SELECT `m`.`medicine_name`, `m`.`medicine_brand`, `md`.`id`, `md`.`packing`,  `md`.`medicine_id`, `md`.`exp_date`, `md`.`quantity`
           FROM `medicines` as `m`, `medicine_details` as `md` 
           WHERE `m`.`id` = `md`.`medicine_id`
             AND `m`.`is_del` = '0'
@@ -110,19 +114,19 @@ include './config/sidebar.php';?>
                   </select>
                 </div>
 
-                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                <!-- <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <label>Select Brand</label>
                   <select id="brand" name="brand" class="form-control form-control-sm rounded-0" required="required">
                     
                   </select>
-                </div>
+                </div> -->
 
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <label>Unit</label>
                   <input id="packing" name="packing" class="form-control form-control-sm rounded-0"  required="required" placeholder="e.g. Tablet, Capsule, Syrup, etc."/>
                 </div>
 
-                <div class="col-lg-2 col-md-6 col-sm-6 col-xs-10">
+                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-10">
                   <div class="form-group">
                     <label>Expiration Date</label>
                     <div class="input-group date" id="expiry" 
@@ -137,9 +141,14 @@ include './config/sidebar.php';?>
                   </div>
                 </div>
 
-                <div class="col-lg-1 col-md-2 col-sm-6 col-xs-12">
+                <div class="col-lg-2 col-md-6 col-sm-6 col-xs-12">
+                  <label>Quantity</label>
+                  <input type="number" min="1" id="quantity" name="quantity" class="form-control form-control-sm rounded-0"  required="required"/>
+                </div>
+
+                <div class="col-lg-1 col-md-12 col-sm-12 col-xs-12">
                   <label>&nbsp;</label>
-                  <button type="submit" id="submit" name="submit" 
+                  <button id="save_medicine" type="submit" id="submit" name="submit" 
                   class="btn btn-primary btn-sm btn-flat btn-block">Save</button>
                 </div>
               </div>
@@ -175,16 +184,20 @@ include './config/sidebar.php';?>
               class="table table-striped dataTable table-bordered dtr-inline" 
                role="grid" aria-describedby="medicine_details_info">
                 <colgroup>
-                  <col width="5%">
-                  <col width="50%">
+                  <col width="2%">
                   <col width="30%">
                   <col width="10%">
+                  <col width="5%">
+                  <col width="20%">
+                  <col width="5%">
                 </colgroup>
                 <thead>
                   <tr>
                     <th class="text-center">#</th>
-                    <th>Medicine Name</th>
+                    <th>Medicine</th>
                     <th>Unit</th>
+                    <th>Quantity</th>
+                    <th>Expiration Date</th>
                     <th>Action</th>
                   </tr>
                 </thead>
@@ -197,8 +210,10 @@ include './config/sidebar.php';?>
                   ?>
                   <tr>
                     <td class="text-center"><?php echo $serial; ?></td>
-                    <td><?php echo $row['medicine_name'];?></td>
+                    <td><?php echo strtoupper($row['medicine_name'])." — ".$row['medicine_brand'];?></td>
                     <td><?php echo $row['packing'];?></td>
+                    <td><?php echo $row['quantity'];?></td>
+                    <td><?php echo $row['exp_date'];?></td>
                     
                     <td class="text-center">
                       <a href="update_medicine_details.php?medicine_id=<?php echo $row['medicine_id'];?>&medicine_detail_id=<?php echo $row['id'];?>&packing=<?php echo $row['packing'];?>" 
@@ -239,6 +254,7 @@ if(isset($_GET['message'])) {
 <script src="plugins/moment/moment.min.js"></script>
 <script src="plugins/daterangepicker/daterangepicker.js"></script>
 <script src="plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+
 <script>
   showMenuSelected("#mnu_medicines", "#mi_medicine_details");
 
@@ -256,28 +272,37 @@ if(isset($_GET['message'])) {
     });
 
 
-    $("#medicine").change(function() {
+    $("#packing").blur(function() {
+      var medicineId = $("#medicine").val();
+      var medicineUnit = $(this).val().trim();
 
-      // var medicineId = $("#medicine").val();
-      var medicineId = $(this).val();
-
-      if(medicineId !== '') {
+      $("#medicine").val(medicineId);
+      $(this).val(medicineUnit);
+      
+      if(medicineUnit !== '') {
         $.ajax({
-          url: "ajax/get_brands.php",
+          url: "ajax/check_medicine_unit.php",
           type: 'GET', 
           data: {
-            'medicine_id': medicineId
+            'medicine_id': medicineId,
+            'medicine_unit': medicineUnit
           },
           cache:false,
           async:false,
-          success: function (data, status, xhr) {
-            $("#brand").html(data);
+          success: function (count, status, xhr) {
+            if(count > 0) {
+              showCustomMessage("This medicine item has already been stored. Please just update the existing one.");
+              $("#save_medicine").attr("disabled", "disabled");
+            } else {
+              $("#save_medicine").removeAttr("disabled");
+            }
           },
           error: function (jqXhr, textStatus, errorMessage) {
             showCustomMessage(errorMessage);
           }
         });
       }
+
     });
   });
 

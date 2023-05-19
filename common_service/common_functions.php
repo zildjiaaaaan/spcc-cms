@@ -91,6 +91,35 @@ function getActiveMedicines($con, $medicineId = 0) {
 	
 }
 
+function getUniqueMedicines($con, $medicineId = 0) {
+
+	$query = "select `id`, `medicine_name`, `medicine_brand` from `medicines` where `is_del` = '0' order by `medicine_name` asc;";
+
+	$stmt = $con->prepare($query);
+	try {
+		$stmt->execute();
+
+	} catch(PDOException $ex) {
+		echo $ex->getTraceAsString();
+		echo $ex->getMessage();
+		exit;
+	}
+
+	$data = '<option value="">Select Medicine</option>';
+
+	while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+		if($medicineId == $row['id']) {
+			$data = $data.'<option selected="selected" value="'.$row['id'].'">'.$row['medicine_name'].' — '.$row['medicine_brand'].'</option>';
+
+		} else {
+		$data = $data.'<option value="'.$row['id'].'">'.strtoupper($row['medicine_name']).' — '.$row['medicine_brand'].'</option>';
+		}
+	}
+
+	return $data;
+	
+}
+
 
 function getPatients($con) {
 $query = "select `id`, `patient_name`, `phone_number` 

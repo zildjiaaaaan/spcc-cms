@@ -79,7 +79,7 @@ if(isset($_POST['submit'])) {
   exit;
 }
 $patients = getActivePatients($con);
-$medicines = getActiveMedicines($con);
+$medicines = getUniqueMedicines($con);
 
 ?>
 <!DOCTYPE html>
