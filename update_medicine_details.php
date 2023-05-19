@@ -8,12 +8,16 @@ if(isset($_POST['submit'])) {
 
   $medicineId = $_POST['medicine'];
   $medicineDetailId = $_POST['hidden_id'];
-  $packing = $_POST['packing'];  
+  $packing = $_POST['packing'];
+  $quantity = $_POST['quantity'];
 
-  $query = "update `medicine_details` 
-  set `medicine_id` = $medicineId, 
-  `packing` = '$packing' 
-  where `id` = $medicineDetailId;";
+  $expDateArr = explode("/", $_POST['expiry']);
+  $expDate = $expDateArr[2].'-'.$expDateArr[0].'-'.$expDateArr[1];
+
+  $query = "UPDATE `medicine_details` 
+            SET `medicine_id` = $medicineId, `packing` = '$packing', `exp_date` = '$expDate', `quantity` = '$quantity'
+            WHERE `id` = '$medicineDetailId';
+            ";
 
   try {
 
@@ -24,7 +28,7 @@ if(isset($_POST['submit'])) {
 
     $con->commit();
 
-    $message = 'medicine details updated successfully.';
+    $message = 'Medicine Details Updated Successfully.';
 
   }  catch(PDOException $ex) {
     $con->rollback();
@@ -41,7 +45,25 @@ $medicineId = $_GET['medicine_id'];
 $medicineDetailId = $_GET['medicine_detail_id'];
 $packing = $_GET['packing'];
 
-$medicines = getMedicines($con, $medicineId);
+$medicines = getUniqueMedicines($con, $medicineId);
+
+try {
+  $query = "SELECT date_format(`exp_date`, '%m/%d/%Y') AS `exp_date`, `quantity`
+            FROM `medicine_details` where `id` = '$medicineDetailId';";
+  
+    $stmtMedDetails = $con->prepare($query);
+    $stmtMedDetails->execute();
+    $row = $stmtMedDetails->fetch(PDO::FETCH_ASSOC);
+  
+    $quantity = $row['quantity'];
+    $exp_date = $row['exp_date'];
+
+  } catch(PDOException $ex) {
+  
+    echo $ex->getMessage();
+    echo $ex->getTraceAsString();
+    exit;
+  }
 
 ?>
 <!DOCTYPE html>
@@ -49,6 +71,7 @@ $medicines = getMedicines($con, $medicineId);
 <head>
  <?php include './config/site_css_links.php';?>
  <?php include './config/data_tables_css.php';?>
+ <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
  <title>Update Medicine Details - SPCC Caloocan Clinic</title>
 
 </head>
@@ -94,22 +117,45 @@ include './config/sidebar.php';?>
               value="<?php echo $medicineDetailId;?>" />
 
               <div class="row">
-                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <label>Select Medicine</label>
                   <select id="medicine" name="medicine" class="form-control form-control-sm rounded-0" required="required">
                     <?php echo $medicines;?>
                   </select>
                 </div>
 
-                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <label>Unit</label>
-                  <input id="packing" name="packing" class="form-control form-control-sm rounded-0"  required="required" value="<?php echo $packing;?>" />
+                  <input id="packing" name="packing" class="form-control form-control-sm rounded-0" required="required" value="<?php echo $packing; ?>"/>
                 </div>
 
-                <div class="col-lg-1 col-md-2 col-sm-4 col-xs-12">
+                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-10">
+                  <div class="form-group">
+                    <label>Expiration Date</label>
+                    <?php
+                        
+                    ?>
+                    <div class="input-group date" id="expiry" 
+                        data-target-input="nearest">
+                        <input type="text" id="exp_date" value="<?php echo $exp_date;?>" class="form-control form-control-sm rounded-0 datetimepicker-input" data-target="#expiry" name="expiry" required="required" data-toggle="datetimepicker"/>
+                        <div class="input-group-append" 
+                        data-target="#expiry" 
+                        data-toggle="datetimepicker">
+                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-2 col-md-6 col-sm-6 col-xs-12">
+                  <label>Quantity</label>
+                  <input type="number" min="1" value="<?php echo $quantity?>" id="quantity" name="quantity" class="form-control form-control-sm rounded-0"  required="required"/>
+                </div>
+
+                <div class="col-lg-1 col-md-12 col-sm-12 col-xs-12">
                   <label>&nbsp;</label>
-                  <button type="submit" id="submit" name="submit" 
-                  class="btn btn-primary btn-sm btn-flat btn-block">Update</button>
+                  <button id="save_medicine" type="submit" id="submit" name="submit" 
+                  class="btn btn-primary btn-sm btn-flat btn-block">Save</button>
                 </div>
               </div>
             </form>
@@ -139,6 +185,11 @@ include './config/sidebar.php';?>
 
   <?php include './config/site_js_links.php'; ?>
   <?php include './config/data_tables_js.php'; ?>
+
+  <script src="plugins/moment/moment.min.js"></script>
+  <script src="plugins/daterangepicker/daterangepicker.js"></script>
+  <script src="plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+
   <script>
     showMenuSelected("#mnu_medicines", "#mi_medicine_details");
 
@@ -147,6 +198,55 @@ include './config/sidebar.php';?>
     if(message !== '') {
       showCustomMessage(message);
     }
+
+    $(document).ready(function() {
+        
+        $('#expiry').datetimepicker({
+          format: 'L',
+          minDate:new Date()
+        });
+        
+        $("form :input").blur(function() {
+          var medicineId = $("#medicine").val();
+          var expiry = $("#exp_date").val().trim();
+          var medicineUnit = $("#packing").val().trim();
+
+          var parts = expiry.split("/");
+          var formattedDate = parts[2] + "-" + parts[0].padStart(2, "0") + "-" + parts[1].padStart(2, "0");
+
+          $("#medicine").val(medicineId);
+          $("#expiry").val(formattedDate);
+          $("#packing").val(medicineUnit);
+          
+          if(medicineUnit !== '') {
+            $.ajax({
+              url: "ajax/check_medicine_unit.php",
+              type: 'GET', 
+              data: {
+                'medicine_id': medicineId,
+                'medicine_unit': medicineUnit,
+                'exp_date': formattedDate,
+                'update_id': <?php echo $medicineDetailId; ?>
+              },
+              cache:false,
+              async:false,
+              success: function (count, status, xhr) {
+                if(count > 0) {
+                  showCustomMessage("Duplicate entry! This item is already existing.");
+                  $("#save_medicine").attr("disabled", "disabled");
+                } else {
+                  $("#save_medicine").removeAttr("disabled");
+                }
+              },
+              error: function (jqXhr, textStatus, errorMessage) {
+                showCustomMessage(errorMessage);
+              }
+            });
+          }
+
+        });
+
+    });
 
 
   </script>

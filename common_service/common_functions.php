@@ -109,7 +109,7 @@ function getUniqueMedicines($con, $medicineId = 0) {
 
 	while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 		if($medicineId == $row['id']) {
-			$data = $data.'<option selected="selected" value="'.$row['id'].'">'.$row['medicine_name'].' — '.$row['medicine_brand'].'</option>';
+			$data = $data.'<option selected="selected" value="'.$row['id'].'">'.strtoupper($row['medicine_name']).' — '.$row['medicine_brand'].'</option>';
 
 		} else {
 		$data = $data.'<option value="'.$row['id'].'">'.strtoupper($row['medicine_name']).' — '.$row['medicine_brand'].'</option>';

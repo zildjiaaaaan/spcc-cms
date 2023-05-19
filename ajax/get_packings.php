@@ -3,7 +3,7 @@
 
   	$medicineId = $_GET['medicine_id'];
 
-  	$query = "SELECT `id`, `packing` from `medicine_details` 
+  	$query = "SELECT `id`, `packing` , `exp_date` from `medicine_details`
   	where `medicine_id` = $medicineId;";
 
   	$packings = '<option value="">Select Unit</option>';
@@ -13,7 +13,7 @@
   		$stmt->execute();
 
   		while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-  			 $packings = $packings.'<option value="'.$row['id'].'">'.$row['packing'].'</option>';
+  			 $packings = $packings.'<option value="'.$row['id'].'">'.$row['packing'].' —— Exp. Date: '.$row['exp_date'].'</option>';
   		}
 
   	} catch(PDOException $ex) {

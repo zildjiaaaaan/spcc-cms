@@ -60,7 +60,7 @@ try {
 try {
 $id = $_GET['id'];
 $query = "SELECT `id`, `patient_name`, `address`, 
-`cnic`, date_format(`date_of_birth`, '%m/%d/%Y') as `date_of_birth`,  `phone_number`, `gender` 
+`cnic`, date_format(`date_of_birth`, '%m/%d/%Y') as `date_of_birth`, `phone_number`, `gender` 
 FROM `patients` where `id` = $id;";
 
   $stmtPatient1 = $con->prepare($query);

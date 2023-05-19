@@ -11,6 +11,8 @@ if(isset($_POST['submit'])) {
 
   $expDateArr = explode("/", $_POST['expiry']);
   $expDate = $expDateArr[2].'-'.$expDateArr[0].'-'.$expDateArr[1];
+
+  //12/18/2000
   
 
   $query = "insert into `medicine_details` (`medicine_id`, `packing`, `exp_date`, `quantity`) values('$medicineId', '$packing', '$expDate', '$quantity');";
@@ -291,7 +293,7 @@ if(isset($_GET['message'])) {
           async:false,
           success: function (count, status, xhr) {
             if(count > 0) {
-              showCustomMessage("This medicine item has already been stored. Please just update the existing one.");
+              showCustomMessage("This medicine unit has already been stored. Please just update the existing one.");
               $("#save_medicine").attr("disabled", "disabled");
             } else {
               $("#save_medicine").removeAttr("disabled");

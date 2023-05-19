@@ -345,6 +345,30 @@ if(isset($_GET['message'])) {
       }
     });
 
+    $("#packing").change(function() {
+
+      // var medicineId = $("#medicine").val();
+      var medicineDetailsId = $(this).val();
+
+      if(medicineDetailsId !== '') {
+        $.ajax({
+          url: "ajax/get_quantity.php",
+          type: 'GET', 
+          data: {
+            'medicine_id': medicineId
+          },
+          cache:false,
+          async:false,
+          success: function (data, status, xhr) {
+            $("#quantity").html(data);
+          },
+          error: function (jqXhr, textStatus, errorMessage) {
+            showCustomMessage(errorMessage);
+          }
+        });
+      }
+    });
+
 
     $("#add_to_list").click(function() {
       var medicineId = $("#medicine").val();
