@@ -311,11 +311,9 @@ if(isset($_GET['message'])) {
     showCustomMessage(message);
   }
 
-  
+  var medDetailsArr = [];
 
   $(document).ready(function() {
-
-    var medDetailsArr = [];
     
     $('#medication_list').find('td').addClass("px-2 py-1 align-middle")
     $('#medication_list').find('th').addClass("p-1 align-middle")
@@ -411,6 +409,10 @@ if(isset($_GET['message'])) {
       var packing = $("#packing option:selected").text();
 
       var quantity = $("#quantity").val().trim();
+      if (quantity == '0') {
+        quantity = '';
+      }
+
       var dosage = $("#dosage").val().trim();
 
       var oldData = $("#current_medicines_list").html();
@@ -464,7 +466,7 @@ if(isset($_GET['message'])) {
         
 
       } else {
-        showCustomMessage('Please fill all fields.');
+        showCustomMessage('Please fill all fields. Medicine quantity cannot be 0.');
       }
 
     });
@@ -481,11 +483,15 @@ if(isset($_GET['message'])) {
 
     document.getElementById("medication_list").deleteRow(rowIndex);
 
-    // for (let i = 0; i < medDetailsArr.length; i++) {
-    //   if (medDetailsArr[i].medId === del_id) {
-    //     medDetailsArr[i].qty -= parseInt(del_qty);
-    //   }
-    // }
+    for (let i = 0; i < medDetailsArr.length; i++) {
+      if (medDetailsArr[i].medId === del_id) {
+        medDetailsArr[i].qty -= parseInt(del_qty);
+      }
+    }
+
+    console.log(del_qty);
+    console.log(del_id);
+    console.log(medDetailsArr);
 
 
   }
