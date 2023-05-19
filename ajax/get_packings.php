@@ -4,7 +4,7 @@
   	$medicineId = $_GET['medicine_id'];
 
   	$query = "SELECT `id`, `packing` , `exp_date` from `medicine_details`
-  	where `medicine_id` = $medicineId;";
+  	where `medicine_id` = $medicineId and `quantity` > '0';";
 
   	$packings = '<option value="">Select Unit</option>';
 

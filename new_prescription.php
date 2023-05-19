@@ -219,7 +219,7 @@ include './config/sidebar.php';?>
 
     <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
       <label>Quantity</label>
-      <input type="number" id="quantity" class="form-control form-control-sm rounded-0" />
+      <input type="number" id="quantity" class="form-control form-control-sm rounded-0" min="0"/>
     </div>
 
     <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
@@ -241,7 +241,7 @@ include './config/sidebar.php';?>
     <table id="medication_list" class="table table-striped table-bordered">
       <colgroup>
         <col width="3%">
-        <col width="50%">
+        <col width="25%">
         <col width="15%">
         <col width="10%">
         <col width="15%">
@@ -311,13 +311,17 @@ if(isset($_GET['message'])) {
     showCustomMessage(message);
   }
 
+  
 
   $(document).ready(function() {
+
+    var medDetailsArr = [];
     
     $('#medication_list').find('td').addClass("px-2 py-1 align-middle")
     $('#medication_list').find('th').addClass("p-1 align-middle")
     $('#visit_date, #next_visit_date').datetimepicker({
-      format: 'L'
+      format: 'L',
+      minDate:new Date()
     });
 
 
@@ -355,12 +359,41 @@ if(isset($_GET['message'])) {
           url: "ajax/get_quantity.php",
           type: 'GET', 
           data: {
-            'medicine_id': medicineId
+            'medicineDetailsId': medicineDetailsId
           },
           cache:false,
           async:false,
           success: function (data, status, xhr) {
-            $("#quantity").html(data);
+
+            if (medDetailsArr.length > 0) {
+              for (let i = 0; i < medDetailsArr.length; i++) {
+                if (medDetailsArr[i].medId === medicineDetailsId) {
+                  data -= medDetailsArr[i].qty;
+                  if (data < 0) {
+                    data = 0;
+                  }
+                  break;
+                }
+              }
+            }
+
+            $("#quantity").val(data);
+            $("input").attr({
+              "max" : data,
+              "min" : 0
+            });
+
+            $("#quantity").on("input", function() {
+              var value = $(this).val();
+              var min = parseInt($(this).attr("min"));
+              var max = parseInt($(this).attr("max"));
+
+              if (value < min) {
+                $(this).val(min);
+              } else if (value > max) {
+                $(this).val(max);
+              }
+            });
           },
           error: function (jqXhr, textStatus, errorMessage) {
             showCustomMessage(errorMessage);
@@ -393,7 +426,7 @@ if(isset($_GET['message'])) {
         tr = tr + '<td class="px-2 py-1 align-middle">'+serial+'</td>';
         tr = tr + '<td class="px-2 py-1 align-middle">'+medicineName+'</td>';
         tr = tr + '<td class="px-2 py-1 align-middle">'+packing+'</td>';
-        tr = tr + '<td class="px-2 py-1 align-middle">'+quantity+'</td>';
+        tr = tr + '<td class="px-2 py-1 align-middle" id="'+medicineDetailId+'">'+quantity+'</td>';
         tr = tr + '<td class="px-2 py-1 align-middle">'+dosage + inputs +'</td>';
 
         tr = tr + '<td class="px-2 py-1 align-middle text-center"><button type="button" class="btn btn-outline-danger btn-sm rounded-0" onclick="deleteCurrentRow(this);"><i class="fa fa-times"></i></button></td>';
@@ -408,6 +441,28 @@ if(isset($_GET['message'])) {
         $("#quantity").val('');
         $("#dosage").val('');
 
+        var hasNoId = true;
+        
+        if (medDetailsArr.length > 0) {
+          for (let i = 0; i < medDetailsArr.length; i++) {
+            if (medDetailsArr[i].medId === medicineDetailId) {
+              medDetailsArr[i].qty += parseInt(quantity);
+              hasNoId = false;
+            }
+          }
+        }
+
+        if (hasNoId) {
+          medDetailsArr.push({
+            medId: medicineDetailId,
+            qty: parseInt(quantity)
+          });
+        }
+
+        
+
+        
+
       } else {
         showCustomMessage('Please fill all fields.');
       }
@@ -420,7 +475,19 @@ if(isset($_GET['message'])) {
 
     var rowIndex = obj.parentNode.parentNode.rowIndex;
     
+    var row = document.getElementById("medication_list").rows[rowIndex];
+    var del_qty = row.cells[3].textContent.trim();
+    var del_id = row.cells[3].id;
+
     document.getElementById("medication_list").deleteRow(rowIndex);
+
+    // for (let i = 0; i < medDetailsArr.length; i++) {
+    //   if (medDetailsArr[i].medId === del_id) {
+    //     medDetailsArr[i].qty -= parseInt(del_qty);
+    //   }
+    // }
+
+
   }
 </script>
 </body>
