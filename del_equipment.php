@@ -4,18 +4,18 @@ include './config/connection.php';
 
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
-    $query = "UPDATE `medicines` set `is_del` = '1' where `id`= $id";   
+    $query = "UPDATE `equipments` set `is_del` = '1' where `id`= $id";   
 
     try {
 
         $con->beginTransaction();
     
-        $stmtMedicine = $con->prepare($query);
-        $stmtMedicine->execute();
+        $stmtEquipment = $con->prepare($query);
+        $stmtEquipment->execute();
     
         $con->commit();
     
-        $message = 'Medicine deleted successfully.';
+        $message = 'Equipment Deleted Successfully.';
     
     } catch(PDOException $ex) {
         $con->rollback();
@@ -25,7 +25,7 @@ if (isset($_GET['id'])) {
         exit;
     }
 
-    header("Location:congratulation.php?goto_page=medicines.php&message=$message");
+    header("Location:congratulation.php?goto_page=equipments.php&message=$message");
     exit;
 }
 

@@ -51,9 +51,7 @@ try {
 <!DOCTYPE html>
 <html lang="en">
 <head>
- <?php include './config/site_css_links.php';?>
- <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
- 
+ <?php include './config/site_css_links.php';?> 
  <?php include './config/data_tables_css.php';?>
  <title>Clinic Equipments - SPCC Caloocan Clinic</title>
 </head>
@@ -195,10 +193,6 @@ if(isset($_GET['message'])) {
 <?php include './config/site_js_links.php'; ?>
 <?php include './config/data_tables_js.php'; ?>
 
-<script src="plugins/moment/moment.min.js"></script>
-<script src="plugins/daterangepicker/daterangepicker.js"></script>
-<script src="plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
-
 <script>
   showMenuSelected("#mnu_equipments", "#mi_equipments");
 
@@ -214,11 +208,6 @@ if(isset($_GET['message'])) {
       "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
     }).buttons().container().appendTo('#all_equipments_wrapper .col-md-6:eq(0)');
     
-  });
-
-  $('#expiry').datetimepicker({
-    minDate:new Date(),
-    format: 'L'
   });
 
   $(document).ready(function() {
