@@ -2,9 +2,13 @@
 	include '../config/connection.php';
 
   	$medicineId = $_GET['medicine_id'];
+	$currentDate = date('Y-m-d');
 
-  	$query = "SELECT `id`, `packing` , `exp_date` from `medicine_details`
-  	where `medicine_id` = $medicineId and `quantity` > '0';";
+  	$query = "SELECT `id`, `packing`, `exp_date`
+			FROM `medicine_details`
+			WHERE `medicine_id` = $medicineId
+				AND `quantity` > '0'
+				AND `exp_date` > '$currentDate';";
 
   	$packings = '<option value="">Select Unit</option>';
 

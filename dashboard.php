@@ -161,6 +161,8 @@ include './config/sidebar.php';
           </div>
         </div>
 
+        <!--------------------------------------------- MEDICINE -------------------------------------->
+
         <?php
 
           try {
@@ -168,10 +170,43 @@ include './config/sidebar.php';
             $query = "SELECT count(*) AS `totalmed`
                       FROM `medicines`
                       WHERE `is_del` = '0';";
-            
+
+            $currentDate = date('Y-m-d');
+            $nextMonthEndDate = date('Y-m-t', strtotime('+30 days'));
+            $queryExpiry = "SELECT COUNT(*) AS `exp_date`
+                            FROM `medicine_details`
+                            JOIN `medicines` ON `medicine_details`.`medicine_id` = `medicines`.`id`
+                            WHERE `exp_date` >= '$currentDate'
+                              AND `exp_date` <= '$nextMonthEndDate'
+                              AND `is_del` = '0';";
+
+            $queryQty = "SELECT COUNT(*) AS `quantity`
+                        FROM `medicine_details`
+                        JOIN `medicines` ON `medicine_details`.`medicine_id` = `medicines`.`id`
+                        WHERE `quantity` = '0' AND `is_del` = '0';";
+
+            $queryExpired = "SELECT COALESCE(SUM(quantity), 0) AS `total_expired`
+                        FROM `medicine_details`
+                        JOIN `medicines` ON `medicine_details`.`medicine_id` = `medicines`.`id`
+                        WHERE `exp_date` < CURDATE()
+                          AND `quantity` > '0'
+                          AND `is_del` = '0';";
+                        
               $stmtMed = $con->prepare($query);
               $stmtMed->execute();
               $r = $stmtMed->fetch(PDO::FETCH_ASSOC);
+
+              $stmtExpiry = $con->prepare($queryExpiry);
+              $stmtExpiry->execute();
+              $rExpiry = $stmtExpiry->fetch(PDO::FETCH_ASSOC);
+
+              $stmtQty = $con->prepare($queryQty);
+              $stmtQty->execute();
+              $rQty = $stmtQty->fetch(PDO::FETCH_ASSOC);
+
+              $stmtExpired = $con->prepare($queryExpired);
+              $stmtExpired->execute();
+              $rExpired = $stmtExpired->fetch(PDO::FETCH_ASSOC);
             
             } catch(PDOException $ex) {
               echo $ex->getMessage();
@@ -179,8 +214,6 @@ include './config/sidebar.php';
               exit;
             }
         ?>
-
-        <!--------------------------------------------- MEDICINE -------------------------------------->
 
         <div class="row">
           <div class="col-lg-3 col-6">
@@ -202,7 +235,13 @@ include './config/sidebar.php';
             <!-- small box -->
             <div class="small-box bg-yellow">
               <div class="inner">
-                <h3><?php echo "0"//$currentWeekCount;?></h3>
+                <h3><?php
+                  if (empty($rExpiry['exp_date']) > 0) {
+                    echo $rExpiry['exp_date'];
+                  } else {
+                    echo 0;
+                  }
+                ?></h3>
 
                 <p>To Be Expired (in 1 month)</p>
               </div>
@@ -217,7 +256,7 @@ include './config/sidebar.php';
             <!-- small box -->
             <div class="small-box bg-yellow text-reset">
               <div class="inner">
-                <h3><?php echo "0"//$currentMonthCount;?></h3>
+                <h3><?php echo $rQty['quantity'];?></h3>
 
                 <p>Need To Restock</p>
               </div>
@@ -232,7 +271,7 @@ include './config/sidebar.php';
             <!-- small box -->
             <div class="small-box bg-yellow text-reset">
               <div class="inner">
-                <h3><?php echo "0"//$currentYearCount;?></h3>
+                <h3><?php echo $rExpired['total_expired'];?></h3>
 
                 <p>Expired Medicines</p>
               </div>
@@ -283,7 +322,7 @@ include './config/sidebar.php';
               <div class="inner">
                 <h3><?php echo "0"//$currentMonthCount;?></h3>
 
-                <p>To Restock</p>
+                <p>Recently Added Equipment</p>
               </div>
               <div class="icon">
                 <i class="fa fa-tools"></i>
@@ -298,7 +337,7 @@ include './config/sidebar.php';
               <div class="inner">
                 <h3><?php echo "0"//$currentYearCount;?></h3>
 
-                <p>Expired Medicines</p>
+                <p>Recently Removed Equipment</p>
               </div>
               <div class="icon">
                 <i class="fa fa-tools"></i>
@@ -326,6 +365,13 @@ include './config/sidebar.php';
             $queryUser = "SELECT COUNT(*) AS `attendant` FROM `users`";
 
             $queryVisit = "SELECT `next_visit_date` AS `upcoming` FROM `patient_visits` WHERE `next_visit_date` > CURDATE() ORDER BY `next_visit_date` ASC LIMIT 1;";
+
+            $queryBrands = "SELECT COUNT(DISTINCT(`medicine_brand`)) AS `medicine_brand` FROM `medicines` WHERE `is_del` = '0';";
+
+            $currentDate = date('Y-m-d');
+            $nextMonthEndDate = date('Y-m-t', strtotime('+1 month'));
+            $queryExpiry = "SELECT COUNT(*) AS `exp_date` FROM `medicine_details` WHERE `exp_date` >= '$currentDate' AND `exp_date` <= '$nextMonthEndDate'";
+            
             
               $stmtDel = $con->prepare($queryDel);
               $stmtDel->execute();
@@ -338,6 +384,10 @@ include './config/sidebar.php';
               $stmtVisit = $con->prepare($queryVisit);
               $stmtVisit->execute();
               $rVisit = $stmtVisit->fetch(PDO::FETCH_ASSOC);
+
+              $stmtBrand = $con->prepare($queryBrands);
+              $stmtBrand->execute();
+              $rBrand = $stmtBrand->fetch(PDO::FETCH_ASSOC);
             
             } catch(PDOException $ex) {
               echo $ex->getMessage();
@@ -366,7 +416,7 @@ include './config/sidebar.php';
             <!-- small box -->
             <div class="small-box bg-navy">
               <div class="inner">
-                <h3><?php echo "0"//$currentWeekCount;?></h3>
+                <h3><?php echo $rBrand['medicine_brand'];?></h3>
 
                 <p>Total Medicine Brands</p>
               </div>

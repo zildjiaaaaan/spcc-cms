@@ -32,7 +32,6 @@ if(isset($_POST['submit'])) {
     $nextVisitDate = $nextVisitDateArr[2].'-'.$nextVisitDateArr[0].'-'.$nextVisitDateArr[1];
   }
 
-
   try {
 
     $con->beginTransaction();
@@ -49,7 +48,7 @@ if(isset($_POST['submit'])) {
 
     $lastInsertId = $con->lastInsertId();//latest patient visit id
 
-//now to store data in medication history
+    //now to store data in medication history
     $size = sizeof($medicineDetailIds);
     $curMedicineDetailId = 0;
     $curQuantity = 0;
@@ -71,12 +70,37 @@ if(isset($_POST['submit'])) {
 
     $message = 'Patient Medication stored successfully.';
 
-  }catch(PDOException $ex) {
+  } catch(PDOException $ex) {
     $con->rollback();
 
     echo $ex->getTraceAsString();
     echo $ex->getMessage();
     exit;
+  }
+
+  $medDetailsArr = $_POST['medDetailsArr'];
+
+  foreach ($medDetailsArr as $medicine) {
+    // Decode the JSON string into a PHP array or object
+    $medicineData = json_decode($medicine, true);
+
+    $id = $medicineData['medId'];
+    $quantity = $medicineData['qty'];
+
+    try {
+
+      $queryUpdateQty = "UPDATE `medicine_details` SET `quantity` = `quantity` - '$quantity' WHERE `id` = '$id';";
+      $stmtUpdateQty = $con->prepare($queryUpdateQty);
+      $stmtUpdateQty->execute();
+
+    } catch(PDOException $ex) {
+      $con->rollback();
+  
+      echo $ex->getTraceAsString();
+      echo $ex->getMessage();
+      exit;
+    }
+
   }
 
   header("location:congratulation.php?goto_page=new_prescription.php&message=$message");
@@ -321,7 +345,13 @@ if(isset($_GET['message'])) {
     
     $('#medication_list').find('td').addClass("px-2 py-1 align-middle")
     $('#medication_list').find('th').addClass("p-1 align-middle")
-    $('#visit_date, #next_visit_date').datetimepicker({
+    $('#visit_date').datetimepicker({
+      format: 'L',
+      minDate:new Date(),
+      maxDate:new Date()
+    });
+
+    $('#next_visit_date').datetimepicker({
       format: 'L',
       minDate:new Date()
     });
@@ -426,6 +456,7 @@ if(isset($_GET['message'])) {
         inputs = inputs + '<input type="hidden" name="medicineDetailIds[]" value="'+medicineDetailId+'" />';
         inputs = inputs + '<input type="hidden" name="quantities[]" value="'+quantity+'" />';
         inputs = inputs + '<input type="hidden" name="dosages[]" value="'+dosage+'" />';
+        inputs = inputs + '<input type="hidden" name="medDetailsArr[]" value=\'{"medId":'+medicineDetailId+', "qty":'+quantity+'}\'/>';
 
 
         var tr = '<tr>';
@@ -442,13 +473,8 @@ if(isset($_GET['message'])) {
 
         $("#current_medicines_list").html(oldData);
 
-        $("#medicine").val('');
-        $("#packing").val('');
-        $("#quantity").val('');
-        $("#dosage").val('');
-
         var hasNoId = true;
-        
+                
         if (medDetailsArr.length > 0) {
           for (let i = 0; i < medDetailsArr.length; i++) {
             if (medDetailsArr[i].medId === medicineDetailId) {
@@ -461,9 +487,14 @@ if(isset($_GET['message'])) {
         if (hasNoId) {
           medDetailsArr.push({
             medId: medicineDetailId,
-            qty: parseInt(quantity)
+            qty: parseInt(quantity),
           });
         }
+
+        $("#medicine").val('');
+        $("#packing").val('');
+        $("#quantity").val('');
+        $("#dosage").val('');
 
       } else {
         showCustomMessage('Please fill all fields. Medicine quantity cannot be 0.');
