@@ -215,7 +215,7 @@ include './config/sidebar.php';?>
           var formattedDate = parts[2] + "-" + parts[0].padStart(2, "0") + "-" + parts[1].padStart(2, "0");
 
           $("#medicine").val(medicineId);
-          $("#expiry").val(formattedDate);
+          // $("#expiry").val(formattedDate);
           $("#packing").val(medicineUnit);
           
           if(medicineUnit !== '') {

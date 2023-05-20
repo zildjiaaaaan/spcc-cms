@@ -49,6 +49,7 @@ $query = "SELECT `e`.`equipment`, `e`.`brand`, `ed`.`id`, `ed`.`status`, `ed`.`e
           FROM `equipments` as `e`, `equipment_details` as `ed` 
           WHERE `e`.`id` = `ed`.`equipment_id`
             AND `e`.`is_del` = '0'
+            AND `ed`.`is_del` = '0'
           ORDER BY `e`.`id` ASC, `ed`.`id` ASC;";
 
  try {
@@ -128,7 +129,7 @@ include './config/sidebar.php';?>
                     <label>Date Acquired</label>
                     <div class="input-group date" id="date_acquired" 
                         data-target-input="nearest">
-                        <input type="text" class="form-control form-control-sm rounded-0 datetimepicker-input" data-target="#date_acquired" name="date_acquired" required="required" data-toggle="datetimepicker" autocomplete="off"/>
+                        <input type="text" value="<?php echo date("m/d/Y"); ?>" id="acquired" class="form-control form-control-sm rounded-0 datetimepicker-input" data-target="#date_acquired" name="date_acquired" required="required" data-toggle="datetimepicker" autocomplete="off"/>
                         <div class="input-group-append" 
                         data-target="#date_acquired" 
                         data-toggle="datetimepicker">
@@ -182,9 +183,9 @@ include './config/sidebar.php';?>
 
         <div class="card-body">
             <div class="row table-responsive">
-              <table id="medicine_details" 
+              <table id="equipment_details" 
               class="table table-striped dataTable table-bordered dtr-inline" 
-               role="grid" aria-describedby="medicine_details_info">
+               role="grid" aria-describedby="equipment_details_info">
                 <colgroup>
                   <col width="2%">
                   <col width="30%">
@@ -218,9 +219,12 @@ include './config/sidebar.php';?>
                     <td><?php echo $row['date_acquired'];?></td>
                     
                     <td class="text-center">
-                      <a href="update_medicine_details.php?medicine_id=<?php echo $row['medicine_id'];?>&medicine_detail_id=<?php echo $row['id'];?>&packing=<?php echo $row['packing'];?>" 
+                      <a href="update_equipment_details.php?equipment_id=<?php echo $row['equipment_id'];?>&equipment_detail_id=<?php echo $row['id'];?>" 
                       class = "btn btn-primary btn-sm btn-flat">
                       <i class="fa fa-edit"></i>
+                      </a>
+                      <a href="del_equipment.php?delId=<?php echo $row['id'];?>" class="btn btn-danger btn-sm btn-flat">
+                        <i class="fa fa-trash"></i>
                       </a>
                     </td>
                    
@@ -271,32 +275,40 @@ if(isset($_GET['message'])) {
     $('#date_acquired').datetimepicker({
       format: 'L',
       //maxDate:new Date()
+      // "setDate": new Date(),
+      // "autoclose": true
     });
 
 
-    $("#packing").blur(function() {
-      var medicineId = $("#medicine").val();
-      var medicineUnit = $(this).val().trim();
+    $("form :input").blur(function() {
+      var equipmentId = $("#equipment").val();
+      var equipmentStatus = $("#status").val().trim();
+      var dateAcquired = $("#acquired").val().trim();
+  
+      var parts = dateAcquired.split("/");
+      var formattedDate = parts[2] + "-" + parts[0].padStart(2, "0") + "-" + parts[1].padStart(2, "0");
 
-      $("#medicine").val(medicineId);
-      $(this).val(medicineUnit);
+      $("#equipment").val(equipmentId);
+      $("#status").val(equipmentStatus);
+      //$("#acquired").val(formattedDate);
       
-      if(medicineUnit !== '') {
+      if(equipmentStatus !== '') {
         $.ajax({
-          url: "ajax/check_medicine_unit.php",
+          url: "ajax/check_equipment_status.php",
           type: 'GET', 
           data: {
-            'medicine_id': medicineId,
-            'medicine_unit': medicineUnit
+            'equipment_id': equipmentId,
+            'equipment_status': equipmentStatus,
+            'date_acquired': formattedDate
           },
           cache:false,
           async:false,
           success: function (count, status, xhr) {
             if(count > 0) {
-              showCustomMessage("This medicine unit has already been stored. Please just update the existing one.");
-              $("#save_medicine").attr("disabled", "disabled");
+              showCustomMessage("This equipment has already been stored. Please just update the existing one.");
+              $("#save_equipment").attr("disabled", "disabled");
             } else {
-              $("#save_medicine").removeAttr("disabled");
+              $("#save_equipment").removeAttr("disabled");
             }
           },
           error: function (jqXhr, textStatus, errorMessage) {
@@ -309,10 +321,10 @@ if(isset($_GET['message'])) {
   });
 
   $(function () {
-    $("#medicine_details").DataTable({
+    $("#equipment_details").DataTable({
       "responsive": true, "lengthChange": false, "autoWidth": false,
       "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-    }).buttons().container().appendTo('#medicine_details_wrapper .col-md-6:eq(0)');
+    }).buttons().container().appendTo('#equipment_details_wrapper .col-md-6:eq(0)');
     
   });
 
