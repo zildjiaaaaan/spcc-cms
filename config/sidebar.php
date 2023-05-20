@@ -102,6 +102,33 @@ if(!(isset($_SESSION['user_id']))) {
             </ul>
           </li>
 
+          <li class="nav-item" id="mnu_equipments">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-tools"></i>
+              <p>
+                Clinic Equipments
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="equipments.php" class="nav-link" 
+                id="mi_equipments">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add Equipments</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="equipment_details.php" class="nav-link" 
+                id="mi_equipment_details">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Equipment Details</p>
+                </a>
+              </li>
+                            
+            </ul>
+          </li>
+
           <li class="nav-item" id="mnu_reports">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-edit"></i>
