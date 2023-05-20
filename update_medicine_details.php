@@ -232,7 +232,7 @@ include './config/sidebar.php';?>
               async:false,
               success: function (count, status, xhr) {
                 if(count > 0) {
-                  showCustomMessage("Duplicate entry! This item is already existing.");
+                  showCustomMessage("This medicine unit has already been stored. Please check inventory or the Trash.");
                   $("#save_medicine").attr("disabled", "disabled");
                 } else {
                   $("#save_medicine").removeAttr("disabled");

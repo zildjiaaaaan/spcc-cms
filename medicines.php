@@ -9,26 +9,27 @@ if(isset($_POST['save_medicine'])) {
   $medicineName = ucwords(strtolower($medicineName));
   $medicineBrand = ucwords(strtolower($medicineBrand));
   if($medicineName != '' && $medicineBrand != '') {
-   $query = "INSERT INTO `medicines`(`medicine_name`, `medicine_brand`)
-   VALUES('$medicineName', '$medicineBrand');";
-   
-   try {
 
-    $con->beginTransaction();
+    $query = "INSERT INTO `medicines`(`medicine_name`, `medicine_brand`)
+    VALUES('$medicineName', '$medicineBrand');";
+    
+    try {
 
-    $stmtMedicine = $con->prepare($query);
-    $stmtMedicine->execute();
+      $con->beginTransaction();
 
-    $con->commit();
+      $stmtMedicine = $con->prepare($query);
+      $stmtMedicine->execute();
 
-    $message = 'Medicine Added Successfully.';
-  }catch(PDOException $ex) {
-   $con->rollback();
+      $con->commit();
 
-   echo $ex->getMessage();
-   echo $ex->getTraceAsString();
-   exit;
- }
+      $message = 'Medicine Added Successfully.';
+    }catch(PDOException $ex) {
+    $con->rollback();
+
+    echo $ex->getMessage();
+    echo $ex->getTraceAsString();
+    exit;
+  }
 
 } else {
  $message = 'Empty form can not be submitted.';
@@ -241,7 +242,7 @@ if(isset($_GET['message'])) {
           async:false,
           success: function (count, status, xhr) {
             if(count > 0) {
-              showCustomMessage("This medicine name has already been stored. Please choose another brand.");
+              showCustomMessage("This medicine has already been stored. Please check inventory or the Trash.");
               $("#save_medicine").attr("disabled", "disabled");
             } else {
               $("#save_medicine").removeAttr("disabled");
@@ -273,7 +274,7 @@ if(isset($_GET['message'])) {
           async:false,
           success: function (count, status, xhr) {
             if(count > 0) {
-              showCustomMessage("This medicine name has already been stored. Please choose another name.");
+              showCustomMessage("This medicine has already been stored. Please check inventory or the Trash.");
               $("#save_medicine").attr("disabled", "disabled");
             } else {
               $("#save_medicine").removeAttr("disabled");

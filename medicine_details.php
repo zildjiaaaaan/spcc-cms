@@ -297,7 +297,7 @@ if(isset($_GET['message'])) {
           async:false,
           success: function (count, status, xhr) {
             if(count > 0) {
-              showCustomMessage("This medicine unit has already been stored. Please just update the existing one.");
+              showCustomMessage("This medicine unit has already been stored. Please check inventory or the Trash.");
               $("#save_medicine").attr("disabled", "disabled");
             } else {
               $("#save_medicine").removeAttr("disabled");

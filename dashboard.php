@@ -178,19 +178,23 @@ include './config/sidebar.php';
                             JOIN `medicines` ON `medicine_details`.`medicine_id` = `medicines`.`id`
                             WHERE `exp_date` >= '$currentDate'
                               AND `exp_date` <= '$nextMonthEndDate'
-                              AND `is_del` = '0';";
+                              AND `medicines`.`is_del` = '0'
+                              AND `medicine_details`.`is_del` = '0';";
 
             $queryQty = "SELECT COUNT(*) AS `quantity`
                         FROM `medicine_details`
                         JOIN `medicines` ON `medicine_details`.`medicine_id` = `medicines`.`id`
-                        WHERE `quantity` = '0' AND `is_del` = '0';";
+                        WHERE `quantity` = '0'
+                          AND `medicines`.`is_del` = '0'
+                          AND `medicine_details`.`is_del` = '0';";
 
             $queryExpired = "SELECT COALESCE(SUM(quantity), 0) AS `total_expired`
                         FROM `medicine_details`
                         JOIN `medicines` ON `medicine_details`.`medicine_id` = `medicines`.`id`
                         WHERE `exp_date` < CURDATE()
                           AND `quantity` > '0'
-                          AND `is_del` = '0';";
+                          AND `medicines`.`is_del` = '0'
+                          AND `medicine_details`.`is_del` = '0';";
                         
               $stmtMed = $con->prepare($query);
               $stmtMed->execute();
@@ -285,12 +289,30 @@ include './config/sidebar.php';
 
         <!--------------------------------------------- EQUIPMENT -------------------------------------->
 
+        <?php
+
+        try {
+          $queryEquipments = "SELECT COUNT(*) AS `total_equipments`
+                      FROM `equipments`
+                      WHERE `is_del` = '0';";
+
+          $stmtEquipments = $con->prepare($queryEquipments);
+          $stmtEquipments->execute();
+          $rEquipments = $stmtEquipments->fetch(PDO::FETCH_ASSOC);
+
+        } catch(PDOException $ex) {
+          echo $ex->getMessage();
+          echo $ex->getTraceAsString();
+          exit;
+        }
+        ?>
+
         <div class="row">
           <div class="col-lg-3 col-6">
             <!-- small box -->
             <div class="small-box bg-info">
               <div class="inner">
-                <h3><?php echo $todaysCount;?></h3>
+                <h3><?php echo $rEquipments['total_equipments'];?></h3>
 
                 <p>Total Equipments</p>
               </div>

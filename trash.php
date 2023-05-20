@@ -33,7 +33,24 @@ if (isset($_GET['recover'])) {
     $menuSelected = "#mi_trash_med";
 
     try {
-      $query = "select `id`, `medicine_name` from `medicines` where `is_del` = '1' order by `medicine_name` asc;";
+      $query = "select `id`, `medicine_name`, `medicine_brand` from `medicines` where `is_del` = '1' order by `medicine_name` asc;";
+      $stmt = $con->prepare($query);
+      $stmt->execute();
+    
+    } catch(PDOException $ex) {
+      echo $ex->getMessage();
+      echo $e->getTraceAsString();
+      exit;  
+    }
+  } else if ($_GET['recover'] == "medicine_details") {
+    $rec = "Medicine Details";
+    $menuSelected = "#mi_trash_meddetails";
+
+    try {
+      $query = "SELECT `id`, `medicine_name`
+                FROM `medicine_details`
+                WHERE `is_del` = '1' order by `medicine_name` asc;";
+
       $stmt = $con->prepare($query);
       $stmt->execute();
     
@@ -106,7 +123,7 @@ include './config/sidebar.php';?>
                     <th>Patient Name</th>
                     <th>Student ID</th>
                     <th>Address</th>
-                    <th>Date Of Birth</th>
+                    <th>Birthdate</th>
                     <th>Phone Number</th>
                     <th>Gender</th>
                     <th>Recover</th>
@@ -152,7 +169,7 @@ include './config/sidebar.php';?>
                 <thead>
                   <tr>
                     <th class="text-center">#</th>
-                    <th>Medicine Name</th>
+                    <th>Medicine Item</th>
                     <th class="text-center">Recover</th>
                   </tr>
                 </thead>
@@ -165,7 +182,7 @@ include './config/sidebar.php';?>
                   ?>
                   <tr>
                     <td class="text-center"><?php echo $serial;?></td>
-                    <td><?php echo $row['medicine_name'];?></td>
+                    <td><?php echo strtoupper($row['medicine_name'])." — ".$row['medicine_brand'];?></td>
                     <td class="text-center">
                       <a href="recover.php?med_id=<?php echo $row['id'];?>" class = "btn btn-success btn-sm btn-flat">
                         <i class="fa fa-recycle"></i>

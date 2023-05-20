@@ -232,9 +232,46 @@ include './config/sidebar.php';?>
   if(message !== '') {
     showCustomMessage(message);
   }
-  $('#date_of_birth').datetimepicker({
+    
+  $(document).ready(function() {
+      
+    $('#date_of_birth').datetimepicker({
         format: 'L'
     });
+        
+    $("form :input").blur(function() {
+      var patientName = $("#patient_name").val().trim();
+      var studentID = $("#cnic").val().trim();
+
+      $("#patient_name").val(patientName);
+      $("#cnic").val(studentID);
+      
+      if(patientName !== '') {
+        $.ajax({
+          url: "ajax/check_patient.php",
+          type: 'GET',
+          data: {
+            'patient_name': patientName,
+            'cnic': studentID,
+            'update_id': <?php echo $row['id']; ?>
+          },
+          cache:false,
+          async:false,
+          success: function (count, status, xhr) {
+            if(count > 0) {
+              showCustomMessage("This patient is already existing! Please check records or the Trash.");
+              $("#save_Patient").attr("disabled", "disabled");
+            } else {
+              $("#save_Patient").removeAttr("disabled");
+            }
+          },
+          error: function (jqXhr, textStatus, errorMessage) {
+            showCustomMessage(errorMessage);
+          }
+        });
+      }
+    });
+  });
       
     
    $(function () {

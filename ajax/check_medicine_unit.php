@@ -4,7 +4,7 @@
     $medicineId = $_GET['medicine_id'];
     $medicineUnit = $_GET['medicine_unit'];
     $query = "select count(*) as `count` from `medicine_details` 
-	where `medicine_id` = '$medicineId' and `packing` = '$medicineUnit' and `is_del` = '0';";
+	where `medicine_id` = '$medicineId' and `packing` = '$medicineUnit';";
 
     if (isset($_GET['update_id'])) {
         $id = $_GET['update_id'];
@@ -13,9 +13,7 @@
                   FROM `medicine_details` 
                   WHERE `medicine_id` = '$medicineId'
                     AND `packing` = '$medicineUnit'
-                    AND `exp_date` = '$exp_date'
-                    AND `is_del` = '0'
-                    AND `id` <> '$id';";
+                    AND `exp_date` = '$exp_date';";
     }
 
   $stmt = $con->prepare($query);
