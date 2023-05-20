@@ -180,8 +180,8 @@ if(!(isset($_SESSION['user_id']))) {
                 </a>
               </li>
               <li class="nav-item">
-                <a href="trash.php?recover=equipment" class="nav-link" 
-                id="mi_trash_equipment">
+                <a href="trash.php?recover=equipments" class="nav-link" 
+                id="mi_trash_equipments">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Equipment</p>
                 </a>
@@ -190,7 +190,7 @@ if(!(isset($_SESSION['user_id']))) {
                 <a href="trash.php?recover=equipment_details" class="nav-link" 
                 id="mi_trash_equipmentdetails">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Equipment</p>
+                  <p>Equipment Details</p>
                 </a>
               </li>
               

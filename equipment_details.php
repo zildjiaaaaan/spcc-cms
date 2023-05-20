@@ -121,7 +121,12 @@ include './config/sidebar.php';?>
 
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <label>Status</label>
-                  <input id="status" name="status" class="form-control form-control-sm rounded-0"  required="required" placeholder="e.g. Available, Defective, Lost, etc."/>
+                  <select id="status" name="status" class="form-control form-control-sm rounded-0" required="required">
+                    <option value="Available">Available</option>
+                    <option value="Defective">Defective</option>
+                    <option value="Lost">Lost</option>
+                  </select>
+                  <!-- <input id="status" name="status" class="form-control form-control-sm rounded-0"  required="required" placeholder="e.g. Available, Defective, Lost, etc."/> -->
                 </div>
 
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-10">
@@ -273,8 +278,8 @@ if(isset($_GET['message'])) {
   $(document).ready(function() {
         
     $('#date_acquired').datetimepicker({
-      format: 'L',
-      //maxDate:new Date()
+      format: 'L'
+      //maxDate: new Date()
       // "setDate": new Date(),
       // "autoclose": true
     });
@@ -305,7 +310,7 @@ if(isset($_GET['message'])) {
           async:false,
           success: function (count, status, xhr) {
             if(count > 0) {
-              showCustomMessage("This equipment has already been stored. Please just update the existing one.");
+              showCustomMessage("This equipment has already been stored. Please check inventory or the Trash.");
               $("#save_equipment").attr("disabled", "disabled");
             } else {
               $("#save_equipment").removeAttr("disabled");

@@ -19,8 +19,8 @@ if (isset($_GET['recover'])) {
                 ORDER BY `patient_name` ASC;";
                 
       
-        $stmtPatient1 = $con->prepare($query);
-        $stmtPatient1->execute();
+        $stmt = $con->prepare($query);
+        $stmt->execute();
       
       } catch(PDOException $ex) {
         echo $ex->getMessage();
@@ -47,9 +47,44 @@ if (isset($_GET['recover'])) {
     $menuSelected = "#mi_trash_meddetails";
 
     try {
-      $query = "SELECT `id`, `medicine_name`
-                FROM `medicine_details`
-                WHERE `is_del` = '1' order by `medicine_name` asc;";
+      $query = "SELECT `m`.`medicine_name`, `m`.`medicine_brand`, `md`.`id`, `md`.`packing`,  `md`.`medicine_id`, `md`.`exp_date`, `md`.`quantity`
+                FROM `medicines` as `m`, `medicine_details` as `md` 
+                WHERE `m`.`id` = `md`.`medicine_id`
+                  AND `md`.`is_del` = '1'
+                ORDER BY `m`.`id` ASC, `md`.`id` ASC;";
+
+      $stmt = $con->prepare($query);
+      $stmt->execute();
+    
+    } catch(PDOException $ex) {
+      echo $ex->getMessage();
+      echo $e->getTraceAsString();
+      exit;  
+    }
+  } else if ($_GET['recover'] == "equipments") {
+    $rec = "Equipments";
+    $menuSelected = "#mi_trash_equipments";
+
+    try {
+      $query = "select `id`, `equipment`, `brand` from `equipments` where `is_del` = '1' order by `equipment` asc;";
+      $stmt = $con->prepare($query);
+      $stmt->execute();
+    
+    } catch(PDOException $ex) {
+      echo $ex->getMessage();
+      echo $e->getTraceAsString();
+      exit;  
+    }
+  } else if ($_GET['recover'] == "equipment_details") {
+    $rec = "Equipment Details";
+    $menuSelected = "#mi_trash_equipmentdetails";
+
+    try {
+      $query = "SELECT `e`.`equipment`, `e`.`brand`, `ed`.`id`, `ed`.`status`, `ed`.`equipment_id`, `ed`.`date_acquired`, `ed`.`quantity`
+                FROM `equipments` as `e`, `equipment_details` as `ed` 
+                WHERE `e`.`id` = `ed`.`equipment_id`
+                  AND `ed`.`is_del` = '1'
+                ORDER BY `e`.`id` ASC, `ed`.`id` ASC;";
 
       $stmt = $con->prepare($query);
       $stmt->execute();
@@ -113,10 +148,8 @@ include './config/sidebar.php';?>
               <?php
                 if ($rec == "Patients") {
               ?>
-              <table id="all_patients" 
-              class="table table-striped dataTable table-bordered dtr-inline" 
-               role="grid" aria-describedby="all_patients_info">
-              
+<!------------------------------------------------------------------ PATIENTS ---------------------------------------------------------------->
+              <table id="all_patients" class="table table-striped dataTable table-bordered dtr-inline" role="grid" aria-describedby="all_patients_info">
                 <thead>
                   <tr>
                     <th>#</th>
@@ -133,7 +166,7 @@ include './config/sidebar.php';?>
                 <tbody>
                   <?php 
                   $count = 0;
-                  while($row =$stmtPatient1->fetch(PDO::FETCH_ASSOC)){
+                  while($row =$stmt->fetch(PDO::FETCH_ASSOC)){
                     $count++;
                   ?>
                   <tr>
@@ -156,10 +189,11 @@ include './config/sidebar.php';?>
                 ?>
                 </tbody>
               </table>
+<!------------------------------------------------------------------ MEDICINE ---------------------------------------------------------------->
                 <?php
                   } else if ($rec == "Medicines") {
                 ?>
-                  <table id="all_medicines" class="table table-striped dataTable table-bordered dtr-inline" role="grid" aria-describedby="all_medicines_info">
+                <table id="all_medicines" class="table table-striped dataTable table-bordered dtr-inline" role="grid" aria-describedby="all_medicines_info">
                 <colgroup>
                   <col width="10%">
                   <col width="80%">
@@ -192,9 +226,127 @@ include './config/sidebar.php';?>
                   <?php } ?>
                 </tbody>
               </table>
+<!------------------------------------------------------------------ MEDICINE DETAILS ---------------------------------------------------------------->
               <?php
-                }
+                  } else if ($rec == "Medicine Details") {
               ?>
+              <table id="all_med_details" class="table table-striped dataTable table-bordered dtr-inline" role="grid" aria-describedby="all_med_details_info">
+              
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Medicine</th>
+                    <th>Unit</th>
+                    <th>Expiration Date</th>
+                    <th>Recover</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <?php 
+                  $count = 0;
+                  while($row =$stmt->fetch(PDO::FETCH_ASSOC)){
+                    $count++;
+                  ?>
+                  <tr>
+                    <td><?php echo $count; ?></td>
+                    <td><?php echo $row['medicine_name'];?></td>
+                    <td><?php echo $row['packing'];?></td>
+                    <td><?php echo $row['exp_date'];?></td>
+                    <td class="text-center">
+                      <a href="recover.php?meddetails_id=<?php echo $row['id'];?>" class = "btn btn-success btn-sm btn-flat">
+                      <i class="fa fa-recycle"></i>
+                      </a>
+                    </td>
+                   
+                  </tr>
+                <?php
+                }
+                ?>
+                </tbody>
+              </table>
+<!------------------------------------------------------------------ EQUIPMENTS ---------------------------------------------------------------->
+              <?php
+                } else if ($rec == "Equipments") {          
+              ?>
+              <table id="all_equipments" class="table table-striped dataTable table-bordered dtr-inline" role="grid" aria-describedby="all_equipments_info">
+                <colgroup>
+                  <col width="5%">
+                  <col width="40%">
+                  <col width="40%">
+                  <col width="10%">
+                </colgroup>
+
+                <thead>
+                  <tr>
+                    <th class="text-center">#</th>
+                    <th>Equipment</th>
+                    <th>Equipment Brand</th>
+                    <th class="text-center">Recover</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <?php 
+                    $serial = 0;
+                    while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $serial++;
+                  ?>
+                  <tr>
+                    <td class="text-center"><?php echo $serial;?></td>
+                    <td><?php echo $row['equipment'];?></td>
+                    <td><?php echo $row['brand'];?></td>
+                    <td class="text-center">
+                      <a href="recover.php?equipment_id=<?php echo $row['id'];?>" class = "btn btn-success btn-sm btn-flat">
+                        <i class="fa fa-recycle"></i>
+                      </a>
+                    </td>
+                  </tr>
+                  <?php } ?>
+                </tbody>
+              </table>
+<!------------------------------------------------------------------ EQUIPMENTS DETAILS ---------------------------------------------------------------->
+              <?php
+                } else if ($rec == "Equipment Details") {
+              ?>
+              <table id="all_equipment_details" class="table table-striped dataTable table-bordered dtr-inline" role="grid" aria-describedby="all_equipment_details_info">
+              
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Equipment</th>
+                  <th>Status</th>
+                  <th>Date Acquired</th>
+                  <th>Recover</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <?php 
+                $count = 0;
+                while($row =$stmt->fetch(PDO::FETCH_ASSOC)){
+                  $count++;
+                ?>
+                <tr>
+                  <td><?php echo $count; ?></td>
+                  <td><?php echo strtoupper($row['equipment'])." — ".$row['brand'];?></td>
+                  <td><?php echo $row['status'];?></td>
+                  <td><?php echo $row['date_acquired'];?></td>
+                  <td class="text-center">
+                    <a href="recover.php?meddetails_id=<?php echo $row['id'];?>" class = "btn btn-success btn-sm btn-flat">
+                    <i class="fa fa-recycle"></i>
+                    </a>
+                  </td>
+                 
+                </tr>
+              <?php
+              }
+              ?>
+              </tbody>
+            </table>
+
+
+              <?php } ?>
             </div>
         </div>
      
@@ -255,6 +407,33 @@ include './config/sidebar.php';?>
       //"buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
       "buttons": ["colvis"]
     }).buttons().container().appendTo('#all_medicines_wrapper .col-md-6:eq(0)');
+    
+  });
+
+  $(function () {
+    $("#all_med_details").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      //"buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+      "buttons": ["colvis"]
+    }).buttons().container().appendTo('#all_med_details_wrapper .col-md-6:eq(0)');
+    
+  });
+
+  $(function () {
+    $("#all_equipments").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      //"buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+      "buttons": ["colvis"]
+    }).buttons().container().appendTo('#all_equipments_wrapper .col-md-6:eq(0)');
+    
+  });
+
+  $(function () {
+    $("#all_equipment_details").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      //"buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+      "buttons": ["colvis"]
+    }).buttons().container().appendTo('#all_equipment_details_wrapper .col-md-6:eq(0)');
     
   });
 

@@ -9,8 +9,7 @@
                 FROM `equipment_details`
                 WHERE `equipment_id` = '$equipmentId'
                     AND `status` = '$equipmentStatus'
-                    AND `date_acquired` = '$dateAcquired'
-                    AND `is_del` = '0';";
+                    AND `date_acquired` = '$dateAcquired';";
 
     if (isset($_GET['update_id'])) {
         $id = $_GET['update_id'];
@@ -19,7 +18,6 @@
                   WHERE `equipment_id` = '$equipmentId'
                     AND `status` = '$equipmentStatus'
                     AND `date_acquired` = '$dateAcquired'
-                    AND `is_del` = '0'
                     AND `id` <> '$id';";
     }
 

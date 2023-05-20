@@ -163,7 +163,7 @@ $("#equipment_brand").blur(function() {
       async:false,
       success: function (count, status, xhr) {
         if(count > 0) {
-          showCustomMessage("This equipment has already been stored. Please choose another brand.");
+          showCustomMessage("This equipment has already been stored. Please check inventory or the Trash.");
           $("#save_equipment").attr("disabled", "disabled");
         } else {
           $("#save_equipment").removeAttr("disabled");
@@ -196,7 +196,7 @@ $("#equipment_name").blur(function() {
       async:false,
       success: function (count, status, xhr) {
         if(count > 0) {
-          showCustomMessage("This equipment has already been stored. Please choose another name.");
+          showCustomMessage("This equipment has already been stored. Please check inventory or the Trash.");
           $("#save_equipment").attr("disabled", "disabled");
         } else {
           $("#save_equipment").removeAttr("disabled");

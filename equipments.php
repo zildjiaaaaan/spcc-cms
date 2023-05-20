@@ -230,7 +230,7 @@ if(isset($_GET['message'])) {
           async:false,
           success: function (count, status, xhr) {
             if(count > 0) {
-              showCustomMessage("This equipment has already been stored. Please choose another brand.");
+              showCustomMessage("This equipment has already been stored. Please check inventory or the Trash.");
               $("#save_equipment").attr("disabled", "disabled");
             } else {
               $("#save_equipment").removeAttr("disabled");
@@ -262,7 +262,7 @@ if(isset($_GET['message'])) {
           async:false,
           success: function (count, status, xhr) {
             if(count > 0) {
-              showCustomMessage("This equipment name has already been stored. Please choose another name.");
+              showCustomMessage("This equipment name has already been stored. Please check inventory or the Trash.");
               $("#save_equipment").attr("disabled", "disabled");
             } else {
               $("#save_equipment").removeAttr("disabled");
