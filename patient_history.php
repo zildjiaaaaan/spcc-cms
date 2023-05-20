@@ -68,14 +68,14 @@ include './config/sidebar.php';?>
               <div class="col-md-12 table-responsive">
                 <table id="patient_history" class="table table-striped table-bordered">
                   <colgroup>
-                    <col width="3%">
-                    <col width="7%">
-                    <col width="15%">
+                    <col width="1%">
+                    <col width="6%">
+                    <col width="8%">
+                    <col width="20%">
+                    <col width="1%">
+                    <col width="1%">
+                    <col width="1%">
                     <col width="35%">
-                    <col width="10%">
-                    <col width="5%">
-                    <col width="5%">
-                    <col width="10%">
                   </colgroup>
                   <thead>
                     <tr class="bg-gradient-primary text-light">
@@ -86,7 +86,7 @@ include './config/sidebar.php';?>
                       <th class="p-1 text-center">Unit</th>
                       <th class="p-1 text-center">Qty</th>
                       <th class="p-1 text-center">Dosage</th>
-                      <th class="p-1 text-center">View Full Prescription</th>
+                      <th class="p-1 text-center">Prescription Remarks</th>
                     </tr>
                   </thead>
 
@@ -109,15 +109,7 @@ include './config/sidebar.php';?>
 
 <?php 
 include './config/footer.php';
-$message = '';
-if(isset($_GET['message'])) {
-  if (!empty($_GET['message'])) {
-    $message = $_GET['message'];  
-  } else {
-    $message = "No Remarks";
-  }
-}
-?>  
+?>
   <!-- /.control-sidebar -->
 </div>
 <!-- ./wrapper -->
@@ -126,21 +118,6 @@ if(isset($_GET['message'])) {
 
 <script>
   showMenuSelected("#mnu_patients", "#mi_patient_history");
-
-  function showPrescription(rem) {
-    $.alert({
-        confirmButton: 'Ok',
-        confirmButtonClass: "btn-sm btn-flat rounded-0 btn-info",
-        title: 'Prescription Remarks',
-        content: rem
-    });
-  }
-
-  var remarks = '<?php echo $message;?>';
-
-  if(remarks !== '') {
-    showPrescription(remarks);
-  }
 
   $(document).ready(function() {
 

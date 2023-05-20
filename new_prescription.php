@@ -12,7 +12,11 @@ if(isset($_POST['submit'])) {
   $bp = $_POST['bp'];
   $weight = $_POST['weight'];
   $disease = $_POST['disease'];
-  $remarks = $_POST['remarks'];
+  $remarks = 'No Remarks';
+
+  if (!empty($_POST['remarks'])) {
+    $remarks = $_POST['remarks'];  
+  }
 
   $medicineDetailIds = $_POST['medicineDetailIds'];
 
@@ -461,10 +465,6 @@ if(isset($_GET['message'])) {
           });
         }
 
-        
-
-        
-
       } else {
         showCustomMessage('Please fill all fields. Medicine quantity cannot be 0.');
       }
@@ -488,11 +488,6 @@ if(isset($_GET['message'])) {
         medDetailsArr[i].qty -= parseInt(del_qty);
       }
     }
-
-    console.log(del_qty);
-    console.log(del_id);
-    console.log(medDetailsArr);
-
 
   }
 </script>

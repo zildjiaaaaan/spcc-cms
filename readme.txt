@@ -6,6 +6,7 @@ Med Brand •
 Med unit (change to dropdown, should have own table) •
 med quantity •
 
+fix patient history table
 quantity should decrease
 clinic equipments
 
