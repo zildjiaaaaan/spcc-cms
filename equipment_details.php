@@ -5,17 +5,21 @@ include './common_service/common_functions.php';
 $message = '';
 
 if(isset($_POST['submit'])) {
-  $medicineId = $_POST['medicine'];
-  $packing = $_POST['packing'];
+  $equipmentId = $_POST['equipment'];
+  $status = $_POST['status'];
   $quantity = $_POST['quantity'];
 
-  $expDateArr = explode("/", $_POST['expiry']);
-  $expDate = $expDateArr[2].'-'.$expDateArr[0].'-'.$expDateArr[1];
+  $acquiredDateArr = explode("/", $_POST['date_acquired']);
+  $acquiredDate = $acquiredDateArr[2].'-'.$acquiredDateArr[0].'-'.$acquiredDateArr[1];
 
-  //12/18/2000
-  
+  $remarks = 'No Remarks';
 
-  $query = "insert into `medicine_details` (`medicine_id`, `packing`, `exp_date`, `quantity`) values('$medicineId', '$packing', '$expDate', '$quantity');";
+  if (!empty($_POST['remarks'])) {
+    $remarks = $_POST['remarks'];  
+  }  
+
+  $query = "INSERT INTO `equipment_details` (`equipment_id`, `status`, `quantity`, `date_acquired`, `remarks`)
+            VALUES ('$equipmentId', '$status', '$quantity', '$acquiredDate', '$remarks');";
   try {
 
     $con->beginTransaction();
@@ -25,7 +29,7 @@ if(isset($_POST['submit'])) {
 
     $con->commit();
 
-    $message = 'Medicine Details Saved Successfully.';
+    $message = 'Equipment Details Saved Successfully.';
 
   } catch(PDOException $ex) {
 
@@ -35,20 +39,17 @@ if(isset($_POST['submit'])) {
    echo $ex->getTraceAsString();
    exit;
  }
- header("location:congratulation.php?goto_page=medicine_details.php&message=$message");
+ header("location:congratulation.php?goto_page=equipment_details.php&message=$message");
  exit;
 }
 
+$equipments = getUniqueEquipments($con);
 
-$medicines = getUniqueMedicines($con);
-//$brands = getBrands($con);
-
-$query = "SELECT `m`.`medicine_name`, `m`.`medicine_brand`, `md`.`id`, `md`.`packing`,  `md`.`medicine_id`, `md`.`exp_date`, `md`.`quantity`
-          FROM `medicines` as `m`, `medicine_details` as `md` 
-          WHERE `m`.`id` = `md`.`medicine_id`
-            AND `m`.`is_del` = '0'
-            AND `md`.`is_del` = '0'
-          ORDER BY `m`.`id` ASC, `md`.`id` ASC;";
+$query = "SELECT `e`.`equipment`, `e`.`brand`, `ed`.`id`, `ed`.`status`, `ed`.`equipment_id`, `ed`.`date_acquired`, `ed`.`quantity`
+          FROM `equipments` as `e`, `equipment_details` as `ed` 
+          WHERE `e`.`id` = `ed`.`equipment_id`
+            AND `e`.`is_del` = '0'
+          ORDER BY `e`.`id` ASC, `ed`.`id` ASC;";
 
  try {
   
@@ -69,7 +70,7 @@ $query = "SELECT `m`.`medicine_name`, `m`.`medicine_brand`, `md`.`id`, `md`.`pac
  <?php include './config/site_css_links.php';?>
  <?php include './config/data_tables_css.php';?>
  <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
- <title>Medicine Details - SPCC Caloocan Clinic</title>
+ <title>Equipment Details - SPCC Caloocan Clinic</title>
 
 </head>
 <body class="hold-transition sidebar-mini dark-mode layout-fixed layout-navbar-fixed">
@@ -86,7 +87,7 @@ include './config/sidebar.php';?>
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-6">
-              <h1>Medicine Details</h1>
+              <h1>Equipment Details</h1>
             </div>
           </div>
         </div><!-- /.container-fluid -->
@@ -98,7 +99,7 @@ include './config/sidebar.php';?>
         <!-- Default box -->
         <div class="card card-outline card-primary rounded-0 shadow">
           <div class="card-header">
-            <h3 class="card-title">Add Medicine Details</h3>
+            <h3 class="card-title">Add Equipment Details</h3>
 
             <div class="card-tools">
               <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
@@ -111,32 +112,25 @@ include './config/sidebar.php';?>
             <form method="post">
               <div class="row">
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                  <label>Select Medicine</label>
-                  <select id="medicine" name="medicine" class="form-control form-control-sm rounded-0" required="required">
-                    <?php echo $medicines;?>
+                  <label>Select Equipment</label>
+                  <select id="equipment" name="equipment" class="form-control form-control-sm rounded-0" required="required">
+                    <?php echo $equipments;?>
                   </select>
                 </div>
 
-                <!-- <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                  <label>Select Brand</label>
-                  <select id="brand" name="brand" class="form-control form-control-sm rounded-0" required="required">
-                    
-                  </select>
-                </div> -->
-
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                  <label>Unit</label>
-                  <input id="packing" name="packing" class="form-control form-control-sm rounded-0"  required="required" placeholder="e.g. Tablet, Capsule, Syrup, etc."/>
+                  <label>Status</label>
+                  <input id="status" name="status" class="form-control form-control-sm rounded-0"  required="required" placeholder="e.g. Available, Defective, Lost, etc."/>
                 </div>
 
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-10">
                   <div class="form-group">
-                    <label>Expiration Date</label>
-                    <div class="input-group date" id="expiry" 
+                    <label>Date Acquired</label>
+                    <div class="input-group date" id="date_acquired" 
                         data-target-input="nearest">
-                        <input type="text" class="form-control form-control-sm rounded-0 datetimepicker-input" data-target="#expiry" name="expiry" required="required" data-toggle="datetimepicker" autocomplete="off"/>
+                        <input type="text" class="form-control form-control-sm rounded-0 datetimepicker-input" data-target="#date_acquired" name="date_acquired" required="required" data-toggle="datetimepicker" autocomplete="off"/>
                         <div class="input-group-append" 
-                        data-target="#expiry" 
+                        data-target="#date_acquired" 
                         data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                       </div>
@@ -144,14 +138,19 @@ include './config/sidebar.php';?>
                   </div>
                 </div>
 
-                <div class="col-lg-2 col-md-6 col-sm-6 col-xs-12">
+                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <label>Quantity</label>
                   <input type="number" min="1" id="quantity" name="quantity" class="form-control form-control-sm rounded-0"  required="required"/>
                 </div>
 
+                <div class="col-lg-11 col-md-12 col-sm-12 col-xs-12">
+                    <label>Remarks</label>
+                    <textarea id="remarks" name="remarks" class="form-control form-control-sm rounded-0" placeholder="Please note something if necessary"></textarea>
+                </div>
+
                 <div class="col-lg-1 col-md-12 col-sm-12 col-xs-12">
                   <label>&nbsp;</label>
-                  <button id="save_medicine" type="submit" id="submit" name="submit" 
+                  <button id="save_equipment" type="submit" id="submit" name="submit" 
                   class="btn btn-primary btn-sm btn-flat btn-block">Save</button>
                 </div>
               </div>
@@ -197,10 +196,10 @@ include './config/sidebar.php';?>
                 <thead>
                   <tr>
                     <th class="text-center">#</th>
-                    <th>Medicine</th>
-                    <th>Unit</th>
+                    <th>Equipment</th>
+                    <th>Status</th>
                     <th>Quantity</th>
-                    <th>Expiration Date</th>
+                    <th>Date Acquired</th>
                     <th>Action</th>
                   </tr>
                 </thead>
@@ -213,18 +212,15 @@ include './config/sidebar.php';?>
                   ?>
                   <tr>
                     <td class="text-center"><?php echo $serial; ?></td>
-                    <td><?php echo strtoupper($row['medicine_name'])." — ".$row['medicine_brand'];?></td>
-                    <td><?php echo $row['packing'];?></td>
+                    <td><?php echo strtoupper($row['equipment'])." — ".$row['brand'];?></td>
+                    <td><?php echo $row['status'];?></td>
                     <td><?php echo $row['quantity'];?></td>
-                    <td><?php echo $row['exp_date'];?></td>
+                    <td><?php echo $row['date_acquired'];?></td>
                     
                     <td class="text-center">
                       <a href="update_medicine_details.php?medicine_id=<?php echo $row['medicine_id'];?>&medicine_detail_id=<?php echo $row['id'];?>&packing=<?php echo $row['packing'];?>" 
                       class = "btn btn-primary btn-sm btn-flat">
                       <i class="fa fa-edit"></i>
-                      </a>
-                      <a href="del_medicine.php?delId=<?php echo $row['id'];?>" class="btn btn-danger btn-sm btn-flat">
-                        <i class="fa fa-trash"></i>
                       </a>
                     </td>
                    
@@ -262,7 +258,7 @@ if(isset($_GET['message'])) {
 <script src="plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
 
 <script>
-  showMenuSelected("#mnu_medicines", "#mi_medicine_details");
+  showMenuSelected("#mnu_equipments", "#mi_equipment_details");
 
   var message = '<?php echo $message;?>';
 
@@ -272,9 +268,9 @@ if(isset($_GET['message'])) {
 
   $(document).ready(function() {
         
-    $('#expiry').datetimepicker({
+    $('#date_acquired').datetimepicker({
       format: 'L',
-      minDate:new Date()
+      //maxDate:new Date()
     });
 
 

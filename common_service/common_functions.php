@@ -167,6 +167,35 @@ function getActivePatients($con) {
 	return $data;
 }
 
+function getUniqueEquipments($con, $equipmentId = 0) {
+
+	$query = "select `id`, `equipment`, `brand` from `equipments` where `is_del` = '0' order by `equipment` asc;";
+
+	$stmt = $con->prepare($query);
+	try {
+		$stmt->execute();
+
+	} catch(PDOException $ex) {
+		echo $ex->getTraceAsString();
+		echo $ex->getMessage();
+		exit;
+	}
+
+	$data = '<option value="">Select Equipment</option>';
+
+	while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+		if($equipmentId == $row['id']) {
+			$data = $data.'<option selected="selected" value="'.$row['id'].'">'.$row['equipment'].' — '.strtoupper($row['brand']).'</option>';
+
+		} else {
+		$data = $data.'<option value="'.$row['id'].'">'.$row['equipment'].' — '.strtoupper($row['brand']).'</option>';
+		}
+	}
+
+	return $data;
+	
+}
+
 
 function getDateTextBox($label, $dateId) {
 
