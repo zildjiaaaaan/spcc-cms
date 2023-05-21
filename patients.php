@@ -6,7 +6,12 @@ include './common_service/common_functions.php';
 $message = '';
 if (isset($_POST['save_Patient'])) {
 
-    $patientName = trim($_POST['patient_name']);
+    $patientName = strtoupper(trim($_POST['patient_name']));
+    $patientMName = strtoupper(trim($_POST['patient_mname']));
+    $patientSName = strtoupper(trim($_POST['patient_sname']));
+
+    $patientFullName = $patientSName.", ".$patientName.", ".$patientMName;
+
     $address = trim($_POST['address']);
     $cnic = trim($_POST['cnic']);
     
@@ -17,32 +22,35 @@ if (isset($_POST['save_Patient'])) {
 
     $phoneNumber = trim($_POST['phone_number']);
 
-    $patientName = ucwords(strtolower($patientName));
+    $contactPerson = ucwords(strtolower(trim($_POST['contact_person'])));
+    $relationship = ucwords(strtolower(trim($_POST['relationship'])));
+    $contactPersonNo = trim($_POST['contact_person_no']);
     $address = ucwords(strtolower($address));
 
     $gender = $_POST['gender'];
-if ($patientName != '' && $address != '' && $cnic != '' && $dateBirth != '' && $phoneNumber != '' && $gender != '') {
-      $query = "INSERT INTO `patients`(`patient_name`, `address`, `cnic`, `date_of_birth`, `phone_number`, `gender`, `is_del`)
-                VALUES('$patientName', '$address', '$cnic', '$dateBirth', '$phoneNumber', '$gender', '0');";
-try {
+    
+  if ($patientFullName != '' && $address != '' && $cnic != '' && $dateBirth != '' && $phoneNumber != '' && $gender != '') {
+      $query = "INSERT INTO `patients`(`patient_name`, `address`, `cnic`, `date_of_birth`, `phone_number`, `gender`, `contact_person`, `relationship`, `contact_person_no`, `is_del`)
+                VALUES('$patientFullName', '$address', '$cnic', '$dateBirth', '$phoneNumber', '$gender', '$contactPerson', '$relationship', '$contactPersonNo', '0');";
+    try {
 
-  $con->beginTransaction();
+      $con->beginTransaction();
 
-  $stmtPatient = $con->prepare($query);
-  $stmtPatient->execute();
+      $stmtPatient = $con->prepare($query);
+      $stmtPatient->execute();
 
-  $con->commit();
+      $con->commit();
 
-  $message = 'Patient Added Successfully.';
+      $message = 'Patient Added Successfully.';
 
-} catch(PDOException $ex) {
-  $con->rollback();
+    } catch(PDOException $ex) {
+      $con->rollback();
 
-  echo $ex->getMessage();
-  echo $ex->getTraceAsString();
-  exit;
-}
-}
+      echo $ex->getMessage();
+      echo $ex->getTraceAsString();
+      exit;
+    }
+  }
   header("Location:congratulation.php?goto_page=patients.php&message=$message");
   exit;
 }
@@ -117,13 +125,21 @@ include './config/sidebar.php';?>
           <form method="post">
             <div class="row">
               <div class="col-lg-4 col-md-4 col-sm-4 col-xs-10">
-              <label>Patient Name</label>
-              <input type="text" id="patient_name" name="patient_name" required="required" class="form-control form-control-sm rounded-0" placeholder="Enter full name"/>
+              <label>First Name</label>
+              <input type="text" id="patient_name" name="patient_name" required="required" class="form-control form-control-sm rounded-0"/>
+              </div>
+              <div class="col-lg-4 col-md-4 col-sm-4 col-xs-10">
+              <label>Middle Name</label>
+              <input type="text" id="patient_mname" name="patient_mname" class="form-control form-control-sm rounded-0"/>
+              </div>
+              <div class="col-lg-4 col-md-4 col-sm-4 col-xs-10">
+              <label>Surname</label>
+              <input type="text" id="patient_sname" name="patient_sname" required="required" class="form-control form-control-sm rounded-0"/>
               </div>
               <br>
               <br>
               <br>
-              <div class="col-lg-4 col-md-4 col-sm-4 col-xs-10">
+              <div class="col-lg-8 col-md-4 col-sm-4 col-xs-10">
                 <label>Address</label> 
                 <input type="text" id="address" name="address" required="required"
                 class="form-control form-control-sm rounded-0"/>
@@ -160,9 +176,20 @@ include './config/sidebar.php';?>
                 name="gender">
                   <?php echo getGender();?>
                 </select>
-                
               </div>
+              <div class="col-lg-4 col-md-4 col-sm-4 col-xs-10">
+                <label>Contact Person</label>
+                <input type="text" id="contact_person" name="contact_person" required="required" class="form-control form-control-sm rounded-0"/>
               </div>
+              <div class="col-lg-4 col-md-4 col-sm-4 col-xs-10">
+                <label>Relationship</label>
+                <input type="text" id="relationship" name="relationship" required="required" class="form-control form-control-sm rounded-0"/>
+              </div>
+              <div class="col-lg-4 col-md-4 col-sm-4 col-xs-10">
+                <label>Contact Person Phone Number</label>
+                <input type="text" id="contact_person_no" name="contact_person_no" required="required" class="form-control form-control-sm rounded-0"/>
+              </div>
+            </div>
               
               <div class="clearfix">&nbsp;</div>
 
@@ -225,7 +252,13 @@ include './config/sidebar.php';?>
                   ?>
                   <tr>
                     <td><?php echo $count; ?></td>
-                    <td><?php echo $row['patient_name'];?></td>
+                    <td><?php
+                      $string = $row['patient_name'];
+                      $explodedArray = explode(', ', $string);
+                      $resultArray = array_map('trim', $explodedArray);
+
+                      echo $resultArray[0].", ".ucwords(strtolower($resultArray[1])).", ".ucwords(strtolower($resultArray[2]));
+                    ?></td>
                     <td><?php echo $row['address'];?></td>
                     <td><?php echo $row['cnic'];?></td>
                     <td><?php echo $row['date_of_birth'];?></td>
@@ -287,23 +320,51 @@ include './config/sidebar.php';?>
   $(document).ready(function() {
         
     $('#date_of_birth').datetimepicker({
-        format: 'L'
+        format: 'L',
+        maxDate:new Date()
     });
         
     $("form :input").blur(function() {
       var patientName = $("#patient_name").val().trim();
+      var patientMName = $("#patient_mname").val().trim();
+      var patientSName = $("#patient_sname").val().trim();
       var studentID = $("#cnic").val().trim();
 
       $("#patient_name").val(patientName);
+      $("#patient_mname").val(patientMName);
+      $("#patient_sname").val(patientSName);
       $("#cnic").val(studentID);
       
-      if(patientName !== '') {
+      if(studentID !== '') {
+        $.ajax({
+          url: "ajax/check_patient.php",
+          type: 'GET',
+          data: {
+            'cnic': studentID
+          },
+          cache:false,
+          async:false,
+          success: function (count, status, xhr) {
+            if(count > 0) {
+              showCustomMessage("This student ID is already existing! Please check records or the Trash.");
+              $("#save_Patient").attr("disabled", "disabled");
+            } else {
+              $("#save_Patient").removeAttr("disabled");
+            }
+          },
+          error: function (jqXhr, textStatus, errorMessage) {
+            showCustomMessage(errorMessage);
+          }
+        });
+      }
+      if(patientName !== '' && patientMName !== '' && patientSName !== '') {
         $.ajax({
           url: "ajax/check_patient.php",
           type: 'GET',
           data: {
             'patient_name': patientName,
-            'cnic': studentID
+            'patient_mname': patientMName,
+            'patient_sname': patientSName
           },
           cache:false,
           async:false,
