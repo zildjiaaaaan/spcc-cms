@@ -150,6 +150,15 @@ include './config/sidebar.php';?>
               ?>
 <!------------------------------------------------------------------ PATIENTS ---------------------------------------------------------------->
               <table id="all_patients" class="table table-striped dataTable table-bordered dtr-inline" role="grid" aria-describedby="all_patients_info">
+                <colgroup>
+                    <col width="1%">
+                    <col width="20%">
+                    <col width="8%">
+                    <col width="35%">
+                    <col width="8%">
+                    <col width="8%">
+                    <col width="5%">
+                  </colgroup>
                 <thead>
                   <tr>
                     <th>#</th>
@@ -158,7 +167,6 @@ include './config/sidebar.php';?>
                     <th>Address</th>
                     <th>Birthdate</th>
                     <th>Phone Number</th>
-                    <th>Gender</th>
                     <th>Recover</th>
                   </tr>
                 </thead>
@@ -176,7 +184,6 @@ include './config/sidebar.php';?>
                     <td><?php echo $row['address'];?></td>
                     <td><?php echo $row['date_of_birth'];?></td>
                     <td><?php echo $row['phone_number'];?></td>
-                    <td><?php echo $row['gender'];?></td>
                     <td class="text-center">
                       <a href="recover.php?patient_id=<?php echo $row['id'];?>" class = "btn btn-success btn-sm btn-flat">
                       <i class="fa fa-recycle"></i>

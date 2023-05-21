@@ -7,7 +7,12 @@ if (isset($_POST['save_Patient'])) {
   
     $hiddenId = $_POST['hidden_id'];
 
-    $patientName = trim($_POST['patient_name']);
+    $patientName = strtoupper(trim($_POST['patient_name']));
+    $patientMName = strtoupper(trim($_POST['patient_mname']));
+    $patientSName = strtoupper(trim($_POST['patient_sname']));
+
+    $patientFullName = $patientSName.", ".$patientName.", ".$patientMName;
+
     $address = trim($_POST['address']);
     $cnic = trim($_POST['cnic']);
     
@@ -18,38 +23,43 @@ if (isset($_POST['save_Patient'])) {
 
     $phoneNumber = trim($_POST['phone_number']);
 
-    $patientName = ucwords(strtolower($patientName));
+    $contactPerson = ucwords(strtolower(trim($_POST['contact_person'])));
+    $relationship = ucwords(strtolower(trim($_POST['relationship'])));
+    $contactPersonNo = trim($_POST['contact_person_no']);
     $address = ucwords(strtolower($address));
 
     $gender = $_POST['gender'];
 if ($patientName != '' && $address != '' && 
   $cnic != '' && $dateBirth != '' && $phoneNumber != '' && $gender != '') {
-      $query = "update `patients` 
-    set `patient_name` = '$patientName', 
-    `address` = '$address', 
-    `cnic` = '$cnic', 
-    `date_of_birth` = '$dateBirth', 
-    `phone_number` = '$phoneNumber', 
-    `gender` = '$gender' 
-where `id` = $hiddenId;";
-try {
+      $query = "UPDATE `patients` 
+                SET `patient_name` = '$patientFullName', 
+                    `address` = '$address', 
+                    `cnic` = '$cnic', 
+                    `date_of_birth` = '$dateBirth', 
+                    `phone_number` = '$phoneNumber', 
+                    `gender` = '$gender', 
+                    `contact_person` = '$contactPerson',
+                    `relationship` = '$relationship',
+                    `contact_person_no` = '$contactPersonNo'
+                WHERE `id` = $hiddenId;";
+  try {
 
-  $con->beginTransaction();
+    $con->beginTransaction();
 
-  $stmtPatient = $con->prepare($query);
-  $stmtPatient->execute();
+    $stmtPatient = $con->prepare($query);
+    $stmtPatient->execute();
 
-  $con->commit();
+    $con->commit();
 
-  $message = 'Patient updated successfully.';
+    $message = 'Patient Updated Successfully.';
 
-} catch(PDOException $ex) {
-  $con->rollback();
+  } catch(PDOException $ex) {
+    $con->rollback();
 
-  echo $ex->getMessage();
-  echo $ex->getTraceAsString();
-  exit;
-}
+    echo $ex->getMessage();
+    echo $ex->getTraceAsString();
+    exit;
+  }
 }
   header("Location:congratulation.php?goto_page=patients.php&message=$message");
   exit;
@@ -59,15 +69,18 @@ try {
 
 try {
 $id = $_GET['id'];
-$query = "SELECT `id`, `patient_name`, `address`, 
-`cnic`, date_format(`date_of_birth`, '%m/%d/%Y') as `date_of_birth`, `phone_number`, `gender` 
-FROM `patients` where `id` = $id;";
+$query = "SELECT `id`, `patient_name`, `address`, `cnic`, date_format(`date_of_birth`, '%m/%d/%Y') as `date_of_birth`, `phone_number`, `gender`,
+          `contact_person`, `relationship`, `contact_person_no`
+          FROM `patients` where `id` = $id;";
 
   $stmtPatient1 = $con->prepare($query);
   $stmtPatient1->execute();
   $row = $stmtPatient1->fetch(PDO::FETCH_ASSOC);
 
   $gender = $row['gender'];
+  $string = $row['patient_name'];
+  $explodedArray = explode(', ', $string);
+  $resultArray = array_map('trim', $explodedArray);
 
 $dob = $row['date_of_birth']; 
 } catch(PDOException $ex) {
@@ -128,22 +141,29 @@ include './config/sidebar.php';?>
             value="<?php echo $row['id'];?>">
             <div class="row">
               <div class="col-lg-4 col-md-4 col-sm-4 col-xs-10">
-              <label>Patient Name</label>
-              <input type="text" id="patient_name" name="patient_name" required="required"
-                class="form-control form-control-sm rounded-0" value="<?php echo $row['patient_name'];?>" />
+              <label>First Name</label>
+              <input type="text" value="<?php echo $resultArray[1]; ?>" id="patient_name" name="patient_name" required="required" class="form-control form-control-sm rounded-0"/>
+              </div>
+              <div class="col-lg-4 col-md-4 col-sm-4 col-xs-10">
+              <label>Middle Name</label>
+              <input type="text" value="<?php echo $resultArray[2]; ?>" id="patient_mname" name="patient_mname" class="form-control form-control-sm rounded-0"/>
+              </div>
+              <div class="col-lg-4 col-md-4 col-sm-4 col-xs-10">
+              <label>Surname</label>
+              <input type="text" value="<?php echo $resultArray[0]; ?>" id="patient_sname" name="patient_sname" required="required" class="form-control form-control-sm rounded-0"/>
               </div>
               <br>
               <br>
               <br>
-              <div class="col-lg-4 col-md-4 col-sm-4 col-xs-10">
+              <div class="col-lg-8 col-md-4 col-sm-4 col-xs-10">
                 <label>Address</label> 
-                <input type="text" id="address" name="address" required="required"
-                class="form-control form-control-sm rounded-0" value="<?php echo $row['address'];?>" />
+                <input type="text" value="<?php echo $row['address']; ?>" id="address" name="address" required="required"
+                class="form-control form-control-sm rounded-0"/>
               </div>
               <div class="col-lg-4 col-md-4 col-sm-4 col-xs-10">
                 <label>Student ID</label>
-                <input type="text" id="cnic" name="cnic" required="required"
-                class="form-control form-control-sm rounded-0" value="<?php echo $row['cnic'];?>" />
+                <input type="text" value="<?php echo $row['cnic']; ?>" id="cnic" name="cnic" required="required"
+                class="form-control form-control-sm rounded-0"/>
               </div>
               <div class="col-lg-4 col-md-4 col-sm-4 col-xs-10">
                 <div class="form-group">
@@ -151,8 +171,8 @@ include './config/sidebar.php';?>
                     <div class="input-group date" 
                     id="date_of_birth" 
                     data-target-input="nearest">
-                        <input type="text" class="form-control form-control-sm rounded-0 datetimepicker-input" data-target="#date_of_birth" name="date_of_birth" 
-                        value="<?php echo $dob;?>" />
+                        <input type="text" value="<?php echo $dob;?>" class="form-control form-control-sm rounded-0 datetimepicker-input" data-target="#date_of_birth" name="date_of_birth" 
+                        data-toggle="datetimepicker" autocomplete="off" />
                         <div class="input-group-append" 
                         data-target="#date_of_birth" 
                         data-toggle="datetimepicker">
@@ -160,12 +180,11 @@ include './config/sidebar.php';?>
                         </div>
                     </div>
                 </div>
-              
               </div>
               <div class="col-lg-4 col-md-4 col-sm-4 col-xs-10">
                 <label>Phone Number</label>
-                <input type="text" id="phone_number" name="phone_number" required="required"
-                class="form-control form-control-sm rounded-0" value="<?php echo $row['phone_number'];?>" />
+                <input type="text" value="<?php echo $row['phone_number'];?>" id="phone_number" name="phone_number" required="required"
+                class="form-control form-control-sm rounded-0"/>
               </div>
               <div class="col-lg-4 col-md-4 col-sm-4 col-xs-10">
               <label>Gender</label>
@@ -177,7 +196,19 @@ include './config/sidebar.php';?>
                 </select>
                 
               </div>
+              <div class="col-lg-4 col-md-4 col-sm-4 col-xs-10">
+                <label>Contact Person</label>
+                <input type="text" value="<?php echo $row['contact_person']; ?>" id="contact_person" name="contact_person" required="required" class="form-control form-control-sm rounded-0"/>
               </div>
+              <div class="col-lg-4 col-md-4 col-sm-4 col-xs-10">
+                <label>Relationship</label>
+                <input type="text" value="<?php echo $row['relationship']; ?>" id="relationship" name="relationship" required="required" class="form-control form-control-sm rounded-0"/>
+              </div>
+              <div class="col-lg-4 col-md-4 col-sm-4 col-xs-10">
+                <label>Contact Person Phone Number</label>
+                <input type="text" value="<?php echo $row['contact_person_no']; ?>" id="contact_person_no" name="contact_person_no" required="required" class="form-control form-control-sm rounded-0"/>
+              </div>
+            </div>
               
               <div class="clearfix">&nbsp;</div>
               <div class="row">
@@ -241,18 +272,46 @@ include './config/sidebar.php';?>
         
     $("form :input").blur(function() {
       var patientName = $("#patient_name").val().trim();
+      var patientMName = $("#patient_mname").val().trim();
+      var patientSName = $("#patient_sname").val().trim();
       var studentID = $("#cnic").val().trim();
 
       $("#patient_name").val(patientName);
+      $("#patient_mname").val(patientMName);
+      $("#patient_sname").val(patientSName);
       $("#cnic").val(studentID);
       
-      if(patientName !== '') {
+      if(studentID !== '') {
+        $.ajax({
+          url: "ajax/check_patient.php",
+          type: 'GET',
+          data: {
+            'cnic': studentID,
+            'update_id': <?php echo $row['id']; ?>
+          },
+          cache:false,
+          async:false,
+          success: function (count, status, xhr) {
+            if(count > 0) {
+              showCustomMessage("This student ID is already existing! Please check records or the Trash.");
+              $("#save_Patient").attr("disabled", "disabled");
+            } else {
+              $("#save_Patient").removeAttr("disabled");
+            }
+          },
+          error: function (jqXhr, textStatus, errorMessage) {
+            showCustomMessage(errorMessage);
+          }
+        });
+      }
+      if(patientName !== '' && patientMName !== '' && patientSName !== '') {
         $.ajax({
           url: "ajax/check_patient.php",
           type: 'GET',
           data: {
             'patient_name': patientName,
-            'cnic': studentID,
+            'patient_mname': patientMName,
+            'patient_sname': patientSName,
             'update_id': <?php echo $row['id']; ?>
           },
           cache:false,
