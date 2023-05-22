@@ -395,8 +395,8 @@ include './config/sidebar.php';?>
     showCustomMessage(message);
   }
   $('#date_of_birth').datetimepicker({
-        format: 'L'
-    });
+    format: 'L'
+  });
       
     
    $(function () {

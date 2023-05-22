@@ -18,9 +18,9 @@ relationship •
 emergency contact no •
 
 recovery system
->medicine details
->equipment
->equipment details
+>medicine details •
+>equipment •
+>equipment details •
 
 r2Rx@FmaEISXQE@h!5oI
 TyIZZe*H*$VgaTnvrvO!
@@ -97,3 +97,43 @@ LIMITATIONS:
 - Wirelessly accessible only through Internet-capable mobile devices
 - System access levels are only for Clinic Attendant role/position
 - Exclusive for SPCC Caloocan
+
+
+ADD EQUIPMENT	
+[text] equipment
+[text] brand
+[date] date acquired
+
+ADD BORROWER
+[text] fname
+[text] lname
+[text] position
+[text] position_id
+
+ADD EQUIPMENT DETAILS (List Form)
+[select] equipment-brand
+[select] status
+[select] state *if 'Unavailable', enable dates
+[date] *unavailable_until
+[date] *unavailable_since
+[number] qty
+[textarea] remarks
+
+BORROWING (List form)
+[select] last name - id
+[select] available equipment-brand
+[number] qty
+
+--- UPDATE DATABASE ---
+
+TBL_EQUIPMENT
+id	equipment	brand	date_acquired	total_qty
+
+TBL_BORROWER
+id	fname	lname	position	position_id
+
+TBL_AVAILABILITY
+id	equipment_id	status	unavailable_since	unavailable_until	state	qty	remarks
+
+TBL_BORROWED	
+id	borrower_id	availability_id

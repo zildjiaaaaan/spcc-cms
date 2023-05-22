@@ -334,29 +334,37 @@ include './config/sidebar.php';?>
       $("#patient_mname").val(patientMName);
       $("#patient_sname").val(patientSName);
       $("#cnic").val(studentID);
+
+      
       
       if(studentID !== '') {
-        $.ajax({
-          url: "ajax/check_patient.php",
-          type: 'GET',
-          data: {
-            'cnic': studentID
-          },
-          cache:false,
-          async:false,
-          success: function (count, status, xhr) {
-            if(count > 0) {
-              showCustomMessage("This student ID is already existing! Please check records or the Trash.");
-              $("#save_Patient").attr("disabled", "disabled");
-            } else {
-              $("#save_Patient").removeAttr("disabled");
+        if (/\D/.test(studentID)) {
+          showCustomMessage("Invalid characters for ID.");
+          $("#save_Patient").attr("disabled", "disabled");
+        } else {
+          $.ajax({
+            url: "ajax/check_patient.php",
+            type: 'GET',
+            data: {
+              'cnic': studentID
+            },
+            cache:false,
+            async:false,
+            success: function (count, status, xhr) {
+              if(count > 0) {
+                showCustomMessage("This student ID is already existing! Please check records or the Trash.");
+                $("#save_Patient").attr("disabled", "disabled");
+              } else {
+                $("#save_Patient").removeAttr("disabled");
+              }
+            },
+            error: function (jqXhr, textStatus, errorMessage) {
+              showCustomMessage(errorMessage);
             }
-          },
-          error: function (jqXhr, textStatus, errorMessage) {
-            showCustomMessage(errorMessage);
-          }
-        });
+          });
+        }
       }
+
       if(patientName !== '' && patientMName !== '' && patientSName !== '') {
         $.ajax({
           url: "ajax/check_patient.php",
