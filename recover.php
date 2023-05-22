@@ -13,6 +13,18 @@ if (isset($_GET['patient_id'])) {
     $id = $_GET['med_id'];
     $query = "UPDATE `medicines` set `is_del` = '0' where `id`= $id";
     $location = "medicine";
+} else if (isset($_GET['meddetails_id'])) {
+    $id = $_GET['meddetails_id'];
+    $query = "UPDATE `medicine_details` set `is_del` = '0' where `id`= $id";
+    $location = "medicine_details";
+} else if (isset($_GET['equipment_id'])) {
+    $id = $_GET['equipment_id'];
+    $query = "UPDATE `equipments` set `is_del` = '0' where `id`= $id";
+    $location = "equipments";
+} else if (isset($_GET['equipmentdetails_id'])) {
+    $id = $_GET['equipmentdetails_id'];
+    $query = "UPDATE `equipment_details` set `is_del` = '0' where `id`= $id";
+    $location = "equipment_details";
 }
 
 try {

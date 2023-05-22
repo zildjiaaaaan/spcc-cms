@@ -340,7 +340,7 @@ include './config/sidebar.php';?>
                   <td><?php echo $row['status'];?></td>
                   <td><?php echo $row['date_acquired'];?></td>
                   <td class="text-center">
-                    <a href="recover.php?meddetails_id=<?php echo $row['id'];?>" class = "btn btn-success btn-sm btn-flat">
+                    <a href="recover.php?equipmentdetails_id=<?php echo $row['id'];?>" class = "btn btn-success btn-sm btn-flat">
                     <i class="fa fa-recycle"></i>
                     </a>
                   </td>

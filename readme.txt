@@ -41,15 +41,16 @@ light mode/dark mode
 
 ---
 
-Add, View, Update, Delete, Search - Patient Info
-Add, View, Update, Delete, Search - Medicine Type and Brand
-Add, View, Update, Delete, Search - Medicine Details
-Add, View, Update, Delete, Search - Equipment and its Brand
-Add, View, Update, Delete, Search - Equipment Details
-Add, View, Update, Delete - Clinic Attendant
-
-Add - Medication (formerly Prescription)
-View - Patient Medication History
+SCOPE:
+Main Functions
+- Add, View, Update, Delete, Search - Patient Info
+- Add, View, Update, Delete, Search - Medicine Type and Brand
+- Add, View, Update, Delete, Search - Medicine Details
+- Add, View, Update, Delete, Search - Equipment and its Brand
+- Add, View, Update, Delete, Search - Equipment Details
+- Add, View, Update, Delete - Clinic Attendant
+- Add - Medication (formerly Prescription)
+- View - Patient Medication History
 
 Summary of Records
 - Total patients of the current day
@@ -87,6 +88,12 @@ Security System
 - Login with username and password
 
 Accessibility
-- Accessible through desktop/laptop browsers
-- Wirelessly accessible through mobile device browsers
+- Accessible offline when hosted locally
+- Compatible and responsive to mobile devices
 
+LIMITATIONS:
+- Recommeded OS to use: Windows 7, 8, 10, Android, Mac or iOS
+- Recommeded updated browsers to use: Chrome, Firefox, MS Edge, Safari, Opera, and Brave
+- Wirelessly accessible only through Internet-capable mobile devices
+- System access levels are only for Clinic Attendant role/position
+- Exclusive for SPCC Caloocan
