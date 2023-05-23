@@ -454,9 +454,14 @@ include './config/sidebar.php';
             <div class="small-box bg-navy text-reset">
               <div class="inner">
                 <h3><?php
-                      $date = DateTime::createFromFormat('Y-m-d', $rVisit['upcoming']);
-                      $formattedDate = $date->format('F j, Y');
-                      echo $formattedDate;
+                      if (!empty($rVisit['upcoming'])) {
+                        $date = DateTime::createFromFormat('Y-m-d', $rVisit['upcoming']);
+                        $formattedDate = $date->format('F j, Y');
+                        echo $formattedDate;
+                      } else {
+                        echo "None";
+                      }
+                      
                     ?></h3>
 
                 <p>Upcoming Visit</p>

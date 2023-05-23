@@ -103,6 +103,7 @@ ADD EQUIPMENT
 [text] equipment
 [text] brand
 [date] date acquired
+[number] total quantity
 
 ADD BORROWER
 [text] fname

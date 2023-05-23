@@ -8,9 +8,15 @@ if(isset($_POST['save_equipment'])) {
   $equipmentBrand = trim($_POST['equipment_brand']);
   $equipmentName = ucwords(strtolower($equipmentName));
   $equipmentBrand = ucwords(strtolower($equipmentBrand));
-  if($equipmentName != '' && $equipmentBrand != '') {
-   $query = "INSERT INTO `equipments`(`equipment`, `brand`)
-   VALUES('$equipmentName', '$equipmentBrand');";
+
+  $acquiredDateArr = explode("/", $_POST['date_acquired']);
+  $acquiredDate = $acquiredDateArr[2].'-'.$acquiredDateArr[0].'-'.$acquiredDateArr[1];
+
+  $total_qty = $_POST['quantity'];
+
+  if($equipmentName != '' && $equipmentBrand != '' && $acquiredDate != '' && $total_qty != '') {
+   $query = "INSERT INTO `equipments`(`equipment`, `brand`, `date_acquired`, `total_qty`)
+   VALUES('$equipmentName', '$equipmentBrand', '$acquiredDate', '$total_qty');";
    
    try {
 
@@ -22,7 +28,7 @@ if(isset($_POST['save_equipment'])) {
     $con->commit();
 
     $message = 'Equipment Added Successfully.';
-  }catch(PDOException $ex) {
+  } catch(PDOException $ex) {
    $con->rollback();
 
    echo $ex->getMessage();
@@ -38,7 +44,10 @@ exit;
 }
 
 try {
-  $query = "select `id`, `equipment`, `brand` from `equipments` where `is_del` = '0' order by `equipment` asc;";
+  $query = "SELECT `id`, `equipment`, `brand`, `date_acquired`, `total_qty`
+            FROM `equipments`
+            WHERE `is_del` = '0'
+            ORDER BY `equipment` ASC;";
   $stmt = $con->prepare($query);
   $stmt->execute();
 
@@ -53,6 +62,7 @@ try {
 <head>
  <?php include './config/site_css_links.php';?> 
  <?php include './config/data_tables_css.php';?>
+ <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
  <title>Clinic Equipments - SPCC Caloocan Clinic</title>
 </head>
 <body class="hold-transition sidebar-mini dark-mode layout-fixed layout-navbar-fixed">
@@ -88,15 +98,35 @@ include './config/sidebar.php';?>
           <div class="card-body">
             <form method="post">
              <div class="row">
-              <div class="col-lg-4 col-md-6 col-sm-6 col-xs-10">
+              <div class="col-lg-3 col-md-6 col-sm-6 col-xs-10">
                 <label>Equipment Name</label>
                 <input type="text" id="equipment_name" name="equipment_name" required="required" placeholder="e.g. Disposable Syringe"
-                class="form-control form-control-sm rounded-0" />
+                class="form-control form-control-sm rounded-0" autofocus/>
               </div>
 
-              <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+              <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <label>Brand</label>
                   <input id="equipment_brand" name="equipment_brand" class="form-control form-control-sm rounded-0" placeholder="Leave it blank for generic brand" required="required" />
+              </div>
+
+              <div class="col-lg-3 col-md-6 col-sm-6 col-xs-10">
+                <div class="form-group">
+                  <label>Date Acquired</label>
+                  <div class="input-group date" id="date_acquired" 
+                      data-target-input="nearest">
+                      <input type="text" value="<?php echo date("m/d/Y"); ?>" id="acquired" class="form-control form-control-sm rounded-0 datetimepicker-input" data-target="#date_acquired" name="date_acquired" required="required" data-toggle="datetimepicker" autocomplete="off"/>
+                      <div class="input-group-append" 
+                      data-target="#date_acquired" 
+                      data-toggle="datetimepicker">
+                      <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-2 col-md-6 col-sm-6 col-xs-12">
+                <label>Quantity</label>
+                <input type="number" min="1" id="quantity" name="quantity" class="form-control form-control-sm rounded-0"  required="required"/>
               </div>
 
               <div class="col-lg-1 col-md-12 col-sm-12 col-xs-2">
@@ -130,8 +160,10 @@ include './config/sidebar.php';?>
           <table id="all_equipments" class="table table-striped dataTable table-bordered dtr-inline" role="grid" aria-describedby="all_equipments_info">
             <colgroup>
               <col width="5%">
-              <col width="35%">
-              <col width="35%">
+              <col width="20%">
+              <col width="15%">
+              <col width="15%">
+              <col width="10%">
               <col width="10%">
             </colgroup>
 
@@ -140,6 +172,8 @@ include './config/sidebar.php';?>
                 <th class="text-center">#</th>
                 <th>Equipment</th>
                 <th>Equipment Brand</th>
+                <th>Date Acquired</th>
+                <th>Total Quantity</th>
                 <th class="text-center">Action</th>
               </tr>
             </thead>
@@ -154,6 +188,8 @@ include './config/sidebar.php';?>
                 <td class="text-center"><?php echo $serial;?></td>
                 <td><?php echo $row['equipment'];?></td>
                 <td><?php echo $row['brand'];?></td>
+                <td><?php echo $row['date_acquired'];?></td>
+                <td><?php echo $row['total_qty'];?></td>
                 <td class="text-center">
                   <a href="update_equipment.php?id=<?php echo $row['id'];?>" class="btn btn-primary btn-sm btn-flat">
                     <i class="fa fa-edit"></i>
@@ -193,6 +229,10 @@ if(isset($_GET['message'])) {
 <?php include './config/site_js_links.php'; ?>
 <?php include './config/data_tables_js.php'; ?>
 
+<script src="plugins/moment/moment.min.js"></script>
+<script src="plugins/daterangepicker/daterangepicker.js"></script>
+<script src="plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+
 <script>
   showMenuSelected("#mnu_equipments", "#mi_equipments");
 
@@ -212,10 +252,18 @@ if(isset($_GET['message'])) {
 
   $(document).ready(function() {
 
-    $("#equipment_brand").blur(function() {
-      var equipmentBrand = $(this).val().trim();
+    $('#date_acquired').datetimepicker({
+      format: 'L'
+      //maxDate: new Date()
+      // "setDate": new Date(),
+      // "autoclose": true
+    });
+
+
+    $("form :input").blur(function() {
+      var equipmentBrand = $("#equipment_brand").val().trim();
       var equipmentName = $("#equipment_name").val().trim();
-      $(this).val(equipmentBrand);
+      $("#equipment_brand").val(equipmentBrand);
       $("#equipment_name").val(equipmentName);
 
       if(equipmentBrand !== '') {
@@ -241,39 +289,6 @@ if(isset($_GET['message'])) {
           }
         });
       }
-
-    });
-
-    $("#equipment_name").blur(function() {
-      var equipmentName = $(this).val().trim();
-      var equipmentBrand = $("#equipment_brand").val().trim();
-      $(this).val(equipmentName);
-      $("#equipment_brand").val(equipmentBrand);
-
-      if(equipmentName !== '') {
-        $.ajax({
-          url: "ajax/check_equipment_name.php",
-          type: 'GET', 
-          data: {
-            'equipment_name': equipmentName,
-            'equipment_brand': equipmentBrand
-          },
-          cache:false,
-          async:false,
-          success: function (count, status, xhr) {
-            if(count > 0) {
-              showCustomMessage("This equipment name has already been stored. Please check inventory or the Trash.");
-              $("#save_equipment").attr("disabled", "disabled");
-            } else {
-              $("#save_equipment").removeAttr("disabled");
-            }
-          },
-          error: function (jqXhr, textStatus, errorMessage) {
-            showCustomMessage(errorMessage);
-          }
-        });
-      }
-
     });
   });
 </script>
