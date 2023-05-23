@@ -200,8 +200,12 @@ include './config/sidebar.php';?>
                     <td><?php echo $row['borrower_id'];?></td>
                     <td><?php echo $row['contact_no'];?></td>
                     <td class="text-center">
-                      <a href="update_patient.php?id=<?php echo $row['id'];?>" class = "btn btn-primary btn-sm btn-flat">
-                      <i class="fa fa-edit"></i>
+                      <a href="update_borrower.php?id=<?php echo $row['id'];?>" class = "btn btn-primary btn-sm btn-flat">
+                        <i class="fa fa-edit"></i>
+                      </a>
+                      </a>
+                      <a href="del_borrower.php?delId=<?php echo $row['id'];?>" class="btn btn-danger btn-sm btn-flat">
+                        <i class="fa fa-trash"></i>
                       </a>
                     </td>
                    
@@ -254,11 +258,6 @@ include './config/sidebar.php';?>
 
   $(document).ready(function() {
         
-    $('#date_of_birth').datetimepicker({
-        format: 'L',
-        maxDate:new Date()
-    });
-        
     $("form :input").blur(function() {
         var borrowerID_disabled = false;
         var name_disabled = false;
@@ -309,7 +308,6 @@ include './config/sidebar.php';?>
                 $("#save_borrower").attr("disabled", "disabled");
                 } else {
                     $("#save_borrower").removeAttr("disabled");
-                    console.log("borrowerid");
                 }
             },
             error: function (jqXhr, textStatus, errorMessage) {
@@ -343,7 +341,7 @@ include './config/sidebar.php';?>
         });
       }
     });
-  });      
+  });
     
    $(function () {
     $("#all_patients").DataTable({
