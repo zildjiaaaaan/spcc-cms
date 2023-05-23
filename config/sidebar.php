@@ -38,6 +38,31 @@ if(!(isset($_SESSION['user_id']))) {
             </a>
           </li>
 
+          <li class="nav-item">
+            <a href="new_prescription.php" class="nav-link" 
+            id="mi_new_prescription">
+              <i class="fas fa-heart nav-icon"></i>
+              <p>New Medication</p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a href="borrow.php" class="nav-link" 
+            id="mi_borrow">
+              <i class="fas fa-toolbox nav-icon"></i>
+              <p>Borrow Equipment</p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <div>
+              <i></i>
+              <p>
+                &nbsp;
+              </p>
+            </div>
+          </li>
+
           
           <li class="nav-item" id="mnu_patients">
             <a href="#" class="nav-link">
@@ -49,17 +74,10 @@ if(!(isset($_SESSION['user_id']))) {
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="new_prescription.php" class="nav-link" 
-                id="mi_new_prescription">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>New Prescription</p>
-                </a>
-              </li>
-              <li class="nav-item">
                 <a href="patients.php" class="nav-link" 
                 id="mi_patients">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Add Patients</p>
+                  <p>Add Patient</p>
                 </a>
               </li>
               <li class="nav-item">
@@ -106,7 +124,7 @@ if(!(isset($_SESSION['user_id']))) {
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-tools"></i>
               <p>
-                Clinic Equipments
+                Clinic Equipment
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
@@ -115,7 +133,7 @@ if(!(isset($_SESSION['user_id']))) {
                 <a href="equipments.php" class="nav-link" 
                 id="mi_equipments">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Add Equipments</p>
+                  <p>Add Equipment</p>
                 </a>
               </li>
               <li class="nav-item">
@@ -127,6 +145,42 @@ if(!(isset($_SESSION['user_id']))) {
               </li>
                             
             </ul>
+          </li>
+
+          <li class="nav-item" id="mnu_borrowers">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-user-tag"></i>
+              <p>
+                Borrowers
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="borrowers.php" class="nav-link" 
+                id="mi_borrowers">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add Borrower</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link" 
+                id="mi_borrower_history">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Borrower History</p>
+                </a>
+              </li>
+              
+            </ul>
+          </li>
+
+          <li class="nav-item">
+            <div>
+              <i></i>
+              <p>
+                &nbsp;
+              </p>
+            </div>
           </li>
 
           <li class="nav-item" id="mnu_reports">

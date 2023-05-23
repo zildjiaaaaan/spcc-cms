@@ -107,7 +107,7 @@ if (isset($_GET['recover'])) {
  <?php include './config/data_tables_css.php';?>
 
   <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
-  <title>Patients - Clinic's Patient Management System in PHP</title>
+  <title>Recover <?php echo $rec;?> - SPCC Caloocan Clinic</title>
 
 </head>
 <body class="hold-transition sidebar-mini dark-mode layout-fixed layout-navbar-fixed">

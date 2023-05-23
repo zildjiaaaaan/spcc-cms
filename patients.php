@@ -145,7 +145,7 @@ include './config/sidebar.php';?>
                 class="form-control form-control-sm rounded-0"/>
               </div>
               <div class="col-lg-4 col-md-4 col-sm-4 col-xs-10">
-                <label>Student ID</label>
+                <label>Student ID / Employee ID</label>
                 <input type="text" id="cnic" name="cnic" required="required"
                 class="form-control form-control-sm rounded-0"/>
               </div>
@@ -236,7 +236,7 @@ include './config/sidebar.php';?>
                     <th>#</th>
                     <th>Patient Name</th>
                     <th>Address</th>
-                    <th>Student ID</th>
+                    <th>Student ID / Employee ID</th>
                     <th>Birthdate</th>
                     <th>Contact</th>
                     <th>Gender</th>
@@ -328,41 +328,47 @@ include './config/sidebar.php';?>
       var patientName = $("#patient_name").val().trim();
       var patientMName = $("#patient_mname").val().trim();
       var patientSName = $("#patient_sname").val().trim();
+      var patientContact = $("#phone_number").val().trim();
+      var emergencyContact = $("#contact_person_no").val().trim();
       var studentID = $("#cnic").val().trim();
 
       $("#patient_name").val(patientName);
       $("#patient_mname").val(patientMName);
       $("#patient_sname").val(patientSName);
+      $("#phone_number").val(patientContact);
+      $("#contact_person_no").val(emergencyContact);
       $("#cnic").val(studentID);
-
-      
-      
-      if(studentID !== '') {
-        if (/\D/.test(studentID)) {
-          showCustomMessage("Invalid characters for ID.");
-          $("#save_Patient").attr("disabled", "disabled");
-        } else {
-          $.ajax({
-            url: "ajax/check_patient.php",
-            type: 'GET',
-            data: {
-              'cnic': studentID
-            },
-            cache:false,
-            async:false,
-            success: function (count, status, xhr) {
-              if(count > 0) {
-                showCustomMessage("This student ID is already existing! Please check records or the Trash.");
-                $("#save_Patient").attr("disabled", "disabled");
-              } else {
-                $("#save_Patient").removeAttr("disabled");
-              }
-            },
-            error: function (jqXhr, textStatus, errorMessage) {
-              showCustomMessage(errorMessage);
+           
+      if ((studentID !== '' && !/^[a-zA-Z0-9]+$/.test(studentID))) {
+        showCustomMessage("Invalid characters in Student ID / Employee ID field.");
+        $("#save_Patient").attr("disabled", "disabled");
+      } if (patientContact !== '' && /\D/.test(patientContact)) {
+        showCustomMessage("Invalid characters in Phone Number field.");
+        $("#save_Patient").attr("disabled", "disabled");
+      } else if (emergencyContact !== '' && /\D/.test(emergencyContact)) {
+        showCustomMessage("Invalid characters in Contact Person Phone Number field.");
+        $("#save_Patient").attr("disabled", "disabled");
+      } else {
+        $.ajax({
+          url: "ajax/check_patient.php",
+          type: 'GET',
+          data: {
+            'cnic': studentID
+          },
+          cache:false,
+          async:false,
+          success: function (count, status, xhr) {
+            if(count > 0) {
+              showCustomMessage("This student ID is already existing! Please check records or the Trash.");
+              $("#save_Patient").attr("disabled", "disabled");
+            } else {
+              $("#save_Patient").removeAttr("disabled");
             }
-          });
-        }
+          },
+          error: function (jqXhr, textStatus, errorMessage) {
+            showCustomMessage(errorMessage);
+          }
+        });
       }
 
       if(patientName !== '' && patientMName !== '' && patientSName !== '') {

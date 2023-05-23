@@ -209,20 +209,18 @@ if(isset($_GET['message'])) {
     showCustomMessage(message);
   }
 
-  $(function () {
-    $("#all_medicines").DataTable({
-      "responsive": true, "lengthChange": false, "autoWidth": false,
-      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-    }).buttons().container().appendTo('#all_medicines_wrapper .col-md-6:eq(0)');
-    
-  });
-
   $('#expiry').datetimepicker({
     minDate:new Date(),
     format: 'L'
   });
 
   $(document).ready(function() {
+    
+    $("#all_medicines").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    }).buttons().container().appendTo('#all_medicines_wrapper .col-md-6:eq(0)');
+      
 
     $("#medicine_brand").blur(function() {
       var medicineBrand = $(this).val().trim();

@@ -111,7 +111,7 @@ include './config/sidebar.php';
               <div class="icon">
                 <i class="fa fa-calendar-day"></i>
               </div>
-             
+              <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -126,7 +126,7 @@ include './config/sidebar.php';
               <div class="icon">
                 <i class="fa fa-calendar-week"></i>
               </div>
-             
+              <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -141,7 +141,7 @@ include './config/sidebar.php';
               <div class="icon">
                 <i class="fa fa-calendar"></i>
               </div>
-             
+              <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -156,7 +156,7 @@ include './config/sidebar.php';
               <div class="icon">
                 <i class="fa fa-user-injured"></i>
               </div>
-             
+              <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
         </div>
@@ -225,13 +225,12 @@ include './config/sidebar.php';
             <div class="small-box bg-yellow">
               <div class="inner">
                 <h3><?php echo $r['totalmed'];?></h3>
-
                 <p>Total Medicine Stocks</p>
               </div>
               <div class="icon">
                 <i class="fa fa-pills"></i>
               </div>
-             
+              <a href="medicines.php" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -252,6 +251,7 @@ include './config/sidebar.php';
               <div class="icon">
                 <i class="fa fa-pills"></i>
               </div>
+              <a href="medicine_details.php?search=expired" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
              
             </div>
           </div>
@@ -267,6 +267,7 @@ include './config/sidebar.php';
               <div class="icon">
                 <i class="fa fa-pills"></i>
               </div>
+              <a href="medicine_details.php?search=restock" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
              
             </div>
           </div>
@@ -282,7 +283,7 @@ include './config/sidebar.php';
               <div class="icon">
                 <i class="fa fa-pills"></i>
               </div>
-             
+              <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
         </div>
@@ -314,12 +315,12 @@ include './config/sidebar.php';
               <div class="inner">
                 <h3><?php echo $rEquipments['total_equipments'];?></h3>
 
-                <p>Total Equipments</p>
+                <p>Total Equipment</p>
               </div>
               <div class="icon">
                 <i class="fa fa-tools"></i>
               </div>
-             
+              <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -329,12 +330,12 @@ include './config/sidebar.php';
               <div class="inner">
                 <h3><?php echo "0"//$currentWeekCount;?></h3>
 
-                <p>Defective Equipments</p>
+                <p>Borrowed Equipment</p>
               </div>
               <div class="icon">
                 <i class="fa fa-tools"></i>
               </div>
-             
+              <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -349,7 +350,7 @@ include './config/sidebar.php';
               <div class="icon">
                 <i class="fa fa-tools"></i>
               </div>
-             
+              <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -359,12 +360,12 @@ include './config/sidebar.php';
               <div class="inner">
                 <h3><?php echo "0"//$currentYearCount;?></h3>
 
-                <p>Recently Removed Equipment</p>
+                <p>Recently Missing Equipment</p>
               </div>
               <div class="icon">
                 <i class="fa fa-tools"></i>
               </div>
-             
+              <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
         </div>
@@ -430,7 +431,7 @@ include './config/sidebar.php';
               <div class="icon">
                 <i class="fa fa-user"></i>
               </div>
-             
+              <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -445,7 +446,7 @@ include './config/sidebar.php';
               <div class="icon">
                 <i class="fa fa-tag"></i>
               </div>
-             
+              <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -469,7 +470,7 @@ include './config/sidebar.php';
               <div class="icon">
                 <i class="fa fa-hospital"></i>
               </div>
-             
+              <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -484,7 +485,7 @@ include './config/sidebar.php';
               <div class="icon">
                 <i class="fa fa-trash"></i>
               </div>
-             
+              <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
         </div>

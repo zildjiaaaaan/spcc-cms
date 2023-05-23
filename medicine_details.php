@@ -270,7 +270,34 @@ if(isset($_GET['message'])) {
     showCustomMessage(message);
   }
 
-  $(document).ready(function() {
+  $(document).ready(function() {  
+    
+    $(function(){
+      const url = new URL(window.location.href);
+      const search = url.searchParams.get("search");
+      console.log(search); 
+      
+      if (search == "expired") {
+        console.log(search); 
+        $("#medicine_details").DataTable({
+          order: [[4, 'asc']],
+          "responsive": true, "lengthChange": false, "autoWidth": false,
+          "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+        }).buttons().container().appendTo('#medicine_details_wrapper .col-md-6:eq(0)');
+      } else if (search == "restock") {
+        console.log(search); 
+        $("#medicine_details").DataTable({
+          order: [[3, 'asc']],
+          "responsive": true, "lengthChange": false, "autoWidth": false,
+          "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+        }).buttons().container().appendTo('#medicine_details_wrapper .col-md-6:eq(0)');
+      } else {
+        $("#medicine_details").DataTable({
+          "responsive": true, "lengthChange": false, "autoWidth": false,
+          "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+        }).buttons().container().appendTo('#medicine_details_wrapper .col-md-6:eq(0)');
+      }
+    })
         
     $('#expiry').datetimepicker({
       format: 'L',
@@ -278,12 +305,13 @@ if(isset($_GET['message'])) {
     });
 
 
-    $("#packing").blur(function() {
+    $("form :input").blur(function() {
+      
       var medicineId = $("#medicine").val();
-      var medicineUnit = $(this).val().trim();
+      var medicineUnit = $("#packing").val().trim();
 
       $("#medicine").val(medicineId);
-      $(this).val(medicineUnit);
+      $("#packing").val(medicineUnit);
       
       if(medicineUnit !== '') {
         $.ajax({
@@ -310,14 +338,6 @@ if(isset($_GET['message'])) {
       }
 
     });
-  });
-
-  $(function () {
-    $("#medicine_details").DataTable({
-      "responsive": true, "lengthChange": false, "autoWidth": false,
-      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-    }).buttons().container().appendTo('#medicine_details_wrapper .col-md-6:eq(0)');
-    
   });
 
 </script>

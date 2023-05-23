@@ -116,7 +116,7 @@ $medicines = getUniqueMedicines($con);
  <?php include './config/site_css_links.php' ?>
 
  <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
- <title>New Prescription - SPCC Caloocan Clinic</title>
+ <title>New Medication - SPCC Caloocan Clinic</title>
 
 </head>
 <body class="hold-transition sidebar-mini dark-mode layout-fixed layout-navbar-fixed">
@@ -133,7 +133,7 @@ include './config/sidebar.php';?>
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-6">
-              <h1>New Prescription</h1>
+              <h1>New Medication</h1>
             </div>
           </div>
         </div><!-- /.container-fluid -->
@@ -145,7 +145,7 @@ include './config/sidebar.php';?>
         <!-- Default box -->
         <div class="card card-outline card-primary rounded-0 shadow">
           <div class="card-header">
-            <h3 class="card-title">Add New Prescription</h3>
+            <h3 class="card-title">New Medication</h3>
 
             <div class="card-tools">
               <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
@@ -208,8 +208,8 @@ include './config/sidebar.php';?>
       </div>
       
       <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
-        <label>Weight</label>
-        <input id="weight" name="weight" class="form-control form-control-sm rounded-0" required="required" placeholder="e.g. 50 kg"/>
+        <label>Weight (in kg)</label>
+        <input type="number" id="weight" name="weight" class="form-control form-control-sm rounded-0" required="required" placeholder="e.g. 50 kg" min="1"/>
       </div>
 
       <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12">
@@ -331,7 +331,7 @@ if(isset($_GET['message'])) {
 
 <script>
   var serial = 1;
-  showMenuSelected("#mnu_patients", "#mi_new_prescription");
+  showMenuSelected("", "#mi_new_prescription");
 
   var message = '<?php echo $message;?>';
 
@@ -342,9 +342,24 @@ if(isset($_GET['message'])) {
   var medDetailsArr = [];
 
   $(document).ready(function() {
+
+    $("form :input").blur(function() {
+      var bp = $("#bp").val().trim();
+      var weight = $("#weight").val().trim();
+
+      if (bp != '' && /[^0-9/NA]/.test(bp)) {
+        showCustomMessage("Invalid characters in Blood Pressure field.");
+        $("#save_Patient").attr("disabled", "disabled");
+      } else if (/\D/.test(weight)) {
+        showCustomMessage("Invalid characters in Weight field.");
+        $("#save_Patient").attr("disabled", "disabled");
+      }
+    });
+    
     
     $('#medication_list').find('td').addClass("px-2 py-1 align-middle")
     $('#medication_list').find('th').addClass("p-1 align-middle")
+
     $('#visit_date').datetimepicker({
       format: 'L',
       minDate:new Date(),
@@ -354,8 +369,7 @@ if(isset($_GET['message'])) {
     $('#next_visit_date').datetimepicker({
       format: 'L',
       minDate:new Date()
-    });
-
+    });    
 
     $("#medicine").change(function() {
 

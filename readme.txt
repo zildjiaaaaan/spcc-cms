@@ -27,7 +27,7 @@ TyIZZe*H*$VgaTnvrvO!
 
 --------------------------
 
-student id duplicate handler
+student id duplicate handler •
 
 prescription
 medication administration

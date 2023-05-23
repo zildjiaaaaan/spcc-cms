@@ -94,7 +94,7 @@ try {
 
  
  <?php include './config/data_tables_css.php';?>
- <title>Users - Clinic's Patient Management System in PHP</title>
+ <title>Users - SPCC Caloocan Clinic</title>
 
  <style>
   .user-img{
