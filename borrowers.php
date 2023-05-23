@@ -260,50 +260,65 @@ include './config/sidebar.php';?>
     });
         
     $("form :input").blur(function() {
-      var borrowerName = $("#borrower_name").val().trim();
-      var borrowerMName = $("#borrower_mname").val().trim();
-      var borrowerSName = $("#borrower_sname").val().trim();
-      var borrowerID = $("#borrower_id").val().trim();
-      var borrowerContact = $("#contact_no").val().trim();
+        var borrowerID_disabled = false;
+        var name_disabled = false;
 
-      $("#borrower_name").val(borrowerName);
-      $("#borrower_mname").val(borrowerMName);
-      $("#borrower_sname").val(borrowerSName);
-      $("#borrower_id").val(borrowerID);
-      $("#contact_no").val(borrowerContact);
-      
-      if(borrowerID !== '') {
-        if (!/^[a-zA-Z0-9]+$/.test(borrowerID)) {
+        var borrowerName = $("#borrower_name").val().trim();
+        var borrowerMName = $("#borrower_mname").val().trim();
+        var borrowerSName = $("#borrower_sname").val().trim();
+        var borrowerID = $("#borrower_id").val().trim();
+        var borrowerContact = $("#contact_no").val().trim();
+
+        $("#borrower_name").val(borrowerName);
+        $("#borrower_mname").val(borrowerMName);
+        $("#borrower_sname").val(borrowerSName);
+        $("#borrower_id").val(borrowerID);
+        $("#contact_no").val(borrowerContact);
+
+        if ((borrowerName !== '' && !/^[a-zA-Z]+$/.test(borrowerName)) || (borrowerMName !== '' && !/^[a-zA-Z]+$/.test(borrowerMName)) || (borrowerSName !== '' && !/^[a-zA-Z]+$/.test(borrowerSName))) {
+            showCustomMessage("Invalid characters in Name fields.");
+            $("#save_borrower").attr("disabled", "disabled");
+            borrowerID_disabled = true;
+            name_disabled = true;
+        }
+        
+        if (borrowerID !== '' && !/^[a-zA-Z0-9]+$/.test(borrowerID)) {
             showCustomMessage("Invalid characters in Student ID / Employee ID field.");
             $("#save_borrower").attr("disabled", "disabled");
-        } else if (/\D/.test(borrowerContact)) {
+            borrowerID_disabled = true;
+            name_disabled = true;
+        }
+        
+        if (borrowerContact !== '' && /\D/.test(borrowerContact)) {
             showCustomMessage("Invalid characters in Contact Number field.");
             $("#save_borrower").attr("disabled", "disabled");
-        } else {
-          $.ajax({
+        } 
+        
+        if (!borrowerID_disabled) {
+            $.ajax({
             url: "ajax/check_borrower.php",
             type: 'GET',
             data: {
-              'borrower_id': borrowerID
+                'borrower_id': borrowerID
             },
             cache:false,
             async:false,
             success: function (count, status, xhr) {
-              if(count > 0) {
-                showCustomMessage("This ID is already existing! Please check records or the Trash.");
+                if(count > 0) {
+                    showCustomMessage("This ID is already existing! Please check records or the Trash.");
                 $("#save_borrower").attr("disabled", "disabled");
-              } else {
-                $("#save_borrower").removeAttr("disabled");
-              }
+                } else {
+                    $("#save_borrower").removeAttr("disabled");
+                    console.log("borrowerid");
+                }
             },
             error: function (jqXhr, textStatus, errorMessage) {
-              showCustomMessage(errorMessage);
+                showCustomMessage(errorMessage);
             }
-          });
+            });
         }
-      }
 
-      if(borrowerName !== '' && borrowerMName !== '' && borrowerSName !== '') {
+      if(!name_disabled) {
         $.ajax({
           url: "ajax/check_borrower.php",
           type: 'GET',

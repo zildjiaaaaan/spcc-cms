@@ -318,16 +318,21 @@ include './config/sidebar.php';?>
   }
 
   $(document).ready(function() {
-        
+           
     $('#date_of_birth').datetimepicker({
         format: 'L',
         maxDate:new Date()
     });
         
     $("form :input").blur(function() {
+
+      var studentid_disabled = false;
+      var name_disabled = false;
+
       var patientName = $("#patient_name").val().trim();
       var patientMName = $("#patient_mname").val().trim();
       var patientSName = $("#patient_sname").val().trim();
+      var contactPerson = $("#contact_person").val().trim();
       var patientContact = $("#phone_number").val().trim();
       var emergencyContact = $("#contact_person_no").val().trim();
       var studentID = $("#cnic").val().trim();
@@ -338,17 +343,32 @@ include './config/sidebar.php';?>
       $("#phone_number").val(patientContact);
       $("#contact_person_no").val(emergencyContact);
       $("#cnic").val(studentID);
+
+      if ((patientName !== '' && !/^[a-zA-Z]+$/.test(patientName)) || (patientMName !== '' && !/^[a-zA-Z]+$/.test(patientMName)) || (patientSName !== '' && !/^[a-zA-Z]+$/.test(patientSName)) || (contactPerson !== '' && !/^[a-zA-Z]+$/.test(contactPerson))) {
+        showCustomMessage("Invalid characters in Name fields.");
+        $("#save_Patient").attr("disabled", "disabled");
+        studentid_disabled = true;
+        name_disabled = true;
+      }
            
       if ((studentID !== '' && !/^[a-zA-Z0-9]+$/.test(studentID))) {
         showCustomMessage("Invalid characters in Student ID / Employee ID field.");
         $("#save_Patient").attr("disabled", "disabled");
-      } if (patientContact !== '' && /\D/.test(patientContact)) {
+        studentid_disabled = true;
+        name_disabled = true;
+      }
+      
+      if (patientContact !== '' && /\D/.test(patientContact)) {
         showCustomMessage("Invalid characters in Phone Number field.");
         $("#save_Patient").attr("disabled", "disabled");
-      } else if (emergencyContact !== '' && /\D/.test(emergencyContact)) {
+      }
+      
+      if (emergencyContact !== '' && /\D/.test(emergencyContact)) {
         showCustomMessage("Invalid characters in Contact Person Phone Number field.");
         $("#save_Patient").attr("disabled", "disabled");
-      } else {
+      }
+      
+      if (!studentid_disabled) {
         $.ajax({
           url: "ajax/check_patient.php",
           type: 'GET',
@@ -371,7 +391,7 @@ include './config/sidebar.php';?>
         });
       }
 
-      if(patientName !== '' && patientMName !== '' && patientSName !== '') {
+      if(!name_disabled) {
         $.ajax({
           url: "ajax/check_patient.php",
           type: 'GET',
