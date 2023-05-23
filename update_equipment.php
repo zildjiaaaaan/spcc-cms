@@ -7,28 +7,36 @@ if(isset($_POST['save_equipment'])) {
     $equipmentName = ucwords(strtolower($equipmentName));
     $equipmentBrand = trim($_POST['equipment_brand']);
     $equipmentBrand = ucwords(strtolower($equipmentBrand));
+
+    $acquiredDateArr = explode("/", $_POST['date_acquired']);
+    $acquiredDate = $acquiredDateArr[2].'-'.$acquiredDateArr[0].'-'.$acquiredDateArr[1];
+
+    $total_qty = $_POST['quantity'];
    
    $id = $_POST['hidden_id'];
-    if($equipmentName !== '') {
+    if($equipmentName !== '' && $equipmentBrand !== '' && $acquiredDate !== '' && $total_qty !== '') {
       
-        $query = "UPDATE `equipments` 
-        set `equipment` ='$equipmentName', `brand` ='$equipmentBrand'
-        where `id`= $id";
+      $query = "UPDATE `equipments` 
+                SET `equipment` ='$equipmentName',
+                  `brand` ='$equipmentBrand',
+                  `date_acquired` ='$acquiredDate',
+                  `total_qty` ='$total_qty'
+                WHERE `id`= $id";
     try{
     	$con->beginTransaction();
 
     	$stmtEquipment = $con->prepare($query);
 	    $stmtEquipment->execute();
 	   
-	   $con->commit();
-       
-	   $message = "Record updated sucessfully.";
+      $con->commit();
+        
+      $message = "Record Updated Sucessfully.";
 
     }catch(PDOException $ex){
     	$con->rollback();
 	    echo $ex->getMessage();
 	    echo $ex->getTraceAsString();
-        exit;
+      exit;
     }
 
 }
@@ -39,8 +47,9 @@ exit;
 try {
 
  $id = $_GET['id'];
-	$query = "SELECT `id`, `equipment`, `brand` from `equipments`
-	          where `id` = $id";
+	$query = "SELECT `id`, `equipment`, `brand`, date_format(`date_acquired`, '%m/%d/%Y') AS `date_acquired`, `total_qty`
+            FROM `equipments`
+	          WHERE `id` = $id";
 	$stmt = $con->prepare($query);
 	$stmt->execute();
 	$row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -55,6 +64,7 @@ try {
 <html lang="en">
 <head>
  <?php include './config/site_css_links.php';?>
+ <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
  <title>Update Equipment - SPCC Caloocan Clinic</title>
 
  <link rel="stylesheet" href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
@@ -98,28 +108,46 @@ include './config/sidebar.php';?>
         </div>
         <div class="card-body">
           <form method="post">
-          	<div class="row">
-              <input type="hidden" name="hidden_id" 
-              id="hidden_id" value="<?php echo $id;?>" />
+          <div class="row">
+              <input type="hidden" name="hidden_id" id="hidden_id" value="<?php echo $id;?>" />
 
-          		<div class="col-lg-4 col-md-4 col-sm-4 col-xs-10">
+              <div class="col-lg-3 col-md-6 col-sm-6 col-xs-10">
                 <label>Equipment Name</label>
-          			<input type="text" id="equipment_name" name="equipment_name" required="required"
-          			class="form-control form-control-sm rounded-0" value="<?php echo $row['equipment'];?>" />
-          		</div>
+                <input type="text" value="<?php echo $row['equipment'];?>" id="equipment_name" name="equipment_name" required="required" placeholder="e.g. Disposable Syringe"
+                class="form-control form-control-sm rounded-0" autofocus/>
+              </div>
 
-              <div class="col-lg-4 col-md-4 col-sm-4 col-xs-10">
-                <label>Brand</label>
-          			<input type="text" id="equipment_brand" name="equipment_brand" required="required"
-          			class="form-control form-control-sm rounded-0" value="<?php echo $row['brand'];?>" />
-          		</div>
+              <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                  <label>Brand</label>
+                  <input id="equipment_brand" value="<?php echo $row['brand'];?>" name="equipment_brand" class="form-control form-control-sm rounded-0" placeholder="Leave it blank for generic brand" required="required" />
+              </div>
 
-          		<div class="col-lg-1 col-md-2 col-sm-2 col-xs-2">
+              <div class="col-lg-3 col-md-6 col-sm-6 col-xs-10">
+                <div class="form-group">
+                  <label>Date Acquired</label>
+                  <div class="input-group date" id="date_acquired" 
+                      data-target-input="nearest">
+                      <input type="text" value="<?php echo $row['date_acquired']; ?>" id="acquired" class="form-control form-control-sm rounded-0 datetimepicker-input" data-target="#date_acquired" name="date_acquired" required="required" data-toggle="datetimepicker" autocomplete="off"/>
+                      <div class="input-group-append" 
+                      data-target="#date_acquired" 
+                      data-toggle="datetimepicker">
+                      <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-2 col-md-6 col-sm-6 col-xs-12">
+                <label>Quantity</label>
+                <input type="number" value="<?php echo $row['total_qty']; ?>" min="1" id="quantity" name="quantity" class="form-control form-control-sm rounded-0"  required="required"/>
+              </div>
+
+              <div class="col-lg-1 col-md-12 col-sm-12 col-xs-2">
                 <label>&nbsp;</label>
-          			<button type="submit" id="save_equipment" 
-          			name="save_equipment" class="btn btn-primary btn-sm btn-flat btn-block">Update</button>
-          		</div>
-          	</div>
+                <button type="submit" id="save_equipment" 
+                name="save_equipment" class="btn btn-primary btn-sm btn-flat btn-block">Save</button>
+              </div>
+            </div>
           </form>
         </div>
     
@@ -141,74 +169,52 @@ include './config/sidebar.php';?>
 <!-- ./wrapper -->
 
 <?php include './config/site_js_links.php'; ?>
+
+<script src="plugins/moment/moment.min.js"></script>
+<script src="plugins/daterangepicker/daterangepicker.js"></script>
+<script src="plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+
 <script>
 $(document).ready(function() {
 
-$("#equipment_brand").blur(function() {
-  var equipmentBrand = $(this).val().trim();
-  var equipmentName = $("#equipment_name").val().trim();
-  $(this).val(equipmentBrand);
-  $("#equipment_name").val(equipmentName);
+  $('#date_acquired').datetimepicker({
+    format: 'L'
+    //maxDate: new Date()
+    // "setDate": new Date(),
+    // "autoclose": true
+  });
 
-  if(equipmentBrand !== '') {
-    $.ajax({
-      url: "ajax/check_equipment_name.php",
-      type: 'GET', 
-      data: {
-        'equipment_name': equipmentName,
-        'equipment_brand': equipmentBrand,
-        'update_id': <?php echo $id;?>,
-      },
-      cache:false,
-      async:false,
-      success: function (count, status, xhr) {
-        if(count > 0) {
-          showCustomMessage("This equipment has already been stored. Please check inventory or the Trash.");
-          $("#save_equipment").attr("disabled", "disabled");
-        } else {
-          $("#save_equipment").removeAttr("disabled");
+  $("form :input").blur(function() {
+    var equipmentBrand = $("#equipment_brand").val().trim();
+    var equipmentName = $("#equipment_name").val().trim();
+    $("#equipment_brand").val(equipmentBrand);
+    $("#equipment_name").val(equipmentName);
+
+    if(equipmentBrand !== '') {
+      $.ajax({
+        url: "ajax/check_equipment_name.php",
+        type: 'GET', 
+        data: {
+          'equipment_name': equipmentName,
+          'equipment_brand': equipmentBrand,
+          'update_id': <?php echo $id;?>,
+        },
+        cache:false,
+        async:false,
+        success: function (count, status, xhr) {
+          if(count > 0) {
+            showCustomMessage("This equipment has already been stored. Please check inventory or the Trash.");
+            $("#save_equipment").attr("disabled", "disabled");
+          } else {
+            $("#save_equipment").removeAttr("disabled");
+          }
+        },
+        error: function (jqXhr, textStatus, errorMessage) {
+          showCustomMessage(errorMessage);
         }
-      },
-      error: function (jqXhr, textStatus, errorMessage) {
-        showCustomMessage(errorMessage);
-      }
-    });
-  }
-
-});
-
-$("#equipment_name").blur(function() {
-  var equipmentName = $(this).val().trim();
-  var equipmentBrand = $("#equipment_brand").val().trim();
-  $(this).val(equipmentName);
-  $("#equipment_brand").val(equipmentBrand);
-
-  if(equipmentName !== '') {
-    $.ajax({
-      url: "ajax/check_equipment_name.php",
-      type: 'GET', 
-      data: {
-        'equipment_name': equipmentName,
-        'equipment_brand': equipmentBrand,
-        'update_id': <?php echo $id;?>,
-      },
-      cache:false,
-      async:false,
-      success: function (count, status, xhr) {
-        if(count > 0) {
-          showCustomMessage("This equipment has already been stored. Please check inventory or the Trash.");
-          $("#save_equipment").attr("disabled", "disabled");
-        } else {
-          $("#save_equipment").removeAttr("disabled");
-        }
-      },
-      error: function (jqXhr, textStatus, errorMessage) {
-        showCustomMessage(errorMessage);
-      }
-    });
-  }
-
-});
+      });
+    }
+  });
 });
 
 </script>
