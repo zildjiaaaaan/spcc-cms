@@ -210,9 +210,9 @@ include './config/sidebar.php';?>
               </div>
             </div>
               
-              <div class="clearfix">&nbsp;</div>
-              <div class="row">
-                <div class="col-lg-11 col-md-10 col-sm-10">&nbsp;</div>
+            <div class="clearfix">&nbsp;</div>
+            <div class="row">
+              <div class="col-lg-11 col-md-10 col-sm-10">&nbsp;</div>
               <div class="col-lg-1 col-md-2 col-sm-2 col-xs-2">
                 <button type="submit" id="save_Patient" 
                 name="save_Patient" class="btn btn-primary btn-sm btn-flat btn-block">Save</button>

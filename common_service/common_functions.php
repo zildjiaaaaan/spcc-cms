@@ -120,6 +120,34 @@ function getUniqueMedicines($con, $medicineId = 0) {
 	
 }
 
+function getUniqueBorrowers($con, $borrowerID = 0) {
+
+	$query = "select * from `borrowers` where `is_del` = '0' order by `lname` asc;";
+
+	$stmt = $con->prepare($query);
+	try {
+		$stmt->execute();
+
+	} catch(PDOException $ex) {
+		echo $ex->getTraceAsString();
+		echo $ex->getMessage();
+		exit;
+	}
+
+	$data = '<option value="">Select Borrowers</option>';
+
+	while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+		if($borrowerID == $row['id']) {
+			$data = $data.'<option selected="selected" value="'.$row['id'].'">'.strtoupper($row['lname']).', '.$row['fname'].', '.$row['mname'].'</option>';
+		} else {
+			$data = $data.'<option value="'.$row['id'].'">'.strtoupper($row['lname']).', '.$row['fname'].', '.$row['mname'].' ('.$row['borrower_id'].')</option>';
+		}
+	}
+
+	return $data;
+	
+}
+
 
 function getPatients($con) {
 $query = "select `id`, `patient_name`, `phone_number` 

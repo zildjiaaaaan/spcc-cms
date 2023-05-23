@@ -183,6 +183,7 @@ include './config/sidebar.php';?>
 <script src="plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
 
 <script>
+
     showMenuSelected("#mnu_borrowers", "#mi_borrowers");
 
     var message = '<?php echo $message;?>';
@@ -202,7 +203,7 @@ include './config/sidebar.php';?>
             var borrowerSName = $("#borrower_sname").val().trim();
             var borrowerID = $("#borrower_id").val().trim();
             var borrowerContact = $("#contact_no").val().trim();
-    
+  
             $("#borrower_name").val(borrowerName);
             $("#borrower_mname").val(borrowerMName);
             $("#borrower_sname").val(borrowerSName);
