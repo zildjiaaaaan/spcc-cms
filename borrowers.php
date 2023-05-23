@@ -204,7 +204,7 @@ include './config/sidebar.php';?>
                         <i class="fa fa-edit"></i>
                       </a>
                       </a>
-                      <a href="del_borrower.php?delId=<?php echo $row['id'];?>" class="btn btn-danger btn-sm btn-flat">
+                      <a href="del_borrower.php?id=<?php echo $row['id'];?>" class="btn btn-danger btn-sm btn-flat">
                         <i class="fa fa-trash"></i>
                       </a>
                     </td>
