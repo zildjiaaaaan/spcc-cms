@@ -227,6 +227,13 @@ if(isset($_GET['message'])) {
 
     $("#quantity").css("height", "52px");
 
+    $("#remarks").keypress(function(e) {
+      var key = e.which;
+      if (key === 95) {
+        return false;
+      }
+    });
+
     // in javascript, i wanna change the <options> of the #state select box depending on the #status selected
     // if #status is Available, then #state can be active or non-borrowable
     // if #status is Unavailable, then state can be used, missing, defective, in repair, borrowed, transferred
@@ -342,6 +349,9 @@ if(isset($_GET['message'])) {
       var state = $("#state").val();
       var remarks = $("#remarks").val().trim();
 
+      // if remarks has "_" then replace it with "-"
+      remarks = remarks.replace(/_/g, "-");
+
       var quantity = $("#quantity").val().trim();
       if (quantity == '0') {
         quantity = '';
@@ -353,7 +363,7 @@ if(isset($_GET['message'])) {
       if ($(".unavailable").css('display') != 'none') {
         var unavailableSince = $("#unavailableSince").val().trim();
         var parts = unavailableSince.split("/");
-        console.log("unavailableSince"+parts);
+        // console.log("unavailableSince"+parts);
         var month = parts[0].length === 1 ? '0' + parts[0] : parts[0];
         var day = parts[1].length === 1 ? '0' + parts[1] : parts[1];
         f_unavailableSince = parts[2] + "-" + month + "-" + day;
@@ -362,7 +372,7 @@ if(isset($_GET['message'])) {
         var unavailableUntil = $("#unavailableUntil").val().trim();
         if (unavailableUntil != '') {
           parts = unavailableUntil.split("/");
-          console.log("unavailableUntil"+parts);
+          // console.log("unavailableUntil"+parts);
           month = parts[0].length === 1 ? '0' + parts[0] : parts[0];
           day = parts[1].length === 1 ? '0' + parts[1] : parts[1];
           f_unavailableUntil = parts[2] + "-" + month + "-" + day;
@@ -378,80 +388,81 @@ if(isset($_GET['message'])) {
       var hasNoId = true;
       var addCell = true;
         
-      if (equipmentDetailsArr.length > 0) {
-        for (let i = 0; i < equipmentDetailsArr.length; i++) {
-
-          var id_arr = equipmentDetailsArr[i].equipmentId;
-          var status_arr = equipmentDetailsArr[i].status;
-          var state_arr = equipmentDetailsArr[i].state;
-          var remarks_arr = equipmentDetailsArr[i].remarks;
-          var uSince_arr = equipmentDetailsArr[i].unavailableSince;
-          var uUntil_arr = equipmentDetailsArr[i].unavailableUntil;
-          var borId_arr = equipmentDetailsArr[i].borrowerId;
-
-          if (id_arr === equipmentId && status_arr === status && state_arr === state && remarks_arr === remarks && uSince_arr === f_unavailableSince && uUntil_arr === f_unavailableUntil && borId_arr === borrowerId) {
-            var qtyId = equipmentId+"_"+status+"_"+state+"_"+remarks+"_"+f_unavailableSince+"_"+f_unavailableUntil+"_"+borrowerId;
-            addQuantity(parseInt(quantity), qtyId);
-            equipmentDetailsArr[i].qty += parseInt(quantity);
-            hasNoId = false;
-            addCell = false;
-            break;
-          }
-        }
-      }
-
       var oldData = $("#current_equipment_list").html();
       var clearForm = true;
 
-      if(equipmentName !== '' && status !== '' && state !== '' && quantity !== '' && addCell) {
-        
-        var qtyId = equipmentId+"_"+status+"_"+state+"_"+remarks+"_"+f_unavailableSince+"_"+f_unavailableUntil+"_"+borrowerId;
-        var inputs = '';
-        inputs = inputs + '<input type="hidden" name="equipmentIds[]" value="'+equipmentId+'" />';
-        inputs = inputs + '<input type="hidden" name="status[]" value="'+status+'" />';
-        inputs = inputs + '<input type="hidden" name="states[]" value="'+state+'" />';
-        inputs = inputs + '<input type="hidden" name="quantities[]" id="inp-'+qtyId+'" value="'+quantity+'" />';
-        inputs = inputs + '<input type="hidden" name="remarks[]" value="'+remarks+'" />';
-        // inputs = inputs + '<input type="hidden" name="equipmentDetailsArr[]" value=\'{"equipmentId":'+equipmentId+', "qty":'+quantity+'}\'/>';
-        inputs = inputs + '<input type="hidden" name="borrowerIds[]" value="'+borrowerId+'" />';
-        inputs = inputs + '<input type="hidden" name="unavailableSinces[]" value="'+f_unavailableSince+'" />';
-        inputs = inputs + '<input type="hidden" name="unavailableUntils[]" value="'+f_unavailableUntil+'" />';
+      if(equipmentName !== '' && status !== '' && state !== '' && quantity !== '') {
 
-        var tr = '<tr>';
-        tr = tr + '<td class="px-2 py-1 align-middle">'+serial+'</td>';
-        tr = tr + '<td class="px-2 py-1 align-middle">'+equipmentName+'</td>';
-        tr = tr + '<td class="px-2 py-1 align-middle">'+status+'</td>';
-        tr = tr + '<td class="px-2 py-1 align-middle">'+state+'</td>';
-        tr = tr + '<td class="px-2 py-1 align-middle" id="'+qtyId+'">'+quantity+'</td>';
-        tr = tr + '<td class="px-2 py-1 align-middle">'+remarks + inputs +'</td>';
+        if (equipmentDetailsArr.length > 0) {
+          for (let i = 0; i < equipmentDetailsArr.length; i++) {
 
-        tr = tr + '<td class="px-2 py-1 align-middle text-center"><button type="button" class="btn btn-outline-danger btn-sm rounded-0" onclick="deleteCurrentRow(this);"><i class="fa fa-times"></i></button></td>';
-        tr = tr + '</tr>';
-        oldData = oldData + tr;
-        serial++;
+            var id_arr = equipmentDetailsArr[i].equipmentId;
+            var status_arr = equipmentDetailsArr[i].status;
+            var state_arr = equipmentDetailsArr[i].state;
+            var remarks_arr = equipmentDetailsArr[i].remarks;
+            var uSince_arr = equipmentDetailsArr[i].unavailableSince;
+            var uUntil_arr = equipmentDetailsArr[i].unavailableUntil;
+            var borId_arr = equipmentDetailsArr[i].borrowerId;
 
-        $("#current_equipment_list").html(oldData);
+            if (id_arr === equipmentId && status_arr === status && state_arr === state && remarks_arr === remarks && uSince_arr === f_unavailableSince && uUntil_arr === f_unavailableUntil && borId_arr === borrowerId) {
+              var qtyId = equipmentId+"_"+status+"_"+state+"_"+remarks+"_"+f_unavailableSince+"_"+f_unavailableUntil+"_"+borrowerId;
+              addQuantity(parseInt(quantity), qtyId);
+              equipmentDetailsArr[i].qty += parseInt(quantity);
+              hasNoId = false;
+              addCell = false;
+              break;
+            }
+          }
+        }
 
-        if (hasNoId) {
-          equipmentDetailsArr.push({
-            equipmentId: equipmentId,
-            status: status,
-            state: state,
-            qty: parseInt(quantity),
-            remarks: remarks,
-            borrowerId: borrowerId,
-            unavailableSince: f_unavailableSince,
-            unavailableUntil: f_unavailableUntil            
-          });
+        if (addCell) {
+          var qtyId = equipmentId+"_"+status+"_"+state+"_"+remarks+"_"+f_unavailableSince+"_"+f_unavailableUntil+"_"+borrowerId;
+          var inputs = '';
+          inputs = inputs + '<input type="hidden" name="equipmentIds[]" value="'+equipmentId+'" />';
+          inputs = inputs + '<input type="hidden" name="status[]" value="'+status+'" />';
+          inputs = inputs + '<input type="hidden" name="states[]" value="'+state+'" />';
+          inputs = inputs + '<input type="hidden" name="quantities[]" id="inp-'+qtyId+'" value="'+quantity+'" />';
+          inputs = inputs + '<input type="hidden" name="remarks[]" value="'+remarks+'" />';
+          // inputs = inputs + '<input type="hidden" name="equipmentDetailsArr[]" value=\'{"equipmentId":'+equipmentId+', "qty":'+quantity+'}\'/>';
+          inputs = inputs + '<input type="hidden" name="borrowerIds[]" value="'+borrowerId+'" />';
+          inputs = inputs + '<input type="hidden" name="unavailableSinces[]" value="'+f_unavailableSince+'" />';
+          inputs = inputs + '<input type="hidden" name="unavailableUntils[]" value="'+f_unavailableUntil+'" />';
+
+          var tr = '<tr>';
+          tr = tr + '<td class="px-2 py-1 align-middle">'+serial+'</td>';
+          tr = tr + '<td class="px-2 py-1 align-middle">'+equipmentName+'</td>';
+          tr = tr + '<td class="px-2 py-1 align-middle">'+status+'</td>';
+          tr = tr + '<td class="px-2 py-1 align-middle">'+state+'</td>';
+          tr = tr + '<td class="px-2 py-1 align-middle" id="'+qtyId+'">'+quantity+'</td>';
+          tr = tr + '<td class="px-2 py-1 align-middle">'+remarks + inputs +'</td>';
+
+          tr = tr + '<td class="px-2 py-1 align-middle text-center"><button type="button" class="btn btn-outline-danger btn-sm rounded-0" onclick="deleteCurrentRow(this);"><i class="fa fa-times"></i></button></td>';
+          tr = tr + '</tr>';
+          oldData = oldData + tr;
+          serial++;
+
+          $("#current_equipment_list").html(oldData);
+
+          if (hasNoId) {
+            equipmentDetailsArr.push({
+              equipmentId: equipmentId,
+              status: status,
+              state: state,
+              qty: parseInt(quantity),
+              remarks: remarks,
+              borrowerId: borrowerId,
+              unavailableSince: f_unavailableSince,
+              unavailableUntil: f_unavailableUntil            
+            });
+          }
+        } else {
+          
+          showCustomMessage("Equipment \""+ equipmentName +"\" already exists. The quantity has been updated.");
         }
 
       } else {
-        if (!addCell) {
-          showCustomMessage("Equipment \""+ equipmentName +"\" already exists. The quantity has been updated.");
-        } else {
-          showCustomMessage("Please fill out all the fields.");
-          clearForm = false;
-        }
+        showCustomMessage("Please fill out all the fields.");
+        clearForm = false;
       }
 
       if (clearForm) {
