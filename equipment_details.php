@@ -4,109 +4,6 @@ include './common_service/common_functions.php';
 
 $message = '';
 
-if(isset($_POST['submit'])) {
-
-  $patientId = $_POST['patient'];
-  $visitDate = $_POST['visit_date'];
-  $nextVisitDate = $_POST['next_visit_date'];
-  $bp = $_POST['bp'];
-  $weight = $_POST['weight'];
-  $disease = $_POST['disease'];
-  $remarks = 'No Remarks';
-
-  if (!empty($_POST['remarks'])) {
-    $remarks = $_POST['remarks'];  
-  }
-
-  $medicineDetailIds = $_POST['medicineDetailIds'];
-
-  $quantities = $_POST['quantities'];
-  $dosages = $_POST['dosages'];
-
-  $visitDateArr = explode("/", $visitDate);
-  
-  $visitDate = $visitDateArr[2].'-'.$visitDateArr[0].'-'.$visitDateArr[1];
-
-  if($nextVisitDate != '') {
-    $nextVisitDateArr = explode("/", $nextVisitDate);
-    $nextVisitDate = $nextVisitDateArr[2].'-'.$nextVisitDateArr[0].'-'.$nextVisitDateArr[1];
-  }
-
-  try {
-
-    $con->beginTransaction();
-
-      //first to store a row in patient visit
-
-     $queryVisit = "INSERT INTO `patient_visits`(`visit_date`, 
-    `next_visit_date`, `bp`, `weight`, `disease`, `pres_remarks`, `patient_id`) 
-    VALUES('$visitDate', 
-    nullif('$nextVisitDate', ''), 
-    '$bp', '$weight', '$disease', '$remarks', $patientId);";
-    $stmtVisit = $con->prepare($queryVisit);
-    $stmtVisit->execute();
-
-    $lastInsertId = $con->lastInsertId();//latest patient visit id
-
-    //now to store data in medication history
-    $size = sizeof($medicineDetailIds);
-    $curMedicineDetailId = 0;
-    $curQuantity = 0;
-    $curDosage = 0;
-
-    for($i = 0; $i < $size; $i++) {
-      $curMedicineDetailId = $medicineDetailIds[$i];
-      $curQuantity = $quantities[$i];
-      $curDosage = $dosages[$i];
-
-      $qeuryMedicationHistory = "INSERT INTO `patient_medication_history`
-                                    (`patient_visit_id`, `medicine_details_id`, `quantity`, `dosage`)
-                                    VALUES($lastInsertId, $curMedicineDetailId, $curQuantity, $curDosage);";
-      $stmtDetails = $con->prepare($qeuryMedicationHistory);
-      $stmtDetails->execute();
-    }
-
-    $con->commit();
-
-    $message = 'Patient Medication stored successfully.';
-
-  } catch(PDOException $ex) {
-    $con->rollback();
-
-    echo $ex->getTraceAsString();
-    echo $ex->getMessage();
-    exit;
-  }
-
-  $medDetailsArr = $_POST['medDetailsArr'];
-
-  foreach ($medDetailsArr as $medicine) {
-    // Decode the JSON string into a PHP array or object
-    $medicineData = json_decode($medicine, true);
-
-    $id = $medicineData['medId'];
-    $quantity = $medicineData['qty'];
-
-    try {
-
-      $queryUpdateQty = "UPDATE `medicine_details` SET `quantity` = `quantity` - '$quantity' WHERE `id` = '$id';";
-      $stmtUpdateQty = $con->prepare($queryUpdateQty);
-      $stmtUpdateQty->execute();
-
-    } catch(PDOException $ex) {
-      $con->rollback();
-  
-      echo $ex->getTraceAsString();
-      echo $ex->getMessage();
-      exit;
-    }
-
-  }
-
-  header("location:congratulation.php?goto_page=new_prescription.php&message=$message");
-  exit;
-}
-
 $equipments = getUniqueEquipments($con);
 $borrowers = getUniqueBorrowers($con);
 
@@ -168,7 +65,7 @@ include './config/sidebar.php';?>
                 <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
                   <label>Status</label>
                   <select id="status" name="status" class="form-control form-control-sm rounded-0" required="required">
-                    <option>Select Status</option>
+                    <option value="">Select Status</option>
                     <option value="Available">Available</option>
                     <option value="Unavailable">Unavailable</option>
                   </select>
@@ -177,7 +74,7 @@ include './config/sidebar.php';?>
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <label>State</label>
                   <select id="state" name="state" class="form-control form-control-sm rounded-0">
-                    <option>Select State</option>
+                    <option value="">Select State</option>
                   </select>
                 </div>
 
@@ -189,8 +86,8 @@ include './config/sidebar.php';?>
                 </div>
                 
                 <div class="col-lg-3 col-md-2 col-sm-6 col-xs-12">
-                  <label>Quantity</label>
-                  <input type="number" id="quantity" name="quantity" class="form-control form-control-sm rounded-0" required="required" placeholder="e.g. 50 kg" min="1"/>
+                  <label>Quantity Available</label>
+                  <input type="number" id="quantity" name="quantity" class="form-control form-control-sm rounded-0" required="required" min="1"/>
                 </div>
 
                 <div class="clearfix unavailable">&nbsp;</div>
@@ -200,7 +97,7 @@ include './config/sidebar.php';?>
                     <label>Unavailable Since</label>
                     <div class="input-group date" id="unavailable_since" 
                         data-target-input="nearest">
-                        <input type="text" value="<?php echo date("m/d/Y"); ?>" id="acquired" class="form-control form-control-sm rounded-0 datetimepicker-input" data-target="#unavailable_since" name="unavailable_since" required="required" data-toggle="datetimepicker" autocomplete="off"/>
+                        <input type="text" value="<?php echo date("m/d/Y"); ?>" id="unavailableSince" class="form-control form-control-sm rounded-0 datetimepicker-input" data-target="#unavailable_since" name="unavailable_since" required="required" data-toggle="datetimepicker" autocomplete="off"/>
                         <div class="input-group-append" 
                         data-target="#unavailable_since" 
                         data-toggle="datetimepicker">
@@ -215,7 +112,7 @@ include './config/sidebar.php';?>
                     <label>Unavailable Until</label>
                     <div class="input-group date" id="unavailable_until" 
                         data-target-input="nearest">
-                        <input type="text" value="" id="acquired" class="form-control form-control-sm rounded-0 datetimepicker-input" data-target="#unavailable_until" name="unavailable_until" data-toggle="datetimepicker" autocomplete="off"/>
+                        <input type="text" value="" id="unavailableUntil" class="form-control form-control-sm rounded-0 datetimepicker-input" data-target="#unavailable_until" name="unavailable_until" data-toggle="datetimepicker" autocomplete="off"/>
                         <div class="input-group-append" 
                         data-target="#unavailable_until" 
                         data-toggle="datetimepicker">
@@ -247,80 +144,45 @@ include './config/sidebar.php';?>
     <div class="col-md-12"><hr /></div>
     <div class="clearfix">&nbsp;</div>
 
-    <!--
+    <div class="clearfix">&nbsp;</div>
+    <div class="row table-responsive">
+      <table id="equipment_list" class="table table-striped table-bordered">
+        <colgroup>
+          <col width="2%">
+          <col width="20%">
+          <col width="10%">
+          <col width="10%">
+          <col width="5%">
+          <col width="40%">
+          <col width="3%">
+        </colgroup>
+        <thead class="bg-primary">
+          <tr>
+            <th>#</th>
+            <th>Equipment</th>
+            <th>Status</th>
+            <th>State</th>
+            <th>Qty</th>
+            <th>Remarks</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody id="current_equipment_list">
+
+        </tbody>
+      </table>
+    </div>
+
+    <div class="clearfix">&nbsp;</div>
     <div class="row">
-     <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-      <label>Select Medicine</label>
-      <select id="medicine" class="form-control form-control-sm rounded-0">
-      <?php //echo $medicines;?>
-      </select>
+      <div class="col-md-10">&nbsp;</div>
+      <div class="col-md-2">
+        <button type="submit" id="submit" name="submit" 
+        class="btn btn-primary btn-sm btn-flat btn-block">Save</button>
+      </div>
     </div>
-
-    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-      <label>Select Unit</label>
-      <select id="packing" class="form-control form-control-sm rounded-0">
-
-      </select>
-    </div>
-
-    <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
-      <label>Quantity</label>
-      <input type="number" id="quantity" class="form-control form-control-sm rounded-0" min="0"/>
-    </div>
-
-    <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
-      <label>Dosage</label>
-      <input type="number" id="dosage" class="form-control form-control-sm rounded-0" />
-    </div>
-
-    <div class="col-lg-1 col-md-1 col-sm-6 col-xs-12">
-      <label>&nbsp;</label>
-      <button id="add_to_list" type="button" class="btn btn-primary btn-sm btn-flat btn-block">
-        <i class="fa fa-plus"></i>
-      </button>
-    </div>
-
-    </div>
-
-    -->
-
-  <div class="clearfix">&nbsp;</div>
-  <div class="row table-responsive">
-    <table id="medication_list" class="table table-striped table-bordered">
-      <colgroup>
-        <col width="3%">
-        <col width="25%">
-        <col width="15%">
-        <col width="10%">
-        <col width="15%">
-        <col width="5%">
-      </colgroup>
-      <thead class="bg-primary">
-        <tr>
-          <th>#</th>
-          <th>Medicine Name</th>
-          <th>Unit</th>
-          <th>Qty</th>
-          <th>Dosage</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-
-      <tbody id="current_medicines_list">
-
-      </tbody>
-    </table>
-  </div>
-
-  <div class="clearfix">&nbsp;</div>
-  <div class="row">
-    <div class="col-md-10">&nbsp;</div>
-    <div class="col-md-2">
-      <button type="submit" id="submit" name="submit" 
-      class="btn btn-primary btn-sm btn-flat btn-block">Save</button>
-    </div>
-  </div>
-</form>
+  </form>
 
 </div>
 
@@ -359,7 +221,7 @@ if(isset($_GET['message'])) {
     showCustomMessage(message);
   }
 
-  var medDetailsArr = [];
+  var equipmentDetailsArr = [];
 
   $(document).ready(function() {
 
@@ -408,73 +270,36 @@ if(isset($_GET['message'])) {
     });
 
     $("form :input").blur(function() {
-      var bp = $("#bp").val().trim();
-      var weight = $("#weight").val().trim();
-
-      if (bp != '' && /[^0-9/NA]/.test(bp)) {
-        showCustomMessage("Invalid characters in Blood Pressure field.");
-        $("#save_Patient").attr("disabled", "disabled");
-      } else if (/\D/.test(weight)) {
-        showCustomMessage("Invalid characters in Weight field.");
-        $("#save_Patient").attr("disabled", "disabled");
-      }
+      // input validation
     });
     
     
-    $('#medication_list').find('td').addClass("px-2 py-1 align-middle")
-    $('#medication_list').find('th').addClass("p-1 align-middle")
+    $('#equipment_list').find('td').addClass("px-2 py-1 align-middle")
+    $('#equipment_list').find('th').addClass("p-1 align-middle")
 
     $('#unavailable_since, #unavailable_until').datetimepicker({
       format: 'L'
-      //maxDate: new Date()
-      // "setDate": new Date(),
-      // "autoclose": true
     });
 
-    $("#medicine").change(function() {
+    $("#equipment").change(function() {
 
-      // var medicineId = $("#medicine").val();
-      var medicineId = $(this).val();
+      var equipmentDetailsId = $(this).val();
 
-      if(medicineId !== '') {
-        $.ajax({
-          url: "ajax/get_packings.php",
-          type: 'GET', 
-          data: {
-            'medicine_id': medicineId
-          },
-          cache:false,
-          async:false,
-          success: function (data, status, xhr) {
-            $("#packing").html(data);
-          },
-          error: function (jqXhr, textStatus, errorMessage) {
-            showCustomMessage(errorMessage);
-          }
-        });
-      }
-    });
-
-    $("#packing").change(function() {
-
-      // var medicineId = $("#medicine").val();
-      var medicineDetailsId = $(this).val();
-
-      if(medicineDetailsId !== '') {
+      if(equipmentDetailsId !== '') {
         $.ajax({
           url: "ajax/get_quantity.php",
           type: 'GET', 
           data: {
-            'medicineDetailsId': medicineDetailsId
+            'equipmentDetailsId': equipmentDetailsId
           },
           cache:false,
           async:false,
           success: function (data, status, xhr) {
 
-            if (medDetailsArr.length > 0) {
-              for (let i = 0; i < medDetailsArr.length; i++) {
-                if (medDetailsArr[i].medId === medicineDetailsId) {
-                  data -= medDetailsArr[i].qty;
+            if (equipmentDetailsArr.length > 0) {
+              for (let i = 0; i < equipmentDetailsArr.length; i++) {
+                if (equipmentDetailsArr[i].equipmentId === equipmentDetailsId) {
+                  data -= equipmentDetailsArr[i].qty;
                   if (data < 0) {
                     data = 0;
                   }
@@ -510,68 +335,135 @@ if(isset($_GET['message'])) {
 
 
     $("#add_to_list").click(function() {
-      var medicineId = $("#medicine").val();
-      var medicineName = $("#medicine option:selected").text();
+
+      var equipmentId = $("#equipment").val();
+      var equipmentName = $("#equipment option:selected").text();
       
-      var medicineDetailId = $("#packing").val();
-      var packing = $("#packing option:selected").text();
+      var status = $("#status").val();
+      var state = $("#state").val();
+      var remarks = $("#remarks").val().trim();
 
       var quantity = $("#quantity").val().trim();
       if (quantity == '0') {
         quantity = '';
       }
 
-      var dosage = $("#dosage").val().trim();
+      // get value of #unavailable_since and #unavailable_until if the element exists
+      var f_unavailableSince = '';
+      var f_unavailableUntil = '';
+      if ($(".unavailable").css('display') != 'none') {
+        var unavailableSince = $("#unavailableSince").val().trim();
+        var parts = unavailableSince.split("/");
+        console.log("unavailableSince"+parts);
+        var month = parts[0].length === 1 ? '0' + parts[0] : parts[0];
+        var day = parts[1].length === 1 ? '0' + parts[1] : parts[1];
+        f_unavailableSince = parts[2] + "-" + month + "-" + day;
 
-      var oldData = $("#current_medicines_list").html();
+        
+        var unavailableUntil = $("#unavailableUntil").val().trim();
+        parts = unavailableUntil.split("/");
+        console.log("unavailableUntil"+parts);
+        month = parts[0].length === 1 ? '0' + parts[0] : parts[0];
+        day = parts[1].length === 1 ? '0' + parts[1] : parts[1];
+        f_unavailableUntil = parts[2] + "-" + month + "-" + day;
+      }
 
-      if(medicineName !== '' && packing !== '' && quantity !== '' && dosage !== '') {
+      //get #borrower value if the element exists
+      var borrowerId = '';
+      if ($(".borrower").css('display') != 'none') {
+        borrower = $("#borrower").val();
+      }
+
+      var hasNoId = true;
+      var addCell = true;
+        
+      if (equipmentDetailsArr.length > 0) {
+        for (let i = 0; i < equipmentDetailsArr.length; i++) {
+
+          id_arr = equipmentDetailsArr[i].equipmentId;
+          status_arr = equipmentDetailsArr[i].status;
+          state_arr = equipmentDetailsArr[i].state;
+          remarks_arr = equipmentDetailsArr[i].remarks;
+          uSince_arr = equipmentDetailsArr[i].unavailableSince;
+          uUntil_arr = equipmentDetailsArr[i].unavailableUntil;
+          borId_arr = equipmentDetailsArr[i].borrowerId;
+
+          if (id_arr === equipmentId && status_arr === status && state_arr === state && remarks_arr === remarks && unavailableSince === uSince_arr && unavailableUntil === uUntil_arr && borId_arr === borrowerId) {
+            addQuantity(parseInt(quantity), equipmentId);
+            equipmentDetailsArr[i].qty += parseInt(quantity);
+            hasNoId = false;
+            addCell = false;
+          }
+        }
+      }
+
+      var oldData = $("#current_equipment_list").html();
+
+      if(equipmentName !== '' && status !== '' && state !== '' && quantity !== '' && addCell) {
+        
         var inputs = '';
-        inputs = inputs + '<input type="hidden" name="medicineDetailIds[]" value="'+medicineDetailId+'" />';
+        inputs = inputs + '<input type="hidden" name="equipmentIds[]" value="'+equipmentId+'" />';
+        inputs = inputs + '<input type="hidden" name="status[]" value="'+status+'" />';
+        inputs = inputs + '<input type="hidden" name="states[]" value="'+state+'" />';
         inputs = inputs + '<input type="hidden" name="quantities[]" value="'+quantity+'" />';
-        inputs = inputs + '<input type="hidden" name="dosages[]" value="'+dosage+'" />';
-        inputs = inputs + '<input type="hidden" name="medDetailsArr[]" value=\'{"medId":'+medicineDetailId+', "qty":'+quantity+'}\'/>';
-
+        inputs = inputs + '<input type="hidden" name="remarks[]" value="'+remarks+'" />';
+        // inputs = inputs + '<input type="hidden" name="equipmentDetailsArr[]" value=\'{"equipmentId":'+equipmentId+', "qty":'+quantity+'}\'/>';
+        inputs = inputs + '<input type="hidden" name="borrowerIds[]" value="'+borrowerId+'" />';
+        inputs = inputs + '<input type="hidden" name="unavailableSinces[]" value="'+f_unavailableSince+'" />';
+        inputs = inputs + '<input type="hidden" name="unavailableUntils[]" value="'+f_unavailableUntil+'" />';
 
         var tr = '<tr>';
         tr = tr + '<td class="px-2 py-1 align-middle">'+serial+'</td>';
-        tr = tr + '<td class="px-2 py-1 align-middle">'+medicineName+'</td>';
-        tr = tr + '<td class="px-2 py-1 align-middle">'+packing+'</td>';
-        tr = tr + '<td class="px-2 py-1 align-middle" id="'+medicineDetailId+'">'+quantity+'</td>';
-        tr = tr + '<td class="px-2 py-1 align-middle">'+dosage + inputs +'</td>';
+        tr = tr + '<td class="px-2 py-1 align-middle">'+equipmentName+'</td>';
+        tr = tr + '<td class="px-2 py-1 align-middle">'+status+'</td>';
+        tr = tr + '<td class="px-2 py-1 align-middle">'+state+'</td>';
+        tr = tr + '<td class="px-2 py-1 align-middle" id="'+equipmentId+'">'+quantity+'</td>';
+        tr = tr + '<td class="px-2 py-1 align-middle">'+remarks + inputs +'</td>';
 
         tr = tr + '<td class="px-2 py-1 align-middle text-center"><button type="button" class="btn btn-outline-danger btn-sm rounded-0" onclick="deleteCurrentRow(this);"><i class="fa fa-times"></i></button></td>';
         tr = tr + '</tr>';
         oldData = oldData + tr;
         serial++;
 
-        $("#current_medicines_list").html(oldData);
-
-        var hasNoId = true;
-                
-        if (medDetailsArr.length > 0) {
-          for (let i = 0; i < medDetailsArr.length; i++) {
-            if (medDetailsArr[i].medId === medicineDetailId) {
-              medDetailsArr[i].qty += parseInt(quantity);
-              hasNoId = false;
-            }
-          }
-        }
+        $("#current_equipment_list").html(oldData);
 
         if (hasNoId) {
-          medDetailsArr.push({
-            medId: medicineDetailId,
+          equipmentDetailsArr.push({
+            equipmentId: equipmentId,
+            status: status,
+            state: state,
             qty: parseInt(quantity),
+            remarks: remarks,
+            borrowerId: borrowerId,
+            unavailableSince: f_unavailableSince,
+            unavailableUntil: f_unavailableUntil            
           });
         }
 
-        $("#medicine").val('');
-        $("#packing").val('');
+        // reset the form
+        $("#equipment").val('');
+        $("#status").val('');
+        $("#state").val('');
+        $("#remarks").val('');
         $("#quantity").val('');
-        $("#dosage").val('');
+
+        if ($(".unavailable").length > 0 && $(".borrower").length > 0) {
+          $("#unavailable_since").val('');
+          $("#unavailable_until").val('');
+          $("#borrower").val('');
+          $(".unavailable").hide();
+        } else if ($(".unavailable").length > 0) {
+          $("#unavailable_since").val('');
+          $("#unavailable_until").val('');
+          $(".unavailable").hide();
+        }
 
       } else {
-        showCustomMessage('Please fill all fields. Medicine quantity cannot be 0.');
+        if (!addCell) {
+          showCustomMessage("Equipment \""+ equipmentName +"\" already exists. The quantity has been updated.");
+        } else {
+          showCustomMessage("Please fill out all the fields.");
+        }
       }
 
     });
@@ -582,19 +474,26 @@ if(isset($_GET['message'])) {
 
     var rowIndex = obj.parentNode.parentNode.rowIndex;
     
-    var row = document.getElementById("medication_list").rows[rowIndex];
-    var del_qty = row.cells[3].textContent.trim();
-    var del_id = row.cells[3].id;
+    var row = document.getElementById("equipment_list").rows[rowIndex];
+    var del_qty = row.cells[4].textContent.trim();
+    var del_id = row.cells[4].id;
 
-    document.getElementById("medication_list").deleteRow(rowIndex);
+    document.getElementById("equipment_list").deleteRow(rowIndex);
 
-    for (let i = 0; i < medDetailsArr.length; i++) {
-      if (medDetailsArr[i].medId === del_id) {
-        medDetailsArr[i].qty -= parseInt(del_qty);
+    for (let i = 0; i < equipmentDetailsArr.length; i++) {
+      if (equipmentDetailsArr[i].equipmentId === del_id) {
+        equipmentDetailsArr[i].qty -= parseInt(del_qty);
       }
     }
-
   }
+
+  function addQuantity(quantity, equipmentId) {
+    var currentQty = $("#"+equipmentId).text();
+    currentQty = parseInt(currentQty);
+    currentQty += quantity;
+    $("#"+equipmentId).text(currentQty);
+  }
+
 </script>
 </body>
 </html>
