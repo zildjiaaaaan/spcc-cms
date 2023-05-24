@@ -303,7 +303,6 @@ if(isset($_GET['message'])) {
                   if (data < 0) {
                     data = 0;
                   }
-                  break;
                 }
               }
             }
@@ -361,11 +360,13 @@ if(isset($_GET['message'])) {
 
         
         var unavailableUntil = $("#unavailableUntil").val().trim();
-        parts = unavailableUntil.split("/");
-        console.log("unavailableUntil"+parts);
-        month = parts[0].length === 1 ? '0' + parts[0] : parts[0];
-        day = parts[1].length === 1 ? '0' + parts[1] : parts[1];
-        f_unavailableUntil = parts[2] + "-" + month + "-" + day;
+        if (unavailableUntil != '') {
+          parts = unavailableUntil.split("/");
+          console.log("unavailableUntil"+parts);
+          month = parts[0].length === 1 ? '0' + parts[0] : parts[0];
+          day = parts[1].length === 1 ? '0' + parts[1] : parts[1];
+          f_unavailableUntil = parts[2] + "-" + month + "-" + day;
+        }
       }
 
       //get #borrower value if the element exists
@@ -380,19 +381,21 @@ if(isset($_GET['message'])) {
       if (equipmentDetailsArr.length > 0) {
         for (let i = 0; i < equipmentDetailsArr.length; i++) {
 
-          id_arr = equipmentDetailsArr[i].equipmentId;
-          status_arr = equipmentDetailsArr[i].status;
-          state_arr = equipmentDetailsArr[i].state;
-          remarks_arr = equipmentDetailsArr[i].remarks;
-          uSince_arr = equipmentDetailsArr[i].unavailableSince;
-          uUntil_arr = equipmentDetailsArr[i].unavailableUntil;
-          borId_arr = equipmentDetailsArr[i].borrowerId;
+          var id_arr = equipmentDetailsArr[i].equipmentId;
+          var status_arr = equipmentDetailsArr[i].status;
+          var state_arr = equipmentDetailsArr[i].state;
+          var remarks_arr = equipmentDetailsArr[i].remarks;
+          var uSince_arr = equipmentDetailsArr[i].unavailableSince;
+          var uUntil_arr = equipmentDetailsArr[i].unavailableUntil;
+          var borId_arr = equipmentDetailsArr[i].borrowerId;
 
           if (id_arr === equipmentId && status_arr === status && state_arr === state && remarks_arr === remarks && uSince_arr === f_unavailableSince && uUntil_arr === f_unavailableUntil && borId_arr === borrowerId) {
-            addQuantity(parseInt(quantity), equipmentId);
+            var qtyId = equipmentId+"_"+status+"_"+state+"_"+remarks+"_"+f_unavailableSince+"_"+f_unavailableUntil+"_"+borrowerId;
+            addQuantity(parseInt(quantity), qtyId);
             equipmentDetailsArr[i].qty += parseInt(quantity);
             hasNoId = false;
             addCell = false;
+            break;
           }
         }
       }
@@ -402,11 +405,12 @@ if(isset($_GET['message'])) {
 
       if(equipmentName !== '' && status !== '' && state !== '' && quantity !== '' && addCell) {
         
+        var qtyId = equipmentId+"_"+status+"_"+state+"_"+remarks+"_"+f_unavailableSince+"_"+f_unavailableUntil+"_"+borrowerId;
         var inputs = '';
         inputs = inputs + '<input type="hidden" name="equipmentIds[]" value="'+equipmentId+'" />';
         inputs = inputs + '<input type="hidden" name="status[]" value="'+status+'" />';
         inputs = inputs + '<input type="hidden" name="states[]" value="'+state+'" />';
-        inputs = inputs + '<input type="hidden" name="quantities[]" value="'+quantity+'" />';
+        inputs = inputs + '<input type="hidden" name="quantities[]" id="inp-'+qtyId+'" value="'+quantity+'" />';
         inputs = inputs + '<input type="hidden" name="remarks[]" value="'+remarks+'" />';
         // inputs = inputs + '<input type="hidden" name="equipmentDetailsArr[]" value=\'{"equipmentId":'+equipmentId+', "qty":'+quantity+'}\'/>';
         inputs = inputs + '<input type="hidden" name="borrowerIds[]" value="'+borrowerId+'" />';
@@ -418,7 +422,7 @@ if(isset($_GET['message'])) {
         tr = tr + '<td class="px-2 py-1 align-middle">'+equipmentName+'</td>';
         tr = tr + '<td class="px-2 py-1 align-middle">'+status+'</td>';
         tr = tr + '<td class="px-2 py-1 align-middle">'+state+'</td>';
-        tr = tr + '<td class="px-2 py-1 align-middle" id="'+equipmentId+'">'+quantity+'</td>';
+        tr = tr + '<td class="px-2 py-1 align-middle" id="'+qtyId+'">'+quantity+'</td>';
         tr = tr + '<td class="px-2 py-1 align-middle">'+remarks + inputs +'</td>';
 
         tr = tr + '<td class="px-2 py-1 align-middle text-center"><button type="button" class="btn btn-outline-danger btn-sm rounded-0" onclick="deleteCurrentRow(this);"><i class="fa fa-times"></i></button></td>';
@@ -479,22 +483,43 @@ if(isset($_GET['message'])) {
     
     var row = document.getElementById("equipment_list").rows[rowIndex];
     var del_qty = row.cells[4].textContent.trim();
-    var del_id = row.cells[4].id;
+    var id = row.cells[4].id;
 
     document.getElementById("equipment_list").deleteRow(rowIndex);
 
+    var del_arr = id.split("_");
+
     for (let i = 0; i < equipmentDetailsArr.length; i++) {
-      if (equipmentDetailsArr[i].equipmentId === del_id) {
-        equipmentDetailsArr[i].qty -= parseInt(del_qty);
+
+      var id_arr = equipmentDetailsArr[i].equipmentId;
+      var status_arr = equipmentDetailsArr[i].status;
+      var state_arr = equipmentDetailsArr[i].state;
+      var remarks_arr = equipmentDetailsArr[i].remarks;
+      var uSince_arr = equipmentDetailsArr[i].unavailableSince;
+      var uUntil_arr = equipmentDetailsArr[i].unavailableUntil;
+      var borId_arr = equipmentDetailsArr[i].borrowerId;
+
+      var del_id = del_arr[0];
+      var del_status = del_arr[1];
+      var del_state = del_arr[2];
+      var del_remarks = del_arr[3];
+      var del_uSince = del_arr[4];
+      var del_uUntil = del_arr[5];
+      var del_borId = del_arr[6];
+
+      if (id_arr === del_id && status_arr === del_status && state_arr === del_state && remarks_arr === del_remarks && uSince_arr === del_uSince && uUntil_arr === del_uUntil && borId_arr === del_borId) {
+        equipmentDetailsArr.splice(i, 1);
+        break;
       }
     }
   }
 
-  function addQuantity(quantity, equipmentId) {
-    var currentQty = $("#"+equipmentId).text();
+  function addQuantity(quantity, qtyId) {
+    var currentQty = $("#"+qtyId).text();
     currentQty = parseInt(currentQty);
     currentQty += quantity;
-    $("#"+equipmentId).text(currentQty);
+    $("#"+qtyId).text(currentQty);
+    $("#inp-"+qtyId).val(currentQty);
   }
 
 </script>
