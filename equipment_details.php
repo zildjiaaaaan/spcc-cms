@@ -371,7 +371,7 @@ if(isset($_GET['message'])) {
       //get #borrower value if the element exists
       var borrowerId = '';
       if ($(".borrower").css('display') != 'none') {
-        borrower = $("#borrower").val();
+        borrowerId = $("#borrower").val();
       }
 
       var hasNoId = true;
@@ -388,7 +388,7 @@ if(isset($_GET['message'])) {
           uUntil_arr = equipmentDetailsArr[i].unavailableUntil;
           borId_arr = equipmentDetailsArr[i].borrowerId;
 
-          if (id_arr === equipmentId && status_arr === status && state_arr === state && remarks_arr === remarks && unavailableSince === uSince_arr && unavailableUntil === uUntil_arr && borId_arr === borrowerId) {
+          if (id_arr === equipmentId && status_arr === status && state_arr === state && remarks_arr === remarks && uSince_arr === f_unavailableSince && uUntil_arr === f_unavailableUntil && borId_arr === borrowerId) {
             addQuantity(parseInt(quantity), equipmentId);
             equipmentDetailsArr[i].qty += parseInt(quantity);
             hasNoId = false;
@@ -398,6 +398,7 @@ if(isset($_GET['message'])) {
       }
 
       var oldData = $("#current_equipment_list").html();
+      var clearForm = true;
 
       if(equipmentName !== '' && status !== '' && state !== '' && quantity !== '' && addCell) {
         
@@ -440,6 +441,16 @@ if(isset($_GET['message'])) {
           });
         }
 
+      } else {
+        if (!addCell) {
+          showCustomMessage("Equipment \""+ equipmentName +"\" already exists. The quantity has been updated.");
+        } else {
+          showCustomMessage("Please fill out all the fields.");
+          clearForm = false;
+        }
+      }
+
+      if (clearForm) {
         // reset the form
         $("#equipment").val('');
         $("#status").val('');
@@ -457,15 +468,7 @@ if(isset($_GET['message'])) {
           $("#unavailable_until").val('');
           $(".unavailable").hide();
         }
-
-      } else {
-        if (!addCell) {
-          showCustomMessage("Equipment \""+ equipmentName +"\" already exists. The quantity has been updated.");
-        } else {
-          showCustomMessage("Please fill out all the fields.");
-        }
       }
-
     });
 
   });
