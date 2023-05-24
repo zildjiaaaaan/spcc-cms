@@ -7,7 +7,7 @@ $message = '';
 if(isset($_POST['submit'])) {
 
   $equipmentIds = $_POST['equipmentIds'];
-  $status = $_POST['status'];
+  $statuses = $_POST['statuses'];
   $states = $_POST['states'];
   $quantities = $_POST['quantities'];
   $remarks = $_POST['remarks'];
@@ -15,13 +15,30 @@ if(isset($_POST['submit'])) {
   $unavailableSinces = $_POST['unavailableSinces'];
   $unavailableUntils = $_POST['unavailableUntils'];
 
+  // var_dump($equipmentIds);
+  // echo "<br />";
+  // var_dump($status);
+  // echo "<br />";
+  // var_dump($states);
+  // echo "<br />";
+  // var_dump($quantities);
+  // echo "<br />";
+  // var_dump($remarks);
+  // echo "<br />";
+  // var_dump($borrowerIds);
+  // echo "<br />";
+  // var_dump($unavailableSinces);
+  // echo "<br />";
+  // var_dump($unavailableUntils);
+  // echo "<br />";
+
   $size = sizeof($equipmentIds);
 
   // iterate insert query $size times to insert all the equipment details
   for ($i=0; $i < $size; $i++) { 
 
     $equipmentId = $equipmentIds[$i];
-    $status = $status[$i];
+    $status = $statuses[$i];
     $state = $states[$i];
     $quantity = $quantities[$i];
     $remark = $remarks[$i];
@@ -35,7 +52,7 @@ if(isset($_POST['submit'])) {
       ) VALUES (
         '$equipmentId', '$status', '$state',
         '$unavailableSince', '$unavailableUntil', '$quantity',
-        '$remarks', '0'
+        '$remark', '0'
       );";    
 
     try {
@@ -122,14 +139,14 @@ include './config/sidebar.php';?>
               <div class="row">
                 <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
                   <label>Select Equipment</label>
-                  <select id="equipment" name="equipment" class="form-control form-control-sm rounded-0" required="required">
+                  <select id="equipment" name="equipment" class="form-control form-control-sm rounded-0">
                     <?php echo $equipments;?>
                   </select>
                 </div>
 
                 <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
                   <label>Status</label>
-                  <select id="status" name="status" class="form-control form-control-sm rounded-0" required="required">
+                  <select id="status" name="status" class="form-control form-control-sm rounded-0">
                     <option value="">Select Status</option>
                     <option value="Available">Available</option>
                     <option value="Unavailable">Unavailable</option>
@@ -152,7 +169,7 @@ include './config/sidebar.php';?>
                 
                 <div class="col-lg-3 col-md-2 col-sm-6 col-xs-12">
                   <label>Quantity Available</label>
-                  <input type="number" id="quantity" name="quantity" class="form-control form-control-sm rounded-0" required="required" min="1"/>
+                  <input type="number" id="quantity" name="quantity" class="form-control form-control-sm rounded-0" min="1"/>
                 </div>
 
                 <div class="clearfix unavailable">&nbsp;</div>
@@ -162,7 +179,7 @@ include './config/sidebar.php';?>
                     <label>Unavailable Since</label>
                     <div class="input-group date" id="unavailable_since" 
                         data-target-input="nearest">
-                        <input type="text" value="<?php echo date("m/d/Y"); ?>" id="unavailableSince" class="form-control form-control-sm rounded-0 datetimepicker-input" data-target="#unavailable_since" name="unavailable_since" required="required" data-toggle="datetimepicker" autocomplete="off"/>
+                        <input type="text" value="<?php echo date("m/d/Y"); ?>" id="unavailableSince" class="form-control form-control-sm rounded-0 datetimepicker-input" data-target="#unavailable_since" name="unavailable_since" data-toggle="datetimepicker" autocomplete="off"/>
                         <div class="input-group-append" 
                         data-target="#unavailable_since" 
                         data-toggle="datetimepicker">
@@ -486,7 +503,7 @@ if(isset($_GET['message'])) {
           var qtyId = equipmentId+"_"+status+"_"+state+"_"+remarksForId+"_"+f_unavailableSince+"_"+f_unavailableUntil+"_"+borrowerId;
           var inputs = '';
           inputs = inputs + '<input type="hidden" name="equipmentIds[]" value="'+equipmentId+'" />';
-          inputs = inputs + '<input type="hidden" name="status[]" value="'+status+'" />';
+          inputs = inputs + '<input type="hidden" name="statuses[]" value="'+status+'" />';
           inputs = inputs + '<input type="hidden" name="states[]" value="'+state+'" />';
           inputs = inputs + '<input type="hidden" name="quantities[]" id="inp-'+qtyId+'" value="'+quantity+'" />';
           inputs = inputs + '<input type="hidden" name="remarks[]" value="'+remarks+'" />';
