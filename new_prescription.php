@@ -46,7 +46,7 @@ if(isset($_POST['submit'])) {
     $stmtVisit = $con->prepare($queryVisit);
     $stmtVisit->execute();
 
-    $lastInsertId = $con->lastInsertId();//latest patient visit id
+    $lastInsertId = $con->lastInsertId(); //latest patient visit id
 
     //now to store data in medication history
     $size = sizeof($medicineDetailIds);

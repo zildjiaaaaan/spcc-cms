@@ -4,6 +4,71 @@ include './common_service/common_functions.php';
 
 $message = '';
 
+if(isset($_POST['submit'])) {
+
+  $equipmentIds = $_POST['equipmentIds'];
+  $status = $_POST['status'];
+  $states = $_POST['states'];
+  $quantities = $_POST['quantities'];
+  $remarks = $_POST['remarks'];
+  $borrowerIds = $_POST['borrowerIds'];
+  $unavailableSinces = $_POST['unavailableSinces'];
+  $unavailableUntils = $_POST['unavailableUntils'];
+
+  $size = sizeof($equipmentIds);
+
+  // iterate insert query $size times to insert all the equipment details
+  for ($i=0; $i < $size; $i++) { 
+
+    $equipmentId = $equipmentIds[$i];
+    $status = $status[$i];
+    $state = $states[$i];
+    $quantity = $quantities[$i];
+    $remark = $remarks[$i];
+    $borrowerId = $borrowerIds[$i];
+    $unavailableSince = $unavailableSinces[$i];
+    $unavailableUntil = $unavailableUntils[$i];
+
+    $q_equipment_details = "INSERT INTO `equipment_details` (
+        `equipment_id`, `status`, `state`, `unavailable_since`,
+        `unavailable_until`, `quantity`, `remarks`, `is_del`
+      ) VALUES (
+        '$equipmentId', '$status', '$state',
+        '$unavailableSince', '$unavailableUntil', '$quantity',
+        '$remarks', '0'
+      );";    
+
+    try {
+      $con->beginTransaction();
+
+      $stmt_equipment_details = $con->prepare($q_equipment_details);
+      $stmt_equipment_details->execute();
+
+      $lastInsertId = $con->lastInsertId();
+
+      if ($borrowerId != '') {
+        $q_borrowed = "INSERT INTO `borrowed` (`borrower_id`, `equipment_details_id`) VALUES ('$borrowerId', '$lastInsertId');";
+        
+        $stmt_borrowed = $con->prepare($q_borrowed);
+        $stmt_borrowed->execute();
+      }
+
+      $con->commit();
+      $message = "Equipment details successfully added.";
+
+    } catch (PDOException $ex) {
+      $con->rollback();
+      echo $ex->getTraceAsString();
+      echo $ex->getMessage();
+      exit;
+    }
+  }
+
+  header("Location: equipment_details.php?message=$message");
+  exit;
+
+}
+
 $equipments = getUniqueEquipments($con);
 $borrowers = getUniqueBorrowers($con);
 
@@ -351,6 +416,7 @@ if(isset($_GET['message'])) {
 
       // if remarks has "_" then replace it with "-"
       remarks = remarks.replace(/_/g, "-");
+      var remarksForId = remarks.replace(/ /g, "-");
 
       var quantity = $("#quantity").val().trim();
       if (quantity == '0') {
@@ -405,18 +471,19 @@ if(isset($_GET['message'])) {
             var borId_arr = equipmentDetailsArr[i].borrowerId;
 
             if (id_arr === equipmentId && status_arr === status && state_arr === state && remarks_arr === remarks && uSince_arr === f_unavailableSince && uUntil_arr === f_unavailableUntil && borId_arr === borrowerId) {
-              var qtyId = equipmentId+"_"+status+"_"+state+"_"+remarks+"_"+f_unavailableSince+"_"+f_unavailableUntil+"_"+borrowerId;
+              var qtyId = equipmentId+"_"+status+"_"+state+"_"+remarksForId+"_"+f_unavailableSince+"_"+f_unavailableUntil+"_"+borrowerId;
               addQuantity(parseInt(quantity), qtyId);
               equipmentDetailsArr[i].qty += parseInt(quantity);
               hasNoId = false;
               addCell = false;
+              console.log(addCell);
               break;
             }
           }
         }
 
         if (addCell) {
-          var qtyId = equipmentId+"_"+status+"_"+state+"_"+remarks+"_"+f_unavailableSince+"_"+f_unavailableUntil+"_"+borrowerId;
+          var qtyId = equipmentId+"_"+status+"_"+state+"_"+remarksForId+"_"+f_unavailableSince+"_"+f_unavailableUntil+"_"+borrowerId;
           var inputs = '';
           inputs = inputs + '<input type="hidden" name="equipmentIds[]" value="'+equipmentId+'" />';
           inputs = inputs + '<input type="hidden" name="status[]" value="'+status+'" />';
@@ -456,7 +523,6 @@ if(isset($_GET['message'])) {
             });
           }
         } else {
-          
           showCustomMessage("Equipment \""+ equipmentName +"\" already exists. The quantity has been updated.");
         }
 
@@ -493,7 +559,7 @@ if(isset($_GET['message'])) {
     var rowIndex = obj.parentNode.parentNode.rowIndex;
     
     var row = document.getElementById("equipment_list").rows[rowIndex];
-    var del_qty = row.cells[4].textContent.trim();
+    var del_remarks = row.cells[5].textContent.trim();
     var id = row.cells[4].id;
 
     document.getElementById("equipment_list").deleteRow(rowIndex);
@@ -513,7 +579,7 @@ if(isset($_GET['message'])) {
       var del_id = del_arr[0];
       var del_status = del_arr[1];
       var del_state = del_arr[2];
-      var del_remarks = del_arr[3];
+      //var del_remarks = del_arr[3];
       var del_uSince = del_arr[4];
       var del_uUntil = del_arr[5];
       var del_borId = del_arr[6];
