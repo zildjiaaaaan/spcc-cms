@@ -188,8 +188,8 @@ if(isset($_GET['message'])) {
       const search = url.searchParams.get("search");
       console.log(search); 
       
-      if (search == "expired") {
-        // console.log(search);
+      if (search == "borrowed") {
+        console.log(search);
         $("#equipment_inventory").DataTable({
           order: [[4, 'asc']],
           "responsive": true, "lengthChange": false, "autoWidth": false,

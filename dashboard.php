@@ -102,7 +102,7 @@ include './config/sidebar.php';
         <div class="row">
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-white">
+            <div class="small-box bg-white" id="box_todayspatient">
               <div class="inner">
                 <h3><?php echo $todaysCount;?></h3>
 
@@ -111,13 +111,13 @@ include './config/sidebar.php';
               <div class="icon">
                 <i class="fa fa-calendar-day"></i>
               </div>
-              <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
+              
             </div>
           </div>
           <!-- ./col -->
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-white">
+            <div class="small-box bg-white" id="box_weekspatient">
               <div class="inner">
                 <h3><?php echo $currentWeekCount;?></h3>
 
@@ -126,13 +126,12 @@ include './config/sidebar.php';
               <div class="icon">
                 <i class="fa fa-calendar-week"></i>
               </div>
-              <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-white text-reset">
+            <div class="small-box bg-white text-reset" id="box_monthspatient">
               <div class="inner">
                 <h3><?php echo $currentMonthCount;?></h3>
 
@@ -141,22 +140,20 @@ include './config/sidebar.php';
               <div class="icon">
                 <i class="fa fa-calendar"></i>
               </div>
-              <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-white text-reset">
+            <div class="small-box bg-white text-reset" id="box_recentpatient">
               <div class="inner">
                 <h3><?php echo $currentYearCount;?></h3>
 
-                <p>Current Year</p>
+                <p>Recent Patient</p>
               </div>
               <div class="icon">
                 <i class="fa fa-user-injured"></i>
               </div>
-              <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
         </div>
@@ -222,7 +219,7 @@ include './config/sidebar.php';
         <div class="row">
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-yellow">
+            <div class="small-box bg-yellow" id="box_totalmedicine">
               <div class="inner">
                 <h3><?php echo $r['totalmed'];?></h3>
                 <p>Total Medicine Stocks</p>
@@ -230,13 +227,12 @@ include './config/sidebar.php';
               <div class="icon">
                 <i class="fa fa-pills"></i>
               </div>
-              <a href="medicines.php" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-yellow">
+            <div class="small-box bg-yellow" id="box_tobeexpired">
               <div class="inner">
                 <h3><?php
                   if (empty($rExpiry['exp_date']) > 0) {
@@ -250,15 +246,13 @@ include './config/sidebar.php';
               </div>
               <div class="icon">
                 <i class="fa fa-pills"></i>
-              </div>
-              <a href="medicine_details.php?search=expired" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
-             
+              </div>             
             </div>
           </div>
           <!-- ./col -->
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-yellow text-reset">
+            <div class="small-box bg-yellow text-reset" id="box_torestock">
               <div class="inner">
                 <h3><?php echo $rQty['quantity'];?></h3>
 
@@ -266,15 +260,13 @@ include './config/sidebar.php';
               </div>
               <div class="icon">
                 <i class="fa fa-pills"></i>
-              </div>
-              <a href="medicine_details.php?search=restock" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
-             
+              </div>             
             </div>
           </div>
           <!-- ./col -->
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-yellow text-reset">
+            <div class="small-box bg-yellow text-reset" id="box_expired">
               <div class="inner">
                 <h3><?php echo $rExpired['total_expired'];?></h3>
 
@@ -283,7 +275,6 @@ include './config/sidebar.php';
               <div class="icon">
                 <i class="fa fa-pills"></i>
               </div>
-              <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
         </div>
@@ -422,7 +413,7 @@ include './config/sidebar.php';
         <div class="row">
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-navy">
+            <div class="small-box bg-navy" id="box_totalattendants">
               <div class="inner">
                 <h3><?php echo $rUser['attendant'];?></h3>
 
@@ -431,13 +422,12 @@ include './config/sidebar.php';
               <div class="icon">
                 <i class="fa fa-user"></i>
               </div>
-              <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-navy">
+            <div class="small-box bg-navy" id="box_totalmedbrand">
               <div class="inner">
                 <h3><?php echo $rBrand['medicine_brand'];?></h3>
 
@@ -446,7 +436,6 @@ include './config/sidebar.php';
               <div class="icon">
                 <i class="fa fa-tag"></i>
               </div>
-              <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -507,6 +496,54 @@ include './config/sidebar.php';
   $(function(){
     showMenuSelected("#mnu_dashboard", "");
   })
+
+  $(document).ready(function(){
+
+    // PATIENTS
+
+    $("#box_todayspatient, #box_weekspatient, #box_monthspatient").on("mouseenter", function() {
+      $(this).css("cursor", "pointer");
+    }).on("click", function() {
+      location.href = "patient_history.php";
+    });
+
+    $("#box_recentpatient").on("mouseenter", function() {
+      $(this).css("cursor", "pointer");
+    }).on("click", function() {
+      location.href = "patients.php";
+    });
+
+    // MEDICINES
+
+    $("#box_totalmedicine, #box_totalmedbrand").on("mouseenter", function() {
+      $(this).css("cursor", "pointer");
+    }).on("click", function() {
+      location.href = "medicines.php";
+    });
+
+    $("#box_tobeexpired, #box_expired").on("mouseenter", function() {
+      $(this).css("cursor", "pointer");
+    }).on("click", function() {
+      location.href = "medicine_details.php?search=expired";
+    });
+
+    $("#box_torestock").on("mouseenter", function() {
+      $(this).css("cursor", "pointer");
+    }).on("click", function() {
+      location.href = "medicine_details.php?search=restock";
+    });
+
+    // MAINTENANCE
+
+    $("#box_totalattendants").on("mouseenter", function() {
+      $(this).css("cursor", "pointer");
+    }).on("click", function() {
+      location.href = "users.php";
+    });
+
+    
+
+  });
 </script>
 
 </body>
