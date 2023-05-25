@@ -143,6 +143,13 @@ if(!(isset($_SESSION['user_id']))) {
                   <p>Equipment Details</p>
                 </a>
               </li>
+              <li class="nav-item">
+                <a href="equipment_inventory.php" class="nav-link" 
+                id="mi_equipment_inventory">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Equipment Inventory</p>
+                </a>
+              </li>
                             
             </ul>
           </li>
