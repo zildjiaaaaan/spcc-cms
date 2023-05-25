@@ -64,6 +64,8 @@ ADD EQUIPMENT DETAILS (List Form)
 [number] qty
 [textarea] remarks
 
+EQUIPMENT DETAILS INVENTORY (Viewing)
+
 BORROWING (List form)
 [select] last name - id
 [select] available equipment-brand
@@ -77,8 +79,8 @@ id	equipment	brand	date_acquired	total_qty
 TBL_BORROWER •
 id	fname	lname	position	position_id	contact_no
 
-TBL_AVAILABILITY 
+TBL_EQUIPMENT_DETAILS •
 id	equipment_id	status	unavailable_since	unavailable_until	state	qty	remarks
 
-TBL_BORROWED	
-id	borrower_id	availability_id
+TBL_BORROWED •
+id	borrower_id	equipment_details_id

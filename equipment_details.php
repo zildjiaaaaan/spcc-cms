@@ -43,15 +43,15 @@ if(isset($_POST['submit'])) {
     $quantity = $quantities[$i];
     $remark = $remarks[$i];
     $borrowerId = $borrowerIds[$i];
-    $unavailableSince = $unavailableSinces[$i];
-    $unavailableUntil = $unavailableUntils[$i];
+    $unavailableSince = !empty($unavailableSince) ? "'$unavailableSince'" : "NULL";
+    $unavailableUntil = !empty($unavailableUntil) ? "'$unavailableUntil'" : "NULL";
 
     $q_equipment_details = "INSERT INTO `equipment_details` (
         `equipment_id`, `status`, `state`, `unavailable_since`,
         `unavailable_until`, `quantity`, `remarks`, `is_del`
       ) VALUES (
         '$equipmentId', '$status', '$state',
-        '$unavailableSince', '$unavailableUntil', '$quantity',
+        $unavailableSince, $unavailableUntil, '$quantity',
         '$remark', '0'
       );";    
 
@@ -359,7 +359,53 @@ if(isset($_GET['message'])) {
     });
 
     $("form :input").blur(function() {
-      // input validation
+
+      var equipmentId = $("#equipment").val();
+      var status = $("#status").val();
+      var state = $("#state").val();
+      var remarks = $("#remarks").val().trim();
+      // var quantity = $("#quantity").val();
+      var unavailableSince = '';
+      var unavailableUntil = '';
+      var borrower = '';
+      if ($(".unavailable").css('display') != 'none') {
+          unavailableSince = $("#unavailableSince").val();
+          unavailableUntil = $("#unavailableUntil").val();
+        if ($(".borrower").css('display') != 'none') {
+          borrower = $("#borrower").val();
+        }
+      }
+      
+      if(equipmentId !== '') {
+        $.ajax({
+          url: "ajax/check_equipment_status.php",
+          type: 'GET', 
+          data: {
+            'equipmentId': equipmentId,
+            'status': status,
+            'state': state,
+            'remarks': remarks,
+            'unavailableSince': unavailableSince,
+            'unavailableUntil': unavailableUntil,
+            'borrower': borrower
+          },
+          cache:false,
+          async:false,
+          success: function (count, status, xhr) {
+            if(count > 0) {
+              showCustomMessage("This equipment details are already existing! Please check records or the Trash.");
+              $("#add_to_list").attr("disabled", "disabled");
+              console.log(count);
+            } else {
+              $("#add_to_list").removeAttr("disabled");
+              console.log(count);
+            }
+          },
+          error: function (jqXhr, textStatus, errorMessage) {
+            showCustomMessage(errorMessage);
+          }
+        });
+      }
     });
     
     
@@ -446,7 +492,6 @@ if(isset($_GET['message'])) {
       if ($(".unavailable").css('display') != 'none') {
         var unavailableSince = $("#unavailableSince").val().trim();
         var parts = unavailableSince.split("/");
-        // console.log("unavailableSince"+parts);
         var month = parts[0].length === 1 ? '0' + parts[0] : parts[0];
         var day = parts[1].length === 1 ? '0' + parts[1] : parts[1];
         f_unavailableSince = parts[2] + "-" + month + "-" + day;
@@ -455,7 +500,6 @@ if(isset($_GET['message'])) {
         var unavailableUntil = $("#unavailableUntil").val().trim();
         if (unavailableUntil != '') {
           parts = unavailableUntil.split("/");
-          // console.log("unavailableUntil"+parts);
           month = parts[0].length === 1 ? '0' + parts[0] : parts[0];
           day = parts[1].length === 1 ? '0' + parts[1] : parts[1];
           f_unavailableUntil = parts[2] + "-" + month + "-" + day;
