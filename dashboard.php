@@ -294,12 +294,40 @@ include './config/sidebar.php';
 
         try {
           $queryEquipments = "SELECT COUNT(*) AS `total_equipments`
-                      FROM `equipments`
-                      WHERE `is_del` = '0';";
+          FROM `equipments`
+          WHERE `is_del` = '0';";
+
+          $queryBorrowed = "SELECT COUNT(*) AS `total_borrowed`
+          FROM `equipment_details`
+          WHERE `state` = 'Borrowed'
+            AND `is_del` = '0';";
+
+          $queryRecent = "SELECT *, `id` AS `equipment_id`
+          FROM `equipments`
+          WHERE `is_del` = '0'
+          ORDER BY `id` DESC
+          LIMIT 1;";
+
+          $queryDefective = "SELECT SUM(quantity) AS `defective_qty`
+          FROM `equipment_details`
+          WHERE `state` = 'Defective'
+          AND `is_del` = '0';";
 
           $stmtEquipments = $con->prepare($queryEquipments);
           $stmtEquipments->execute();
           $rEquipments = $stmtEquipments->fetch(PDO::FETCH_ASSOC);
+
+          $stmtBorrowed = $con->prepare($queryBorrowed);
+          $stmtBorrowed->execute();
+          $rBorrowed = $stmtBorrowed->fetch(PDO::FETCH_ASSOC);
+
+          $stmtRecent = $con->prepare($queryRecent);
+          $stmtRecent->execute();
+          $rRecent = $stmtRecent->fetch(PDO::FETCH_ASSOC);
+
+          $stmtDefective = $con->prepare($queryDefective);
+          $stmtDefective->execute();
+          $rDefective = $stmtDefective->fetch(PDO::FETCH_ASSOC);
 
         } catch(PDOException $ex) {
           echo $ex->getMessage();
@@ -311,7 +339,7 @@ include './config/sidebar.php';
         <div class="row">
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-info">
+            <div class="small-box bg-info" id="box_totalequipment">
               <div class="inner">
                 <h3><?php echo $rEquipments['total_equipments'];?></h3>
 
@@ -325,9 +353,9 @@ include './config/sidebar.php';
           <!-- ./col -->
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-info">
+            <div class="small-box bg-info" id="box_borrowed">
               <div class="inner">
-                <h3><?php echo "0"//$currentWeekCount;?></h3>
+                <h3><?php echo $rBorrowed['total_borrowed'];?></h3>
 
                 <p>Borrowed Equipment</p>
               </div>
@@ -339,11 +367,11 @@ include './config/sidebar.php';
           <!-- ./col -->
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-info text-reset">
+            <div class="small-box bg-info text-reset" id="box_defective">
               <div class="inner">
-                <h3><?php echo "0"//$currentMonthCount;?></h3>
+                <h3><?php echo $rDefective['defective_qty'];?></h3>
 
-                <p>Recently Added Equipment</p>
+                <p>Defective Equipment</p>
               </div>
               <div class="icon">
                 <i class="fa fa-tools"></i>
@@ -353,11 +381,11 @@ include './config/sidebar.php';
           <!-- ./col -->
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-info text-reset">
+            <div class="small-box bg-info text-reset" id="box_recent">
               <div class="inner">
-                <h3><?php echo "0"//$currentYearCount;?></h3>
+                  <h3><?php echo $rRecent['equipment'];?></h3>
 
-                <p>Recently Missing Equipment</p>
+                  <p>Recently Added Equipment</p>
               </div>
               <div class="icon">
                 <i class="fa fa-tools"></i>
@@ -448,6 +476,20 @@ include './config/sidebar.php';
             <!-- small box -->
             <div class="small-box bg-navy text-reset">
               <div class="inner">
+                <h3><?php echo $rDel['deleted'];?></h3>
+
+                <p>Deleted Items</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-trash"></i>
+              </div>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-navy text-reset">
+              <div class="inner">
                 <h3><?php
                       if (!empty($rVisit['upcoming'])) {
                         $date = DateTime::createFromFormat('Y-m-d', $rVisit['upcoming']);
@@ -463,20 +505,6 @@ include './config/sidebar.php';
               </div>
               <div class="icon">
                 <i class="fa fa-hospital"></i>
-              </div>
-            </div>
-          </div>
-          <!-- ./col -->
-          <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-navy text-reset">
-              <div class="inner">
-                <h3><?php echo $rDel['deleted'];?></h3>
-
-                <p>Deleted Items</p>
-              </div>
-              <div class="icon">
-                <i class="fa fa-trash"></i>
               </div>
             </div>
           </div>
@@ -541,6 +569,36 @@ include './config/sidebar.php';
     }).on("click", function() {
       window.open("medicine_details.php?search=is_expired:true", "_blank");
     });
+
+    // EQUIPMENT
+
+    $("#box_totalequipment").on("mouseenter", function() {
+      $(this).css("cursor", "pointer");
+    }).on("click", function() {
+      window.open("equipments.php", "_blank");
+    });
+
+    $("#box_borrowed").on("mouseenter", function() {
+      $(this).css("cursor", "pointer");
+    }).on("click", function() {
+      window.open("equipment_inventory.php?search=Borrowed", "_blank");
+    });
+
+    $("#box_recent").on("mouseenter", function() {
+      $(this).css("cursor", "pointer");
+    }).on("click", function() {
+      window.open("equipments.php?search=is_recent&tag=<?php echo $rRecent['equipment']." ".$rRecent['brand']; ?>", "_blank");
+    });
+
+    // id="box_borrowed"
+    $("#box_defective").on("mouseenter", function() {
+      $(this).css("cursor", "pointer");
+    }).on("click", function() {
+      window.open("equipment_inventory.php?search=Defective", "_blank");
+    });
+
+    
+
 
     // MAINTENANCE
 

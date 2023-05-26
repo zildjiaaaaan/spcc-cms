@@ -243,14 +243,31 @@ if(isset($_GET['message'])) {
   }
 
   $(function () {
-    $("#all_equipments").DataTable({
-      "responsive": true, "lengthChange": false, "autoWidth": false,
-      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-    }).buttons().container().appendTo('#all_equipments_wrapper .col-md-6:eq(0)');
-    
+    const url = new URL(window.location.href);
+    var search = url.searchParams.get("search");
+    var tag = url.searchParams.get("tag");
+
+    const dataTableOptions = {
+      order: [[0, 'asc']],
+      responsive: true,
+      lengthChange: false,
+      autoWidth: false,
+      buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    };
+
+    if (search === "is_recent") {
+      search = (tag != '' || tag != null) ? tag : '';
+      dataTableOptions.search = {
+        search: search
+      };
+    }
+
+    $("#all_equipments").DataTable(dataTableOptions).buttons().container().appendTo('#all_equipments_wrapper .col-md-6:eq(0)');
   });
 
   $(document).ready(function() {
+
+
 
     $('#date_acquired').datetimepicker({
       format: 'L'

@@ -189,33 +189,28 @@ if(isset($_GET['message'])) {
     showCustomMessage(message);
   }
 
-  $(document).ready(function() {  
+  $(document).ready(function() {
     
     $(function(){
       const url = new URL(window.location.href);
-      const search = url.searchParams.get("search");
-      console.log(search); 
-      
-      if (search == "borrowed") {
-        console.log(search);
-        $("#equipment_inventory").DataTable({
-          order: [[4, 'asc']],
-          "responsive": true, "lengthChange": false, "autoWidth": false,
-          "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-        }).buttons().container().appendTo('#equipment_inventory_wrapper .col-md-6:eq(0)');
-      } else if (search == "restock") {
-        console.log(search); 
-        $("#equipment_inventory").DataTable({
-          order: [[3, 'asc']],
-          "responsive": true, "lengthChange": false, "autoWidth": false,
-          "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-        }).buttons().container().appendTo('#equipment_inventory_wrapper .col-md-6:eq(0)');
-      } else {
-        $("#equipment_inventory").DataTable({
-          "responsive": true, "lengthChange": false, "autoWidth": false,
-          "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-        }).buttons().container().appendTo('#equipment_inventory_wrapper .col-md-6:eq(0)');
+      var search = url.searchParams.get("search");
+      var tag = url.searchParams.get("tag");
+
+      const dataTableOptions = {
+        order: [[0, 'asc']],
+        responsive: true,
+        lengthChange: false,
+        autoWidth: false,
+        buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"]
+      };
+
+      if (search === "Borrowed" || search === "Defective") {
+        dataTableOptions.search = {
+          search: search
+        };
       }
+
+      $("#equipment_inventory").DataTable(dataTableOptions).buttons().container().appendTo('#equipment_inventory_wrapper .col-md-6:eq(0)');
     })
         
     $('#expiry').datetimepicker({

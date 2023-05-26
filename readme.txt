@@ -99,9 +99,9 @@ borrower_history.php
 dashboard.php
 > patient section •
 > medicine section •
-> equipment section
-> maintenance section
-> filteration
+> equipment section •
+> maintenance section •
+> filteration •
 
 trash.php (recovery system)
 > equipment

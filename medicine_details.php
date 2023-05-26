@@ -308,6 +308,8 @@ if(isset($_GET['message'])) {
           search: search
         };
         dataTableOptions.order = (search === "is_torestock:true") ? [[3, 'asc']] : [[4, 'asc']];
+      } else {
+        dataTableOptions.order = [[0, 'asc']];
       }
 
       $("#medicine_details").DataTable(dataTableOptions).buttons().container().appendTo('#medicine_details_wrapper .col-md-6:eq(0)');
