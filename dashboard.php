@@ -14,9 +14,16 @@ include './config/connection.php';
   from `patient_visits` 
   where YEARWEEK(`visit_date`) = YEARWEEK('$date');";
 
-  $queryYear = "SELECT count(*) as `year` 
-  from `patient_visits` 
-  where YEAR(`visit_date`) = YEAR('$date');";
+  // $queryYear = "SELECT count(*) as `year` 
+  // from `patient_visits` 
+  // where YEAR(`visit_date`) = YEAR('$date');";
+
+  $queryYear = "SELECT `patients`.*
+                FROM `patient_visits`
+                JOIN `patients` ON `patient_visits`.`patient_id` = `patients`.`id`
+                WHERE YEAR(`visit_date`) = YEAR('$date')
+                ORDER BY visit_date DESC
+                LIMIT 1;";
 
   $queryMonth = "SELECT count(*) as `month` 
   from `patient_visits` 
@@ -26,8 +33,7 @@ include './config/connection.php';
   $todaysCount = 0;
   $currentWeekCount = 0;
   $currentMonthCount = 0;
-  $currentYearCount = 0;
-
+  $currentYearCount = "";
 
   try {
 
@@ -44,7 +50,7 @@ include './config/connection.php';
     $stmtYear = $con->prepare($queryYear);
     $stmtYear->execute();
     $r = $stmtYear->fetch(PDO::FETCH_ASSOC);
-    $currentYearCount = $r['year'];
+    $currentYearCount = $r['patient_name'];
 
     $stmtMonth = $con->prepare($queryMonth);
     $stmtMonth->execute();
@@ -147,7 +153,10 @@ include './config/sidebar.php';
             <!-- small box -->
             <div class="small-box bg-white text-reset" id="box_recentpatient">
               <div class="inner">
-                <h3><?php echo $currentYearCount;?></h3>
+                <h3><?php 
+                  $names = explode(", ", $currentYearCount);
+                  echo ucwords(strtolower($names[1]))." ".$names[0][0].".";
+                ?></h3>
 
                 <p>Recent Patient</p>
               </div>
@@ -169,7 +178,7 @@ include './config/sidebar.php';
                       WHERE `is_del` = '0';";
 
             $currentDate = date('Y-m-d');
-            $nextMonthEndDate = date('Y-m-t', strtotime('+30 days'));
+            $nextMonthEndDate = date('Y-m-d', strtotime('+30 days'));
             $queryExpiry = "SELECT COUNT(*) AS `exp_date`
                             FROM `medicine_details`
                             JOIN `medicines` ON `medicine_details`.`medicine_id` = `medicines`.`id`
@@ -188,7 +197,7 @@ include './config/sidebar.php';
             $queryExpired = "SELECT COALESCE(SUM(quantity), 0) AS `total_expired`
                         FROM `medicine_details`
                         JOIN `medicines` ON `medicine_details`.`medicine_id` = `medicines`.`id`
-                        WHERE `exp_date` < CURDATE()
+                        WHERE `exp_date` <= CURDATE()
                           AND `quantity` > '0'
                           AND `medicines`.`is_del` = '0'
                           AND `medicine_details`.`is_del` = '0';";
@@ -235,7 +244,7 @@ include './config/sidebar.php';
             <div class="small-box bg-yellow" id="box_tobeexpired">
               <div class="inner">
                 <h3><?php
-                  if (empty($rExpiry['exp_date']) > 0) {
+                  if (!empty($rExpiry['exp_date'])) {
                     echo $rExpiry['exp_date'];
                   } else {
                     echo 0;

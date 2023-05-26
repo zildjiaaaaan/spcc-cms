@@ -91,7 +91,7 @@ equipment_inventory.php
 > design •
 > update 
 > delete •
-> update - input validation
+> update - input validation 
 
 borrower_history.php
 > view
