@@ -156,7 +156,9 @@ include './config/sidebar.php';?>
               <tr>
                 <td class="text-center"><?php echo $serial;?></td>
                 <td><?php echo $row['medicine_name'];?></td>
-                <td><?php echo $row['medicine_brand'];?></td>
+                <td>
+                  <?php echo $row['medicine_brand'];?>
+                </td>
                 <td class="text-center">
                   <a href="update_medicine.php?id=<?php echo $row['id'];?>" class="btn btn-primary btn-sm btn-flat">
                     <i class="fa fa-edit"></i>
@@ -220,7 +222,6 @@ if(isset($_GET['message'])) {
       "responsive": true, "lengthChange": false, "autoWidth": false,
       "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
     }).buttons().container().appendTo('#all_medicines_wrapper .col-md-6:eq(0)');
-      
 
     $("#medicine_brand").blur(function() {
       var medicineBrand = $(this).val().trim();

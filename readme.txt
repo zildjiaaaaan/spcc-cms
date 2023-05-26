@@ -84,3 +84,21 @@ id	equipment_id	status	unavailable_since	unavailable_until	state	qty	remarks
 
 TBL_BORROWED •
 id	borrower_id	equipment_details_id
+
+
+-----
+equipment_inventory.php
+> design
+> update
+> delete
+
+borrower_history.php
+> view
+
+dashboard.php
+> filteration
+
+trash.php
+> equipment
+> equipment_details
+> borrower

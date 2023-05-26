@@ -311,7 +311,6 @@ include './config/sidebar.php';
               <div class="icon">
                 <i class="fa fa-tools"></i>
               </div>
-              <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -326,7 +325,6 @@ include './config/sidebar.php';
               <div class="icon">
                 <i class="fa fa-tools"></i>
               </div>
-              <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -341,7 +339,6 @@ include './config/sidebar.php';
               <div class="icon">
                 <i class="fa fa-tools"></i>
               </div>
-              <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -356,7 +353,6 @@ include './config/sidebar.php';
               <div class="icon">
                 <i class="fa fa-tools"></i>
               </div>
-              <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
         </div>
@@ -459,7 +455,6 @@ include './config/sidebar.php';
               <div class="icon">
                 <i class="fa fa-hospital"></i>
               </div>
-              <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -474,7 +469,6 @@ include './config/sidebar.php';
               <div class="icon">
                 <i class="fa fa-trash"></i>
               </div>
-              <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
         </div>

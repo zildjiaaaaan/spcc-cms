@@ -47,7 +47,8 @@ if(!(isset($_SESSION['user_id']))) {
           </li>
 
           <li class="nav-item">
-            <a href="borrow.php" class="nav-link" 
+            <!-- borrow.php -->
+            <a href="#" class="nav-link" 
             id="mi_borrow">
               <i class="fas fa-toolbox nav-icon"></i>
               <p>Borrow Equipment</p>
@@ -248,10 +249,19 @@ if(!(isset($_SESSION['user_id']))) {
                 </a>
               </li>
               <li class="nav-item">
-                <a href="trash.php?recover=equipment_details" class="nav-link" 
+                <!-- trash.php?recover=equipment_details -->
+                <a href="#" class="nav-link" 
                 id="mi_trash_equipmentdetails">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Equipment Details</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <!-- trash.php?recover=borrower -->
+                <a href="#" class="nav-link"
+                id="mi_trash_borrower">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Borrower Info</p>
                 </a>
               </li>
               

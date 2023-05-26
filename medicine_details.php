@@ -216,7 +216,24 @@ include './config/sidebar.php';?>
                     <td><?php echo strtoupper($row['medicine_name'])." — ".$row['medicine_brand'];?></td>
                     <td><?php echo $row['packing'];?></td>
                     <td><?php echo $row['quantity'];?></td>
-                    <td><?php echo $row['exp_date'];?></td>
+                    <td>
+                      <?php echo $row['exp_date'];?>
+                      <p class="exp_date"><?php
+
+                        echo (strtotime($row['exp_date']) > strtotime(date('Y-m-d'))) ? "is_expired:false" : "is_expired:true";
+
+                        $date1 = new DateTime($row['exp_date']);
+                        $date2 = new DateTime(date('Y-m-d'));
+                        $interval = $date1->diff($date2);
+                        $days = $interval->days;
+
+                        echo ($days > 30) ? ", is_expiredinmonth:false" : ", is_expiredinmonth:true";
+                        echo ($row['quantity'] > 0) ? ", is_torestock:false" : ", is_torestock:true";
+
+                        // optimize the last 23 lines of code
+
+                      ?></p>
+                    </td>
                     
                     <td class="text-center">
                       <a href="update_medicine_details.php?medicine_id=<?php echo $row['medicine_id'];?>&medicine_detail_id=<?php echo $row['id'];?>&packing=<?php echo $row['packing'];?>" 
@@ -270,7 +287,9 @@ if(isset($_GET['message'])) {
     showCustomMessage(message);
   }
 
-  $(document).ready(function() {  
+  $(document).ready(function() {
+
+    $(".exp_date").hide();
     
     $(function(){
       const url = new URL(window.location.href);
