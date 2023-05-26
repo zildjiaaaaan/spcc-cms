@@ -31,6 +31,25 @@ function getGender($gender = '') {
 	return $data;
 }
 
+function getState($state = '') {
+	$data = '<option value="">Select State</option>';
+	
+	$arr = array("Active", "Non-Borrowable", "Used", "Missing", "Defective", "In Repair", "Borrowed", "Transferred");
+
+	$i = 0;
+	$size = sizeof($arr);
+
+	for($i = 0; $i < $size; $i++) {
+		if($state == $arr[$i]) {
+			$data = $data .'<option selected="selected" value="'.$arr[$i].'">'.$arr[$i].'</option>';
+		} else {
+		$data = $data .'<option value="'.$arr[$i].'">'.$arr[$i].'</option>';
+		}
+	}
+
+	return $data;
+}
+
 
 function getMedicines($con, $medicineId = 0) {
 

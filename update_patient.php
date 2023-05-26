@@ -82,7 +82,7 @@ $query = "SELECT `id`, `patient_name`, `address`, `cnic`, date_format(`date_of_b
   $explodedArray = explode(', ', $string);
   $resultArray = array_map('trim', $explodedArray);
 
-$dob = $row['date_of_birth']; 
+  $dob = $row['date_of_birth']; 
 } catch(PDOException $ex) {
 
   echo $ex->getMessage();

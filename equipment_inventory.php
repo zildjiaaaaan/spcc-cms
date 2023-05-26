@@ -32,7 +32,12 @@ $query = "SELECT `equipment_details`.*, `equipment`, `brand`, `date_acquired`
  <?php include './config/data_tables_css.php';?>
  <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
  <title>Equipment Inventory - SPCC Caloocan Clinic</title>
-
+ <style>
+   .cell-link {
+     color: white;
+     text-decoration: none;
+   }
+  </style>
 </head>
 <body class="hold-transition sidebar-mini dark-mode layout-fixed layout-navbar-fixed">
   <!-- Site wrapper -->
@@ -101,9 +106,10 @@ include './config/sidebar.php';?>
                     $serial++;
                     
                     $rowBorrowed = array();
+                    $b_id = "";
 
                     if ($row['state'] == "Borrowed") {
-                      $query = "SELECT `borrowed`.`id` AS `main_id`, `borrowers`.*
+                      $query = "SELECT `borrowed`.`id` AS `main_id`, `borrowed`.`borrower_id` AS `b_id`, `borrowers`.*
                                 FROM `borrowed`
                                 JOIN `borrowers` ON `borrowed`.`borrower_id` = `borrowers`.`id`
                                 WHERE `borrowed`.`equipment_details_id` = '".$row['id']."';
@@ -112,6 +118,8 @@ include './config/sidebar.php';?>
                         $stmtBorrowed = $con->prepare($query);
                         $stmtBorrowed->execute();
                         $rowBorrowed = $stmtBorrowed->fetch(PDO::FETCH_ASSOC);
+
+                        $b_id = $rowBorrowed['b_id'];
                         
                       } catch(PDOException $ex) {
                         echo $ex->getMessage();
@@ -124,13 +132,13 @@ include './config/sidebar.php';?>
                   <tr>
                     <td class="text-center"><?php echo $serial; ?></td>
                     <td><a class="cell-link" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="<?php echo "Date Acquired: ".$row['date_acquired'];?>"><?php echo $row['equipment']." — ".strtoupper($row['brand']);?></td>
-                    <td><a class="cell-link" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="<?php echo $row['unavailable_since']." — ".$row['unavailable_until'];?>"><?php echo $row['status'];?></a></td>
-                    <td><a class="cell-link" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="<?php if (!empty($rowBorrowed)) {echo "Borrowed by: ".$rowBorrowed['borrower_id'];} ?>"><?php echo $row['state'];?></a></td>
+                    <td><a class="cell-link" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="<?php echo $row['unavailable_since']." - ".$row['unavailable_until'];?>"><?php echo $row['status'];?></a></td>
+                    <td><a class="cell-link" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="<?php echo (!empty($rowBorrowed)) ? "Borrowed by: ".$rowBorrowed['borrower_id']." - ".strtoupper($rowBorrowed['lname']) : "";?>"><?php echo $row['state'];?></a></td>
                     <td><?php echo $row['quantity'];?></td>
                     <td><?php echo $row['remarks'];?></td>
                     
                     <td class="text-center">
-                      <a href="update_equipment_inventory.php?medicine_id=<?php echo $row['medicine_id'];?>&medicine_detail_id=<?php echo $row['id'];?>&packing=<?php echo $row['packing'];?>" 
+                      <a href="update_equipment_inventory.php?equipment_id=<?php echo $row['equipment_id'];?>&equipment_detail_id=<?php echo $row['id'];?>&b_id=<?php echo $b_id;?>" 
                       class = "btn btn-primary btn-sm btn-flat">
                       <i class="fa fa-edit"></i>
                       </a>

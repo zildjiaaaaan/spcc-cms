@@ -42,7 +42,7 @@ if (isset($_GET['delId'])) {
     
         $con->commit();
     
-        $message = 'Equipment Unit Deleted Successfully.';
+        $message = 'Equipment Unit/s Deleted Successfully.';
     
     } catch(PDOException $ex) {
         $con->rollback();
