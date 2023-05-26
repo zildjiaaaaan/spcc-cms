@@ -197,10 +197,21 @@ if(isset($_GET['message'])) {
 <script src="plugins/daterangepicker/daterangepicker.js"></script>
 <script src="plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
 <script>
+
+    $('#unavailable_since, #unavailable_until').datetimepicker({
+        format: 'L'
+    });
+
+    var status = "<?php echo $row['status']; ?>";
+    var state = "<?php echo $row['state']; ?>";
+
+    if (status != "Unavailable") {
+        $(".unavailable").hide();
+    } else if (status != "Available" && state != "Borrowed") {
+        $(".borrower").hide();
+    }
+    
     $(function () {
-
-        
-
         $("#status").change(function() {
             var status = $("#status option:selected").text();
             var html = '';

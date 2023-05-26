@@ -88,17 +88,22 @@ id	borrower_id	equipment_details_id
 
 -----
 equipment_inventory.php
-> design
-> update
-> delete
+> design •
+> update 
+> delete •
+> update - input validation
 
 borrower_history.php
 > view
 
 dashboard.php
+> patient section •
+> medicine section •
+> equipment section
+> maintenance section
 > filteration
 
-trash.php
+trash.php (recovery system)
 > equipment
 > equipment_details
 > borrower

@@ -294,28 +294,23 @@ if(isset($_GET['message'])) {
     $(function(){
       const url = new URL(window.location.href);
       const search = url.searchParams.get("search");
-      console.log(search); 
-      
-      if (search == "expired") {
-        console.log(search); 
-        $("#medicine_details").DataTable({
-          order: [[4, 'asc']],
-          "responsive": true, "lengthChange": false, "autoWidth": false,
-          "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-        }).buttons().container().appendTo('#medicine_details_wrapper .col-md-6:eq(0)');
-      } else if (search == "restock") {
-        console.log(search); 
-        $("#medicine_details").DataTable({
-          order: [[3, 'asc']],
-          "responsive": true, "lengthChange": false, "autoWidth": false,
-          "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-        }).buttons().container().appendTo('#medicine_details_wrapper .col-md-6:eq(0)');
-      } else {
-        $("#medicine_details").DataTable({
-          "responsive": true, "lengthChange": false, "autoWidth": false,
-          "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-        }).buttons().container().appendTo('#medicine_details_wrapper .col-md-6:eq(0)');
+
+      const dataTableOptions = {
+        order: [[4, 'asc']],
+        responsive: true,
+        lengthChange: false,
+        autoWidth: false,
+        buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"]
+      };
+
+      if (search === "is_expired:true" || search === "is_expiredinmonth:true" || search === "is_torestock:true") {
+        dataTableOptions.search = {
+          search: search
+        };
+        dataTableOptions.order = (search === "is_torestock:true") ? [[3, 'asc']] : [[4, 'asc']];
       }
+
+      $("#medicine_details").DataTable(dataTableOptions).buttons().container().appendTo('#medicine_details_wrapper .col-md-6:eq(0)');
     })
         
     $('#expiry').datetimepicker({

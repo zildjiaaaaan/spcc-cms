@@ -14,11 +14,11 @@ include './config/connection.php';
   from `patient_visits` 
   where YEARWEEK(`visit_date`) = YEARWEEK('$date');";
 
-$queryYear = "SELECT count(*) as `year` 
+  $queryYear = "SELECT count(*) as `year` 
   from `patient_visits` 
   where YEAR(`visit_date`) = YEAR('$date');";
 
-$queryMonth = "SELECT count(*) as `month` 
+  $queryMonth = "SELECT count(*) as `month` 
   from `patient_visits` 
   where YEAR(`visit_date`) = $year and 
   MONTH(`visit_date`) = $month;";
@@ -498,13 +498,13 @@ include './config/sidebar.php';
     $("#box_todayspatient, #box_weekspatient, #box_monthspatient").on("mouseenter", function() {
       $(this).css("cursor", "pointer");
     }).on("click", function() {
-      location.href = "patient_history.php";
+      window.open("patient_history.php", "_blank");
     });
 
     $("#box_recentpatient").on("mouseenter", function() {
       $(this).css("cursor", "pointer");
     }).on("click", function() {
-      location.href = "patients.php";
+      window.open("patients.php", "_blank");
     });
 
     // MEDICINES
@@ -512,19 +512,25 @@ include './config/sidebar.php';
     $("#box_totalmedicine, #box_totalmedbrand").on("mouseenter", function() {
       $(this).css("cursor", "pointer");
     }).on("click", function() {
-      location.href = "medicines.php";
+      window.open("medicines.php", "_blank");
     });
 
-    $("#box_tobeexpired, #box_expired").on("mouseenter", function() {
+    $("#box_tobeexpired").on("mouseenter", function() {
       $(this).css("cursor", "pointer");
     }).on("click", function() {
-      location.href = "medicine_details.php?search=expired";
+      window.open("medicine_details.php?search=is_expiredinmonth:true", "_blank");
     });
 
     $("#box_torestock").on("mouseenter", function() {
       $(this).css("cursor", "pointer");
     }).on("click", function() {
-      location.href = "medicine_details.php?search=restock";
+      window.open("medicine_details.php?search=is_torestock:true", "_blank");
+    });
+
+    $("#box_expired").on("mouseenter", function() {
+      $(this).css("cursor", "pointer");
+    }).on("click", function() {
+      window.open("medicine_details.php?search=is_expired:true", "_blank");
     });
 
     // MAINTENANCE
@@ -532,7 +538,7 @@ include './config/sidebar.php';
     $("#box_totalattendants").on("mouseenter", function() {
       $(this).css("cursor", "pointer");
     }).on("click", function() {
-      location.href = "users.php";
+      window.open("users.php", "_blank");
     });
 
     
