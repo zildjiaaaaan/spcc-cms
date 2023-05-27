@@ -165,7 +165,7 @@ include './config/sidebar.php';?>
             <div class="row">
                 <div class="col-md-10">&nbsp;</div>
                 <div class="col-md-2">
-                    <button type="submit" id="submit" name="submit" 
+                    <button type="button" id="submit" name="submit" 
                     class="btn btn-primary btn-sm btn-flat btn-block">Save</button>
                 </div>
             </div>

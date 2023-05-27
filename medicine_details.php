@@ -227,10 +227,10 @@ include './config/sidebar.php';?>
                         $interval = $date1->diff($date2);
                         $days = $interval->days;
 
-                        echo ($days > 30) ? ", is_expiredinmonth:false" : ", is_expiredinmonth:true";
-                        echo ($row['quantity'] > 0) ? ", is_torestock:false" : ", is_torestock:true";
+                        $days = (!$interval->invert) ? -$days : $days;
 
-                        // optimize the last 23 lines of code
+                        echo ($days > 30 || $days < 0) ? ", is_expiredinmonth:false" : ", is_expiredinmonth:true";
+                        echo ($row['quantity'] > 0) ? ", is_torestock:false" : ", is_torestock:true";
 
                       ?></p>
                     </td>
