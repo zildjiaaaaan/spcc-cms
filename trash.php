@@ -80,7 +80,25 @@ if (isset($_GET['recover'])) {
     $menuSelected = "#mi_trash_equipmentinventory";
 
     try {
-      $query = "";
+      $query = "SELECT `ed`.*, `e`.`equipment`, `e`.`brand`
+      FROM `equipment_details` AS `ed`, `equipments` AS `e`
+      WHERE `ed`.`equipment_id` = `e`.`id`
+        AND `ed`.`is_del` = '1';";
+
+      $stmt = $con->prepare($query);
+      $stmt->execute();
+    
+    } catch(PDOException $ex) {
+      echo $ex->getMessage();
+      echo $e->getTraceAsString();
+      exit;  
+    }
+  } else if ($_GET['recover'] == "borrower") {
+    $rec = "Borrowers Information";
+    $menuSelected = "#mi_trash_borrower";
+
+    try {
+      $query = "SELECT * FROM `borrowers` WHERE `is_del` = '1' ORDER BY `lname` ASC;";
 
       $stmt = $con->prepare($query);
       $stmt->execute();
@@ -330,7 +348,7 @@ include './config/sidebar.php';?>
                 <col width="5%">
               </colgroup>
               
-              <thead class="bg-primary">
+              <thead>
                 <tr>
                   <th class="text-center">#</th>
                   <th>Equipment</th>
@@ -338,7 +356,60 @@ include './config/sidebar.php';?>
                   <th>State</th>
                   <th>Qty</th>
                   <th>Remarks</th>
-                  <th>Action</th>
+                  <th class="text-center">Recover</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <?php 
+                $count = 0;
+                while($row =$stmt->fetch(PDO::FETCH_ASSOC)){
+                  $count++;
+                ?>
+                <tr>
+                  <td class="text-center"><?php echo $count; ?></td>
+                  <td><?php echo $row['equipment']." — ".strtoupper($row['brand']);?></td>
+                  <td><?php echo $row['status'];?></a></td>
+                  <td><?php echo $row['state'];?></a></td>
+                  <td><?php echo $row['quantity'];?></td>
+                  <td><?php echo $row['remarks'];?></td>
+                  
+                  <td class="text-center">
+                    <a href="recover.php?equipmentdetails_id=<?php echo $row['id'];?>" class = "btn btn-success btn-sm btn-flat">
+                    <i class="fa fa-recycle"></i>
+                    </a>
+                  </td>
+                  
+                </tr>
+              <?php
+              }
+              ?>
+              </tbody>
+            </table>
+
+<!------------------------------------------------------------------ BORROWERS ---------------------------------------------------------------->
+              <?php
+                } else if ($rec == "Borrowers Information") {
+              ?>
+              <table id="all_borrowers" class="table table-striped dataTable table-bordered dtr-inline" role="grid" aria-describedby="all_borrowers_info">
+
+              <colgroup>
+                <col width="2%">
+                <col width="35%">
+                <col width="25%">
+                <col width="15%">
+                <col width="15%">
+                <col width="5%">
+              </colgroup>
+              
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Borrower</th>
+                  <th>Position</th>
+                  <th>Student ID / Employee ID</th>
+                  <th>Contact</th>
+                  <th>Recover</th>
                 </tr>
               </thead>
 
@@ -350,24 +421,27 @@ include './config/sidebar.php';?>
                 ?>
                 <tr>
                   <td><?php echo $count; ?></td>
-                  <td><?php echo strtoupper($row['equipment'])." — ".$row['brand'];?></td>
-                  <td><?php echo $row['status'];?></td>
-                  <td><?php echo $row['date_acquired'];?></td>
+                  <td><?php
+                      $fullname = strtoupper($row['lname']).", ".ucwords(strtolower($row['fname'])).", ".ucwords(strtolower($row['mname']));
+                      echo $fullname;
+                  ?></td>
+                  <td><?php echo $row['position'];?></td>
+                  <td><?php echo $row['borrower_id'];?></td>
+                  <td><?php echo $row['contact_no'];?></td>
                   <td class="text-center">
-                    <a href="recover.php?equipmentdetails_id=<?php echo $row['id'];?>" class = "btn btn-success btn-sm btn-flat">
+                    <a href="recover.php?borrower_id=<?php echo $row['id'];?>" class = "btn btn-success btn-sm btn-flat">
                     <i class="fa fa-recycle"></i>
                     </a>
                   </td>
-                 
+                  
                 </tr>
               <?php
               }
               ?>
               </tbody>
             </table>
+            <?php } ?>
 
-
-              <?php } ?>
             </div>
         </div>
      
@@ -425,7 +499,6 @@ include './config/sidebar.php';?>
   $(function () {
     $("#all_medicines").DataTable({
       "responsive": true, "lengthChange": false, "autoWidth": false,
-      //"buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
       "buttons": ["colvis"]
     }).buttons().container().appendTo('#all_medicines_wrapper .col-md-6:eq(0)');
     
@@ -434,7 +507,6 @@ include './config/sidebar.php';?>
   $(function () {
     $("#all_med_details").DataTable({
       "responsive": true, "lengthChange": false, "autoWidth": false,
-      //"buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
       "buttons": ["colvis"]
     }).buttons().container().appendTo('#all_med_details_wrapper .col-md-6:eq(0)');
     
@@ -443,7 +515,6 @@ include './config/sidebar.php';?>
   $(function () {
     $("#all_equipments").DataTable({
       "responsive": true, "lengthChange": false, "autoWidth": false,
-      //"buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
       "buttons": ["colvis"]
     }).buttons().container().appendTo('#all_equipments_wrapper .col-md-6:eq(0)');
     
@@ -452,12 +523,18 @@ include './config/sidebar.php';?>
   $(function () {
     $("#all_equipment_details").DataTable({
       "responsive": true, "lengthChange": false, "autoWidth": false,
-      //"buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
       "buttons": ["colvis"]
     }).buttons().container().appendTo('#all_equipment_details_wrapper .col-md-6:eq(0)');
     
   });
 
+  $(function () {
+    $("#all_borrowers").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": ["colvis"]
+    }).buttons().container().appendTo('#all_borrowers_wrapper .col-md-6:eq(0)');
+    
+  });
    
 </script>
 </body>

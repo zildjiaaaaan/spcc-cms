@@ -256,8 +256,7 @@ if(!(isset($_SESSION['user_id']))) {
                 </a>
               </li>
               <li class="nav-item">
-                <!-- trash.php?recover=borrower -->
-                <a href="#" class="nav-link"
+                <a href="trash.php?recover=borrower" class="nav-link"
                 id="mi_trash_borrower">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Borrower Info</p>

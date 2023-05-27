@@ -155,7 +155,8 @@ include './config/sidebar.php';
               <div class="inner">
                 <h3><?php 
                   $names = explode(", ", $currentYearCount);
-                  echo ucwords(strtolower($names[1]))." ".$names[0][0].".";
+                  //echo ucwords(strtolower($names[1]))." ".$names[0][0].".";
+                  echo $names[1][0].". ".ucwords(strtolower($names[0]));
                 ?></h3>
 
                 <p>Recent Patient</p>
@@ -401,12 +402,20 @@ include './config/sidebar.php';
         try {
 
             $queryDel = "SELECT COUNT(*) AS `deleted`
-                        FROM (
-                            SELECT `is_del` FROM `medicines`
-                            UNION ALL
-                            SELECT `is_del` FROM `patients`
-                        ) AS `combined`
-                        WHERE `is_del` = '1';
+                          FROM (
+                              SELECT `is_del` FROM `medicines`
+                              UNION ALL
+                              SELECT `is_del` FROM `patients`
+                              UNION ALL
+                              SELECT `is_del` FROM `medicine_details`
+                              UNION ALL
+                              SELECT `is_del` FROM `equipments`
+                              UNION ALL
+                              SELECT `is_del` FROM `equipment_details`
+                              UNION ALL
+                              SELECT `is_del` FROM `borrowers`
+                          ) AS `combined`
+                          WHERE `is_del` = '1';
                         ";
 
             $queryUser = "SELECT COUNT(*) AS `attendant` FROM `users`";
@@ -493,7 +502,7 @@ include './config/sidebar.php';
                 <h3><?php
                       if (!empty($rVisit['upcoming'])) {
                         $date = DateTime::createFromFormat('Y-m-d', $rVisit['upcoming']);
-                        $formattedDate = $date->format('F j, Y');
+                        $formattedDate = $date->format('M. d');
                         echo $formattedDate;
                       } else {
                         echo "None";

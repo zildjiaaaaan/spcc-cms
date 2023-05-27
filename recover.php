@@ -25,6 +25,10 @@ if (isset($_GET['patient_id'])) {
     $id = $_GET['equipmentdetails_id'];
     $query = "UPDATE `equipment_details` set `is_del` = '0' where `id`= $id";
     $location = "equipment_details";
+} else if (isset($_GET['borrower_id'])) {
+    $id = $_GET['borrower_id'];
+    $query = "UPDATE `borrowers` set `is_del` = '0' where `id`= $id";
+    $location = "borrower";
 }
 
 try {

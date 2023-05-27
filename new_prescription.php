@@ -424,7 +424,7 @@ if(isset($_GET['message'])) {
             }
 
             $("#quantity").val(data);
-            $("input").attr({
+            $("#quantity").attr({
               "max" : data,
               "min" : 0
             });
