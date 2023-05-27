@@ -12,7 +12,7 @@
     */
     $query = "SELECT `borrowed`.*, `quantity`, `unavailable_since`, `unavailable_until`,
                 `remarks`, `equipment`, `brand`, `equipments`.`id` as `equipment_id`,
-                `contact_no`, `equipments`.`is_del` as `is_del`
+                `contact_no`, `equipments`.`is_del` as `e_is_del`, `equipment_details`.`is_del` as `ed_is_del`
             FROM `borrowed`, `equipment_details`, `equipments`, `borrowers`
             WHERE `borrowed`.`borrower_id` = '$borrowerId'
                 AND `borrowed`.`borrower_id` = `borrowers`.`id`
@@ -25,10 +25,7 @@
 
       $i = 0;
       while($r = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $del = '';
-        if ($r['is_del'] == 1) {
-          $del = '(item deleted)';
-        }
+        $del = ($r['e_is_del'] == 1 || $r['ed_is_del'] == 1) ? '(item deleted)' : '';
 
         $i++;
         $data = $data.'<tr>';
@@ -37,7 +34,7 @@
         $equipment_detail_id = $r['equipment_details_id'];
         $equipment_id = $r['equipment_id'];
 
-        $link = '<a class="cell-link" href="update_equipment_inventory.php?equipment_id='.$equipment_id.'&equipment_detail_id='.$equipment_detail_id.'&b_id='.$b_id.'" target="_blank">';
+        $link = ($del == '') ? '<a class="cell-link" href="update_equipment_inventory.php?equipment_id='.$equipment_id.'&equipment_detail_id='.$equipment_detail_id.'&b_id='.$b_id.'" target="_blank">' : '';
         
         $data = $data.'<td class="px-2 py-1 align-middle text-center">'.$i.'</td>';
         $data = $data.'<td class="px-2 py-1 align-middle">'.$link.$r['equipment'].' — '.strtoupper($r['brand']).'<i> '.$del.'</i> </a></td>';

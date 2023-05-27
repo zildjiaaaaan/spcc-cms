@@ -249,9 +249,8 @@ if(!(isset($_SESSION['user_id']))) {
                 </a>
               </li>
               <li class="nav-item">
-                <!-- trash.php?recover=equipment_details -->
-                <a href="#" class="nav-link" 
-                id="mi_trash_equipmentdetails">
+                <a href="trash.php?recover=equipment_inventory" class="nav-link" 
+                id="mi_trash_equipmentinventory">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Equipment Details</p>
                 </a>

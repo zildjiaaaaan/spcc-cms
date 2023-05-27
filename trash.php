@@ -66,7 +66,7 @@ if (isset($_GET['recover'])) {
     $menuSelected = "#mi_trash_equipments";
 
     try {
-      $query = "select `id`, `equipment`, `brand` from `equipments` where `is_del` = '1' order by `equipment` asc;";
+      $query = "select * from `equipments` where `is_del` = '1' order by `equipment` asc;";
       $stmt = $con->prepare($query);
       $stmt->execute();
     
@@ -75,16 +75,12 @@ if (isset($_GET['recover'])) {
       echo $e->getTraceAsString();
       exit;  
     }
-  } else if ($_GET['recover'] == "equipment_details") {
-    $rec = "Equipment Details";
-    $menuSelected = "#mi_trash_equipmentdetails";
+  } else if ($_GET['recover'] == "equipment_inventory") {
+    $rec = "Equipment Inventory";
+    $menuSelected = "#mi_trash_equipmentinventory";
 
     try {
-      $query = "SELECT `e`.`equipment`, `e`.`brand`, `ed`.`id`, `ed`.`status`, `ed`.`equipment_id`, `ed`.`date_acquired`, `ed`.`quantity`
-                FROM `equipments` as `e`, `equipment_details` as `ed` 
-                WHERE `e`.`id` = `ed`.`equipment_id`
-                  AND `ed`.`is_del` = '1'
-                ORDER BY `e`.`id` ASC, `ed`.`id` ASC;";
+      $query = "";
 
       $stmt = $con->prepare($query);
       $stmt->execute();
@@ -279,9 +275,11 @@ include './config/sidebar.php';?>
               <table id="all_equipments" class="table table-striped dataTable table-bordered dtr-inline" role="grid" aria-describedby="all_equipments_info">
                 <colgroup>
                   <col width="5%">
-                  <col width="40%">
-                  <col width="40%">
+                  <col width="30%">
+                  <col width="15%">
+                  <col width="15%">
                   <col width="10%">
+                  <col width="5%">
                 </colgroup>
 
                 <thead>
@@ -289,6 +287,8 @@ include './config/sidebar.php';?>
                     <th class="text-center">#</th>
                     <th>Equipment</th>
                     <th>Equipment Brand</th>
+                    <th>Date Acquired</th>
+                    <th>Total Quantity</th>
                     <th class="text-center">Recover</th>
                   </tr>
                 </thead>
@@ -303,6 +303,8 @@ include './config/sidebar.php';?>
                     <td class="text-center"><?php echo $serial;?></td>
                     <td><?php echo $row['equipment'];?></td>
                     <td><?php echo $row['brand'];?></td>
+                    <td><?php echo $row['date_acquired'];?></td>
+                    <td><?php echo $row['total_qty'];?></td>
                     <td class="text-center">
                       <a href="recover.php?equipment_id=<?php echo $row['id'];?>" class = "btn btn-success btn-sm btn-flat">
                         <i class="fa fa-recycle"></i>
@@ -314,17 +316,29 @@ include './config/sidebar.php';?>
               </table>
 <!------------------------------------------------------------------ EQUIPMENTS DETAILS ---------------------------------------------------------------->
               <?php
-                } else if ($rec == "Equipment Details") {
+                } else if ($rec == "Equipment Inventory") {
               ?>
               <table id="all_equipment_details" class="table table-striped dataTable table-bordered dtr-inline" role="grid" aria-describedby="all_equipment_details_info">
+
+              <colgroup>
+                <col width="2%">
+                <col width="20%">
+                <col width="10%">
+                <col width="10%">
+                <col width="5%">
+                <col width="40%">
+                <col width="5%">
+              </colgroup>
               
-              <thead>
+              <thead class="bg-primary">
                 <tr>
-                  <th>#</th>
+                  <th class="text-center">#</th>
                   <th>Equipment</th>
                   <th>Status</th>
-                  <th>Date Acquired</th>
-                  <th>Recover</th>
+                  <th>State</th>
+                  <th>Qty</th>
+                  <th>Remarks</th>
+                  <th>Action</th>
                 </tr>
               </thead>
 
