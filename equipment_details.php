@@ -17,7 +17,7 @@ if(isset($_POST['submit'])) {
 
   // var_dump($equipmentIds);
   // echo "<br />";
-  // var_dump($status);
+  // var_dump($statuses);
   // echo "<br />";
   // var_dump($states);
   // echo "<br />";
@@ -34,7 +34,7 @@ if(isset($_POST['submit'])) {
 
   $size = sizeof($equipmentIds);
 
-  // iterate insert query $size times to insert all the equipment details
+  //iterate insert query $size times to insert all the equipment details
   for ($i=0; $i < $size; $i++) { 
 
     $equipmentId = $equipmentIds[$i];
@@ -43,8 +43,8 @@ if(isset($_POST['submit'])) {
     $quantity = $quantities[$i];
     $remark = $remarks[$i];
     $borrowerId = $borrowerIds[$i];
-    $unavailableSince = !empty($unavailableSinces[$i]) ? $unavailableSinces[$i] : "NULL";
-    $unavailableUntil = !empty($unavailableUntils[$i]) ? $unavailableUntils[$i] : "NULL";
+    $unavailableSince = !empty($unavailableSinces[$i]) ? "'" . $unavailableSinces[$i] . "'" : "NULL";
+    $unavailableUntil = !empty($unavailableUntils[$i]) ? "'" . $unavailableUntils[$i] . "'" : "NULL";
 
     $q_equipment_details = "INSERT INTO `equipment_details` (
         `equipment_id`, `status`, `state`, `unavailable_since`,
@@ -53,7 +53,7 @@ if(isset($_POST['submit'])) {
         '$equipmentId', '$status', '$state',
         $unavailableSince, $unavailableUntil, '$quantity',
         '$remark', '0'
-      );";    
+      );";
 
     try {
       $con->beginTransaction();

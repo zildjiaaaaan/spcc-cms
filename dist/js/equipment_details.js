@@ -10,8 +10,9 @@ $(function() {
     // Disable '_' in the remarks input
     $("#remarks").keypress(function(e) {
         var key = e.which;
-        if (key === 95) {
-          return false;
+        // return false if the key is '_' or '"' or "'"
+        if (key === 95 || key === 34 || key === 39) {
+            return false;
         }
     });
 
@@ -97,9 +98,11 @@ $(function() {
     });
 
     // if the #status is Unavailable, then show the elements that has the class of unavailable except .borrower
+    var status = '';
+    var state = '';
     $("#status, #state").change(function() {
-        var status = $("#status option:selected").text();
-        var state = $("#state option:selected").text();
+        status = $("#status option:selected").text();
+        state = $("#state option:selected").text();
 
         if (status === 'Unavailable' && state === 'Borrowed') {
             $(".unavailable").show();
@@ -146,26 +149,26 @@ $(function() {
         var f_unavailableSince = '';
         var f_unavailableUntil = '';
 
-        var borrowerDisplay = $(".borrower").css('display');
-        var unavailableDisplay = $(".unavailable").css('display');
+        // var borrowerDisplay = $(".borrower").css('display');
+        // var unavailableDisplay = $(".unavailable").css('display');
 
-        if (borrowerDisplay !== 'none') {
+        if (state === 'Borrowed') {
             if ($("#borrower").val() && $("#unavailableSince").val() && $("#unavailableUntil").val()) {
                 borrowerId = $("#borrower").val();
                 f_unavailableSince = formatDate($("#unavailableSince").val());
                 f_unavailableUntil = formatDate($("#unavailableUntil").val());
             }
-        } else if (unavailableDisplay !== 'none') {
-            if ($("#unavailableSince").val() && $("#unavailableUntil").val()) {
-                f_unavailableSince = formatDate($("#unavailableSince").val());
-                f_unavailableUntil = formatDate($("#unavailableUntil").val());
-                borrowerId = '';
-            } else if ($("#unavailableSince").val()) {
-                f_unavailableSince = formatDate($("#unavailableSince").val());
+        } else if (state === 'Missing' && $("#unavailableSince").val()) {
+            f_unavailableSince = formatDate($("#unavailableSince").val());
+            borrowerId = '';
+        } else if (status === 'Unavailable' && $("#unavailableSince").val() && $("#unavailableUntil").val()) {
+            f_unavailableSince = formatDate($("#unavailableSince").val());
+            f_unavailableUntil = formatDate($("#unavailableUntil").val());
+            borrowerId = '';
+        } else {
+            if (status === 'Available') {
                 borrowerId = '';
             }
-        } else {
-            borrowerId = '';
         }
 
         // Determiner for adding in array
@@ -247,6 +250,8 @@ $(function() {
                     unavailableUntil: f_unavailableUntil
                     });
                 }
+                console.log(status);
+                console.log(state);
             } else {
                 showCustomMessage("Equipment \""+ equipmentName +"\" already exists. The quantity has been updated.");
             }
@@ -262,6 +267,8 @@ $(function() {
             console.log(borrowerId);
             console.log(f_unavailableSince);
             console.log(f_unavailableUntil);
+            console.log(status);
+            console.log(state);
             clearForm = false;
         }
 
@@ -269,9 +276,9 @@ $(function() {
         if (clearForm) {
             $("#equipment, #status, #state, #remarks, #quantity").val('');
 
-            if (unavailableDisplay !== 'none') {
+            if (status === 'Unavailable') {
                 $("#unavailable_since, #unavailable_until").val('');
-                if (borrowerDisplay !== 'none') {
+                if (state === 'Borrowed') {
                     $("#borrower").val('');
                 }
                 $(".unavailable").hide();
