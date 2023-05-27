@@ -265,4 +265,31 @@ data-target="#'.$dateId.'" name="'.$dateId.'" id="'.$dateId.'" required="require
 
           return $d;
 }
+
+function getActiveBorrowers($con) {
+	$query = "select `id`, `fname`, `mname`, `lname`, `borrower_id` 
+	from `borrowers` where `is_del` = '0' order by `lname` asc;";
+	
+	$stmt = $con->prepare($query);
+	try {
+		$stmt->execute();
+
+	} catch(PDOException $ex) {
+		echo $ex->getTraceAsString();
+		echo $ex->getMessage();
+		exit;
+	}
+
+	
+
+	$data = '<option value="">Select Borrower</option>';
+
+	while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+		$fullname = $row['lname'].', '.$row['fname'].', '.$row['mname'];
+		$fullname = strtoupper($fullname);
+		$data = $data.'<option value="'.$row['id'].'">'.$fullname.' ('.$row['borrower_id'].')'.'</option>';
+	}
+
+	return $data;
+}
 ?>

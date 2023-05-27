@@ -94,7 +94,7 @@ equipment_inventory.php
 > update - input validation 
 
 borrower_history.php
-> view
+> view •
 
 dashboard.php
 > patient section •
