@@ -72,7 +72,20 @@ include './config/connection.php';
 <style>
   .dark-mode .bg-fuchsia, .dark-mode .bg-maroon {
     color: #fff!important;
-}
+  }
+  .responsive-h3 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  @media (max-width: 768px) {
+    .responsive-h3 {
+      font-size: 14px;
+      /* line-height: 16px; */
+    }
+  }
+
 </style>
 </head>
 <body class="hold-transition sidebar-mini dark-mode layout-fixed layout-navbar-fixed">
@@ -153,7 +166,7 @@ include './config/sidebar.php';
             <!-- small box -->
             <div class="small-box bg-white text-reset" id="box_recentpatient">
               <div class="inner">
-                <h3><?php 
+                <h3 class="responsive-h3"><?php 
                   $names = explode(", ", $currentYearCount);
                   //echo ucwords(strtolower($names[1]))." ".$names[0][0].".";
                   echo $names[1][0].". ".ucwords(strtolower($names[0]));
@@ -384,7 +397,7 @@ include './config/sidebar.php';
             <!-- small box -->
             <div class="small-box bg-info text-reset" id="box_recent">
               <div class="inner">
-                  <h3><?php echo $rRecent['equipment'];?></h3>
+                  <h3 class="responsive-h3"><?php echo $rRecent['equipment'];?></h3>
 
                   <p>Recently Added Equipment</p>
               </div>
@@ -499,10 +512,10 @@ include './config/sidebar.php';
             <!-- small box -->
             <div class="small-box bg-navy text-reset">
               <div class="inner">
-                <h3><?php
+                <h3 class="responsive-h3"><?php
                       if (!empty($rVisit['upcoming'])) {
                         $date = DateTime::createFromFormat('Y-m-d', $rVisit['upcoming']);
-                        $formattedDate = $date->format('M. d');
+                        $formattedDate = $date->format('M. d, Y');
                         echo $formattedDate;
                       } else {
                         echo "None";

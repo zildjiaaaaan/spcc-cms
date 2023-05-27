@@ -104,6 +104,19 @@ dashboard.php
 > filteration •
 
 trash.php (recovery system)
-> equipment
-> equipment_details
-> borrower
+> equipment •
+> equipment_details •
+> borrower •
+
+-----
+
+Equipment Inventory
+- UPDATE
+- UPDATE (input validation)
+
+Borrow Equipment
+- ADD
+- ADD (input validation)
+
+*Double-check deletions anomaly
+

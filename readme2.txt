@@ -1,0 +1,116 @@
+If a Patient deleted,
+- will not appear in Dashboard 'Today's Patient', 'Current Week', 'Current Month', 'Recent Patient'
+- will not appear in New Medication 'Select Patient'
+- will not appear in Patients
+- will not appear in Patient History
+- will appear in Dashboard 'Deleted Items'
+- will appear in Trash 'Patient Info'
+
+Input Validation (Duplicate):
+- ADD: check Inventory or Trash
+- UPDATE: check Inventory or Trash
+
+Recovery (Notes):
+- None
+
+----------
+
+If a Medicine Details deleted,
+- will not appear in Dashboard 'To Be Expired', 'Need to Restock', 'Expired Medicines'
+- will not appear in New Medication 'Select Unit'
+- will not appear in Medicine Details
+- will appear in Dashboard 'Deleted Items'
+- will appear in Trash 'Medicine Details'
+
+Input Validation (Duplicate):
+- ADD: check Inventory or Trash
+- UPDATE: check Inventory or Trash
+
+Recovery (Notes):
+- Must have Medicine exists
+
+----------
+
+If a Medicine deleted,
+- will not appear in Dashboard 'Total Medicine Stocks', 'Total Medicine Brands'
+- will not appear in New Medication 'Select Medicine'
+- will not appear in Medicine
+- will not appear in Add Medicine Details 'Select Medicine'
+- will not appear in Update Medicine Details 'Select Medicine'
+- rows with said Medicine will not appear in Medicine Details **GIVE WARNING**
+- will appear in Dashboard 'Deleted Items'
+- will appear in Trash 'Medicine Item'
+- will appear in Patient History as "(item deleted)"
+
+Input Validation (Duplicate):
+- ADD: check Inventory or Trash
+- UPDATE: check Inventory or Trash
+
+Recovery (Notes):
+- will not recover Medicine Details with said Medicine
+
+----------
+
+If a Equipment Details deleted,
+- will not appear in Dashboard 'Borrowed Equipment', 'Defective Equipment'
+- will not appear in Borrow Equipment 'Select Equipment'
+- will not appear in Equipment Inventory
+- will appear in Borrower History as "(item deleted)"
+- will appear in Dashboard 'Deleted Items'
+- will appear in Trash 'Equipment Details'
+
+Input Validation (Duplicate):
+- ADD: check Inventory or Trash
+- UPDATE: check Inventory or Trash
+
+Recovery (Notes):
+- Must have Equipment exists
+
+----------
+
+If a Equipment deleted,
+- will not appear in Dashboard 'Total Equipment', 'Recently Added Equipment'
+- rows with said Equipment will not appear in Borrow Equipment
+- will not appear in Equipment
+- will not appear in Add Equipment Details 'Select Equipment'
+- will not appear in Update Equipment Details 'Select Equipment'
+- rows with said Equipment will not appear in Equipment Inventory **GIVE WARNING**
+- will appear in Borrower History as "(item deleted)"
+- will appear in Dashboard 'Deleted Items'
+- will appear in Trash 'Equipment'
+
+Input Validation (Duplicate):
+- ADD: check Inventory or Trash
+- UPDATE: check Inventory or Trash
+
+Recovery (Notes):
+- will not recover Equipment Details with said Equipment
+
+----------
+
+If a Borrower deleted,
+- will not appear in Dashboard 'Borrowed Equipment'
+- will not appear in Borrow Equipment 'Select Borrower'
+- will not appear in Borrower
+- rows with said Borrower will not appear in Equipment Inventory **GIVE WARNING**
+- will not appear in Borrower History
+- will appear in Dashboard 'Deleted Items'
+- will appear in Trash 'Borrower'
+
+Input Validation (Duplicate):
+- ADD: check Inventory or Trash
+- UPDATE: check Inventory or Trash
+
+Recovery (Notes):
+- will recover Equipment Details with said Borrower
+
+
+
+
+
+
+
+
+
+
+
