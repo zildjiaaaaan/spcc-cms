@@ -13,7 +13,7 @@ $borrowers = getActiveBorrowers($con);
     <style>
     .cell-link {
         color: white;
-        text-decoration: none;
+        /* text-decoration: none; */
     }
     </style>
 
@@ -109,6 +109,7 @@ include './config/sidebar.php';?>
     </section>
     <!-- /.content -->
   </div>
+  <div style="height:8px;"></div>
   <!-- /.content-wrapper -->
 
 <?php 

@@ -213,6 +213,7 @@ include './config/sidebar.php';?>
 </section>
 <!-- /.content -->
 </div>
+<div style="height:8px;"></div>
 <!-- /.content-wrapper -->
 <?php 
 include './config/footer.php';
@@ -267,7 +268,13 @@ if(isset($_GET['message'])) {
 
   $(document).ready(function() {
 
-
+    $("#customSwitch1").on("change", function(){
+        if($(this).prop("checked") == true){
+            $("body").removeClass("dark-mode");
+        } else {
+            $("body").addClass("dark-mode");
+        }
+    });
 
     $('#date_acquired').datetimepicker({
       format: 'L'

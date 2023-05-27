@@ -178,6 +178,7 @@ include './config/sidebar.php';?>
 </section>
 <!-- /.content -->
 </div>
+<div style="height:8px;"></div>
 <!-- /.content-wrapper -->
 
 <?php include './config/footer.php';
@@ -212,24 +213,33 @@ if(isset($_GET['message'])) {
     }
     
     $(function () {
-        $("#status").change(function() {
-            var status = $("#status option:selected").text();
-            var html = '';
 
-            if (status === 'Available') {
-                html = '<option value="Active">Active</option>';
-                html += '<option value="Non-Borrowable">Non-Borrowable</option>';
-            } else if (status === 'Unavailable') {
-                html = '<option value="Used">Used</option>';
-                html += '<option value="Missing">Missing</option>';
-                html += '<option value="Defective">Defective</option>';
-                html += '<option value="In Repair">In Repair</option>';
-                html += '<option value="Borrowed">Borrowed</option>';
-                html += '<option value="Transferred">Transferred</option>';
-            }
+      $("#customSwitch1").on("change", function(){
+          if($(this).prop("checked") == true){
+              $("body").removeClass("dark-mode");
+          } else {
+              $("body").addClass("dark-mode");
+          }
+      });
 
-            $("#state").html(html);
-        });
+      $("#status").change(function() {
+          var status = $("#status option:selected").text();
+          var html = '';
+
+          if (status === 'Available') {
+              html = '<option value="Active">Active</option>';
+              html += '<option value="Non-Borrowable">Non-Borrowable</option>';
+          } else if (status === 'Unavailable') {
+              html = '<option value="Used">Used</option>';
+              html += '<option value="Missing">Missing</option>';
+              html += '<option value="Defective">Defective</option>';
+              html += '<option value="In Repair">In Repair</option>';
+              html += '<option value="Borrowed">Borrowed</option>';
+              html += '<option value="Transferred">Transferred</option>';
+          }
+
+          $("#state").html(html);
+      });
     });
 </script>
 </body>

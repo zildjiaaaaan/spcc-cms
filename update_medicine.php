@@ -127,6 +127,7 @@ include './config/sidebar.php';?>
       </div>
     </section>	
   </div>
+  <div style="height:8px;"></div>
   <!-- /.content-wrapper -->
 <?php 
  include './config/footer.php';
@@ -143,6 +144,14 @@ include './config/sidebar.php';?>
 <?php include './config/site_js_links.php'; ?>
 <script>
 $(document).ready(function() {
+
+  $("#customSwitch1").on("change", function(){
+      if($(this).prop("checked") == true){
+          $("body").removeClass("dark-mode");
+      } else {
+          $("body").addClass("dark-mode");
+      }
+  });
 
 $("#medicine_brand").blur(function() {
   var medicineBrand = $(this).val().trim();

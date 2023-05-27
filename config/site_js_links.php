@@ -13,5 +13,45 @@
 
 <script src="dist/js/common_javascript_functions.js"></script>
 
+<script>
+    $(function () {
+        
 
+
+
+        // var dark_mode = '';
+        // if (dark_mode != '1') {
+        //     $("body").removeClass("dark-mode");
+        //     $(".cell-link").css("color", "black");
+        //     $(".cell-link").hover(function(){
+        //       $(this).css("color", "#007bff");
+        //     }, function(){
+        //       $(this).css("color", "black");
+        //     });
+        // }
+
+        // $("#customSwitch1").on("change", function(){
+        //     if($(this).prop("checked") == true){
+        //         $("body").removeClass("dark-mode");
+        //         $(".cell-link").css("color", "black");
+        //         $(".cell-link").hover(function(){
+        //         $(this).css("color", "#007bff");
+        //         }, function(){
+        //         $(this).css("color", "black");
+        //         });
+                
+        //     } else {
+        //         $("body").addClass("dark-mode");
+        //         $(".cell-link").css("color", "white");
+        //         $(".cell-link").hover(function(){
+        //         $(this).css("color", "#007bff");
+        //         }, function(){
+        //         $(this).css("color", "white");
+        //         });
+        //     }
+        // });
+        
+
+    })
+</script>
 

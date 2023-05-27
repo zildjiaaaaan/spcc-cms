@@ -89,6 +89,7 @@ include './config/connection.php';
 </style>
 </head>
 <body class="hold-transition sidebar-mini dark-mode layout-fixed layout-navbar-fixed">
+
 <!-- Site wrapper -->
 <div class="wrapper">
   <!-- Navbar -->
@@ -537,6 +538,7 @@ include './config/sidebar.php';
 
     <!-- /.content -->
   </div>
+  <div style="height:8px;"></div>
   <!-- /.content-wrapper -->
 
 <?php include './config/footer.php';?>  
@@ -551,6 +553,14 @@ include './config/sidebar.php';
   })
 
   $(document).ready(function(){
+
+    $("#customSwitch1").on("change", function(){
+        if($(this).prop("checked") == true){
+            $("body").removeClass("dark-mode");
+        } else {
+            $("body").addClass("dark-mode");
+        }
+    });
 
     // PATIENTS
 
@@ -612,15 +622,11 @@ include './config/sidebar.php';
       window.open("equipments.php?search=is_recent&tag=<?php echo $rRecent['equipment']." ".$rRecent['brand']; ?>", "_blank");
     });
 
-    // id="box_borrowed"
     $("#box_defective").on("mouseenter", function() {
       $(this).css("cursor", "pointer");
     }).on("click", function() {
       window.open("equipment_inventory.php?search=Defective", "_blank");
-    });
-
-    
-
+    });  
 
     // MAINTENANCE
 

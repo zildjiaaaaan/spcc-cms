@@ -8,11 +8,17 @@
   </ul>
   <a href="dashboard.php" class="navbar-brand">
     <span class="brand-text font-weight-light">Clinic Management System</span>
-</a>
+  </a>
   <!-- Right navbar links -->
   <ul class="navbar-nav ml-auto">
+    <!-- <li class="nav-item">
+      <div class="login-user text-light font-weight-bolder right">Hello, <?= $_SESSION['display_name'] ?>!</div>
+    </li> -->
     <li class="nav-item">
-    <div class="login-user text-light font-weight-bolder right">Hello, <?= $_SESSION['display_name'] ?>!</div>  
+      <div class="custom-control custom-switch" style="padding-bottom: 10px;">
+        <input type="checkbox" class="custom-control-input" id="customSwitch1">
+        <label class="custom-control-label" for="customSwitch1">&nbsp;</label>
+      </div>
     </li>
   </ul>
 </nav>

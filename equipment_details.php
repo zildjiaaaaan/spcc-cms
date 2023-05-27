@@ -274,6 +274,7 @@ include './config/sidebar.php';?>
 </section>
 <!-- /.content -->
 </div>
+<div style="height:8px;"></div>
 <!-- /.content-wrapper -->
 
 <?php include './config/footer.php';
@@ -306,6 +307,14 @@ if(isset($_GET['message'])) {
   var equipmentDetailsArr = [];
 
   $(document).ready(function() {
+
+    $("#customSwitch1").on("change", function(){
+      if($(this).prop("checked") == true){
+        $("body").removeClass("dark-mode");
+      } else {
+        $("body").addClass("dark-mode");
+      }
+    });
 
     $("#quantity").css("height", "52px");
 

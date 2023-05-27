@@ -217,6 +217,14 @@ if(isset($_GET['message'])) {
   });
 
   $(document).ready(function() {
+
+    $("#customSwitch1").on("change", function(){
+        if($(this).prop("checked") == true){
+            $("body").removeClass("dark-mode");
+        } else {
+            $("body").addClass("dark-mode");
+        }
+    });
     
     $("#all_medicines").DataTable({
       "responsive": true, "lengthChange": false, "autoWidth": false,

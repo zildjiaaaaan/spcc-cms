@@ -161,6 +161,7 @@ include './config/sidebar.php';?>
  
     <!-- /.content -->
   </div>
+  <div style="height:8px;"></div>
   <!-- /.content-wrapper -->
 <?php 
  include './config/footer.php';
@@ -193,92 +194,100 @@ include './config/sidebar.php';?>
     }
     
     $(document).ready(function() {
+
+      $("#customSwitch1").on("change", function(){
+          if($(this).prop("checked") == true){
+              $("body").removeClass("dark-mode");
+          } else {
+              $("body").addClass("dark-mode");
+          }
+      });
         
-        $("form :input").blur(function() {
-            var borrowerID_disabled = false;
-            var name_disabled = false;
-    
-            var borrowerName = $("#borrower_name").val().trim();
-            var borrowerMName = $("#borrower_mname").val().trim();
-            var borrowerSName = $("#borrower_sname").val().trim();
-            var borrowerID = $("#borrower_id").val().trim();
-            var borrowerContact = $("#contact_no").val().trim();
+      $("form :input").blur(function() {
+          var borrowerID_disabled = false;
+          var name_disabled = false;
   
-            $("#borrower_name").val(borrowerName);
-            $("#borrower_mname").val(borrowerMName);
-            $("#borrower_sname").val(borrowerSName);
-            $("#borrower_id").val(borrowerID);
-            $("#contact_no").val(borrowerContact);
-    
-            if ((borrowerName !== '' && !/^[a-zA-Z]+$/.test(borrowerName)) || (borrowerMName !== '' && !/^[a-zA-Z]+$/.test(borrowerMName)) || (borrowerSName !== '' && !/^[a-zA-Z]+$/.test(borrowerSName))) {
-                showCustomMessage("Invalid characters in Name fields.");
-                $("#save_borrower").attr("disabled", "disabled");
-                borrowerID_disabled = true;
-                name_disabled = true;
-            }
-            
-            if (borrowerID !== '' && !/^[a-zA-Z0-9]+$/.test(borrowerID)) {
-                showCustomMessage("Invalid characters in Student ID / Employee ID field.");
-                $("#save_borrower").attr("disabled", "disabled");
-                borrowerID_disabled = true;
-                name_disabled = true;
-            }
-            
-            if (borrowerContact !== '' && /\D/.test(borrowerContact)) {
-                showCustomMessage("Invalid characters in Contact Number field.");
-                $("#save_borrower").attr("disabled", "disabled");
-            } 
-            
-            if (!borrowerID_disabled) {
-                $.ajax({
-                url: "ajax/check_borrower.php",
-                type: 'GET',
-                data: {
-                    'borrower_id': borrowerID,
-                    'update_id': <?php echo $row['id']; ?>
-                },
-                cache:false,
-                async:false,
-                success: function (count, status, xhr) {
-                    if(count > 0) {
-                        showCustomMessage("This ID is already existing! Please check records or the Trash.");
-                    $("#save_borrower").attr("disabled", "disabled");
-                    } else {
-                        $("#save_borrower").removeAttr("disabled");
-                    }
-                },
-                error: function (jqXhr, textStatus, errorMessage) {
-                    showCustomMessage(errorMessage);
-                }
-                });
-            }
-    
-          if(!name_disabled) {
-            $.ajax({
+          var borrowerName = $("#borrower_name").val().trim();
+          var borrowerMName = $("#borrower_mname").val().trim();
+          var borrowerSName = $("#borrower_sname").val().trim();
+          var borrowerID = $("#borrower_id").val().trim();
+          var borrowerContact = $("#contact_no").val().trim();
+
+          $("#borrower_name").val(borrowerName);
+          $("#borrower_mname").val(borrowerMName);
+          $("#borrower_sname").val(borrowerSName);
+          $("#borrower_id").val(borrowerID);
+          $("#contact_no").val(borrowerContact);
+  
+          if ((borrowerName !== '' && !/^[a-zA-Z]+$/.test(borrowerName)) || (borrowerMName !== '' && !/^[a-zA-Z]+$/.test(borrowerMName)) || (borrowerSName !== '' && !/^[a-zA-Z]+$/.test(borrowerSName))) {
+              showCustomMessage("Invalid characters in Name fields.");
+              $("#save_borrower").attr("disabled", "disabled");
+              borrowerID_disabled = true;
+              name_disabled = true;
+          }
+          
+          if (borrowerID !== '' && !/^[a-zA-Z0-9]+$/.test(borrowerID)) {
+              showCustomMessage("Invalid characters in Student ID / Employee ID field.");
+              $("#save_borrower").attr("disabled", "disabled");
+              borrowerID_disabled = true;
+              name_disabled = true;
+          }
+          
+          if (borrowerContact !== '' && /\D/.test(borrowerContact)) {
+              showCustomMessage("Invalid characters in Contact Number field.");
+              $("#save_borrower").attr("disabled", "disabled");
+          } 
+          
+          if (!borrowerID_disabled) {
+              $.ajax({
               url: "ajax/check_borrower.php",
               type: 'GET',
               data: {
-                'borrower_name': borrowerName,
-                'borrower_mname': borrowerMName,
-                'borrower_sname': borrowerSName,
-                'update_id': <?php echo $row['id']; ?>
+                  'borrower_id': borrowerID,
+                  'update_id': <?php echo $row['id']; ?>
               },
               cache:false,
               async:false,
               success: function (count, status, xhr) {
-                if(count > 0) {
-                  showCustomMessage("This borrower is already existing! Please check records or the Trash.");
+                  if(count > 0) {
+                      showCustomMessage("This ID is already existing! Please check records or the Trash.");
                   $("#save_borrower").attr("disabled", "disabled");
-                } else {
-                  $("#save_borrower").removeAttr("disabled");
-                }
+                  } else {
+                      $("#save_borrower").removeAttr("disabled");
+                  }
               },
               error: function (jqXhr, textStatus, errorMessage) {
-                showCustomMessage(errorMessage);
+                  showCustomMessage(errorMessage);
               }
-            });
+              });
           }
-        });
+  
+        if(!name_disabled) {
+          $.ajax({
+            url: "ajax/check_borrower.php",
+            type: 'GET',
+            data: {
+              'borrower_name': borrowerName,
+              'borrower_mname': borrowerMName,
+              'borrower_sname': borrowerSName,
+              'update_id': <?php echo $row['id']; ?>
+            },
+            cache:false,
+            async:false,
+            success: function (count, status, xhr) {
+              if(count > 0) {
+                showCustomMessage("This borrower is already existing! Please check records or the Trash.");
+                $("#save_borrower").attr("disabled", "disabled");
+              } else {
+                $("#save_borrower").removeAttr("disabled");
+              }
+            },
+            error: function (jqXhr, textStatus, errorMessage) {
+              showCustomMessage(errorMessage);
+            }
+          });
+        }
+      });
     });
       
     

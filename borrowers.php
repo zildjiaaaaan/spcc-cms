@@ -256,6 +256,14 @@ include './config/sidebar.php';?>
   }
 
   $(document).ready(function() {
+
+    $("#customSwitch1").on("change", function(){
+        if($(this).prop("checked") == true){
+            $("body").removeClass("dark-mode");
+        } else {
+            $("body").addClass("dark-mode");
+        }
+    });
         
     $("form :input").blur(function() {
         var borrowerID_disabled = false;

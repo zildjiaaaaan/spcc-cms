@@ -27,6 +27,7 @@ try {
     $_SESSION['display_name'] = $row['display_name'];
     $_SESSION['user_name'] = $row['user_name'];
     $_SESSION['profile_picture'] = $row['profile_picture'];
+    $_SESSION['dark_mode'] = '1';
 
     header("location:dashboard.php");
     exit;
