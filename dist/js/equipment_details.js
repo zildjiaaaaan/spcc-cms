@@ -340,9 +340,19 @@ function deleteCurrentRow(obj) {
     var del_id = del_arr[0];
     var del_status = del_arr[1];
     var del_state = del_arr[2];
-    var del_uSince = del_arr[4];
-    var del_uUntil = del_arr[5];
-    var del_borId = del_arr[6];
+    var del_uSince = del_arr[3];
+    var del_uUntil = del_arr[4];
+    var del_borId = del_arr[5];
+
+    // const qtyId = `${equipmentId}_${status}_${state}_${f_unavailableSince}_${f_unavailableUntil}_${borrowerId}`;
+
+    // equipmentId, 
+    // status,
+    // state,
+    // qty: parseInt(quantity),
+    // borrowerId,
+    // unavailableSince: f_unavailableSince,
+    // unavailableUntil: f_unavailableUntil
 
     var delIndex = equipmentDetailsArr.findIndex((equipment) => {
         return (
