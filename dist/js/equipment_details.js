@@ -123,6 +123,40 @@ $(function() {
         }
     });
 
+    var borrowerId = '';
+    var f_unavailableSince = '';
+    var f_unavailableUntil = '';
+
+    $("form :input").change(function() {
+        var equipmentId = $("#equipment").val();
+        var equipmentName = $("#equipment option:selected").text();
+        
+        if (state === 'Borrowed') {
+            if ($("#borrower").val() && $("#unavailableSince").val() && $("#unavailableUntil").val()) {
+                borrowerId = $("#borrower").val();
+                f_unavailableSince = formatDate($("#unavailableSince").val());
+                f_unavailableUntil = formatDate($("#unavailableUntil").val());
+            }
+        } else if (state === 'Missing' && $("#unavailableSince").val()) {
+            f_unavailableSince = formatDate($("#unavailableSince").val());
+            borrowerId = '';
+        } else if (status === 'Unavailable' && $("#unavailableSince").val() && $("#unavailableUntil").val()) {
+            f_unavailableSince = formatDate($("#unavailableSince").val());
+            f_unavailableUntil = formatDate($("#unavailableUntil").val());
+            borrowerId = '';
+        } else {
+            if (status === 'Available') {
+                borrowerId = '';
+            }
+        }
+
+
+
+
+
+
+    });
+
     $('#equipment_list').find('td').addClass("px-2 py-1 align-middle")
     $('#equipment_list').find('th').addClass("p-1 align-middle")
 
@@ -132,8 +166,8 @@ $(function() {
         var equipmentId = $("#equipment").val();
         var equipmentName = $("#equipment option:selected").text();
         
-        var status = $("#status").val();
-        var state = $("#state").val();
+        // var status = $("#status").val();
+        // var state = $("#state").val();
 
         // if remarks has "_" then replace it with "-"
         var remarks = $("#remarks").val().trim();      
@@ -145,12 +179,9 @@ $(function() {
             quantity = '';
         }
 
-        var borrowerId = '*';
-        var f_unavailableSince = '';
-        var f_unavailableUntil = '';
-
-        // var borrowerDisplay = $(".borrower").css('display');
-        // var unavailableDisplay = $(".unavailable").css('display');
+        borrowerId = '*';
+        f_unavailableSince = '';
+        f_unavailableUntil = '';
 
         if (state === 'Borrowed') {
             if ($("#borrower").val() && $("#unavailableSince").val() && $("#unavailableUntil").val()) {
