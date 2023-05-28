@@ -104,6 +104,10 @@ include './config/sidebar.php';?>
                   $serial = 0;
                   while($row =$stmtDetails->fetch(PDO::FETCH_ASSOC)){
                     $serial++;
+
+                    // convert date format to YYYY/MM/DD
+                    $row['unavailable_since'] = date('Y/m/d', strtotime($row['unavailable_since']));
+                    $row['unavailable_until'] = date('Y/m/d', strtotime($row['unavailable_until']));
                     
                     $rowBorrowed = array();
                     $b_id = "";
@@ -128,11 +132,19 @@ include './config/sidebar.php';?>
                       }
                     }
 
+                    
+
                   ?>
                   <tr>
                     <td class="text-center"><?php echo $serial; ?></td>
                     <td><a class="cell-link" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="<?php echo "Date Acquired: ".$row['date_acquired'];?>"><?php echo $row['equipment']." — ".strtoupper($row['brand']);?></td>
-                    <td><a class="cell-link" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="<?php echo $row['unavailable_since']." - ".$row['unavailable_until'];?>"><?php echo $row['status'];?></a></td>
+                    <td>
+                      <a class="cell-link" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="<?php echo $row['unavailable_since']." - ".$row['unavailable_until'];?>">
+                      <?php echo $row['status']; ?>
+                      <p class="search_tag"><?php
+                          echo ($row['status'] == "Available") ? "isAvailable" : "";
+                      ?></p>
+                      </a></td>
                     <td><a class="cell-link" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="<?php echo (!empty($rowBorrowed)) ? "Borrowed by: ".$rowBorrowed['borrower_id']." - ".strtoupper($rowBorrowed['lname']) : "";?>"><?php echo $row['state'];?></a></td>
                     <td><?php echo $row['quantity'];?></td>
                     <td><?php echo $row['remarks'];?></td>
@@ -192,6 +204,8 @@ if(isset($_GET['message'])) {
 
   $(document).ready(function() {
 
+    $(".search_tag").hide();
+
     $("#customSwitch1").on("change", function(){
         if($(this).prop("checked") == true){
             $("body").removeClass("dark-mode");
@@ -212,34 +226,34 @@ if(isset($_GET['message'])) {
         }
     });
     
-    $(function(){
-      const url = new URL(window.location.href);
-      var search = url.searchParams.get("search");
-      var tag = url.searchParams.get("tag");
+    // Search filters
+    const url = new URL(window.location.href);
+    var search = url.searchParams.get("search");
+    var tag = url.searchParams.get("tag");
 
-      const dataTableOptions = {
-        order: [[0, 'asc']],
-        responsive: true,
-        lengthChange: false,
-        autoWidth: false,
-        buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    const dataTableOptions = {
+      order: [[0, 'asc']],
+      responsive: true,
+      lengthChange: false,
+      autoWidth: false,
+      buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    };
+
+    if (search === "Borrowed" || search === "Defective") {
+      dataTableOptions.search = {
+        search: search
       };
+    }
 
-      if (search === "Borrowed" || search === "Defective") {
-        dataTableOptions.search = {
-          search: search
-        };
-      }
-
-      $("#equipment_inventory").DataTable(dataTableOptions).buttons().container().appendTo('#equipment_inventory_wrapper .col-md-6:eq(0)');
-    })
+    $("#equipment_inventory").DataTable(dataTableOptions).buttons().container().appendTo('#equipment_inventory_wrapper .col-md-6:eq(0)');
         
+    // Initialize datetimepicker
     $('#expiry').datetimepicker({
       format: 'L',
       minDate:new Date()
     });
 
-
+    // Input validation
     $("form :input").blur(function() {
       
       var medicineId = $("#medicine").val();

@@ -12,9 +12,10 @@ $borrowers = getActiveBorrowers($con);
      <title>Borrower History - SPCC Caloocan Clinic</title>
     <style>
     .cell-link {
-        color: white;
-        /* text-decoration: none; */
+        color: <?php echo ($_SESSION['dark_mode'] != "1") ? "black;" : "white;" ; ?>;
+        text-decoration: none;
     }
+    
     </style>
 
 </head>
@@ -147,7 +148,7 @@ include './config/footer.php';
           }
         });
 
-        //alert('hello');
+    
 
       }
 
@@ -157,8 +158,6 @@ include './config/footer.php';
     $("#abc").click(function() {
 
     });
-
-//event driven programming
 
   });
 </script>

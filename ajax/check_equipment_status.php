@@ -18,12 +18,12 @@
     if ($unavailableSince != '') {
 
       // convert $unavailableSince to date format from mm/dd/yyyy to yyyy-mm-dd
-      $unavailableSince = date("Y-m-d", strtotime($unavailableSince));
+      // $unavailableSince = date("Y-m-d", strtotime($unavailableSince));
 
       $q_unavailable = " AND `unavailable_since` = '$unavailableSince'";
 
       if ($unavailableUntil != '') {
-        $unavailableUntil = date("Y-m-d", strtotime($unavailableUntil));
+        // $unavailableUntil = date("Y-m-d", strtotime($unavailableUntil));
         $q_unavailable .= " AND `unavailable_until` = '$unavailableUntil'";
       }
 
