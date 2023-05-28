@@ -287,8 +287,7 @@ if(isset($_GET['message'])) {
 </div>
 <!-- ./wrapper -->
 
-<?php include './config/site_js_links.php';
-?>
+<?php include './config/site_js_links.php';?>
 
 <script src="plugins/moment/moment.min.js"></script>
 <script src="plugins/daterangepicker/daterangepicker.js"></script>

@@ -9,13 +9,22 @@ $borrowers = getActiveBorrowers($con);
 <html lang="en">
 <head>
     <?php include './config/site_css_links.php';?>
-     <title>Borrower History - SPCC Caloocan Clinic</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    <title>Borrower History - SPCC Caloocan Clinic</title>
     <style>
     .cell-link {
         color: <?php echo ($_SESSION['dark_mode'] != "1") ? "black;" : "white;" ; ?>;
         text-decoration: none;
     }
-    
+    .select2-selection {
+        background-color: <?php echo ($_SESSION['dark_mode'] != "1") ? "white" : "#343a40" ; ?>;
+    }
+
+    .select2-selection__rendered {
+        color: <?php echo ($_SESSION['dark_mode'] != "1") ? "black" : "white" ; ?>;
+    }
     </style>
 
 </head>
@@ -56,6 +65,7 @@ include './config/sidebar.php';?>
         </div>
         <div class="card-body">
           <div class="row">
+
             <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
               <select id="borrower" class="form-control form-control-sm rounded-0">
                 <?php echo $borrowers;?>
@@ -63,10 +73,9 @@ include './config/sidebar.php';?>
             </div>
 
             <div class="col-lg-1 col-md-2 col-sm-4 col-xs-12">
-              <button type="button" id="search" 
-              class="btn btn-primary btn-sm btn-flat btn-block">Search</button>
+              <button type="button" id="search" class="btn btn-primary btn-sm btn-flat btn-block">Search</button>
             </div>
-            </div>
+          </div>
 
             <div class="clearfix">&nbsp;</div>
             <div class="clearfix">&nbsp;</div>
@@ -121,11 +130,15 @@ include './config/footer.php';
 <!-- ./wrapper -->
 
 <?php include './config/site_js_links.php' ?>
-
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
   showMenuSelected("#mnu_borrowers", "#mi_borrower_history");
 
   $(document).ready(function() {
+
+    $("#borrower").select2({
+      width: 'resolve'
+    });
 
     $("#search").click(function() {
       var borrowerId = $("#borrower").val();
@@ -147,16 +160,7 @@ include './config/footer.php';
             showCustomMessage(errorMessage);
           }
         });
-
-    
-
       }
-
-    });
-
-
-    $("#abc").click(function() {
-
     });
 
   });

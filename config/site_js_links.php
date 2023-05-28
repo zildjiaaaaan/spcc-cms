@@ -8,7 +8,6 @@
 <!-- AdminLTE for demo purposes -->
 <!-- <script src="dist/js/demo.js"></script> -->
 
-
 <script src="dist/js/jquery_confirm/jquery-confirm.js"></script>
 
 <script src="dist/js/common_javascript_functions.js"></script>
@@ -22,6 +21,9 @@ function toggleMode(isLightMode) {
     }, function () {
         $(this).css("color", isLightMode ? "black" : "white");
     });
+
+    $(".select2-selection").css("background-color", isLightMode ? "white" : "#343a40");
+    $(".select2-selection__rendered").css("color", isLightMode ? "black" : "white");
 }
 
 function showLoader() {

@@ -300,6 +300,7 @@ include './config/sidebar.php';?>
             $("#save_borrower").attr("disabled", "disabled");
         } 
         
+        // Check Borrower ID duplicate
         if (!borrowerID_disabled) {
             $.ajax({
             url: "ajax/check_borrower.php",
@@ -323,6 +324,7 @@ include './config/sidebar.php';?>
             });
         }
 
+      // Check Borrower Name duplicate
       if(!name_disabled) {
         $.ajax({
           url: "ajax/check_borrower.php",
