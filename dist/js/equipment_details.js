@@ -128,8 +128,6 @@ $(function() {
 
     $("form :input").change(function() {
         var equipmentId = $("#equipment").val();
-        var equipmentName = $("#equipment option:selected").text();
-        var remarks = $("#remarks").val().trim();
         var checkForm = true;
         
         if (state === 'Borrowed') {
@@ -148,7 +146,6 @@ $(function() {
         } else {
             if (status === 'Unavailable') {
                 checkForm = false;
-                console.log(checkForm);
             }
         }
 
@@ -160,7 +157,6 @@ $(function() {
                     'equipmentId': equipmentId,
                     'status': status,
                     'state': state,
-                    'remarks': remarks,
                     'borrowerId': borrowerId,
                     'f_unavailableSince': f_unavailableSince,
                     'f_unavailableUntil': f_unavailableUntil
@@ -193,8 +189,8 @@ $(function() {
 
         // if remarks has "_" then replace it with "-"
         var remarks = $("#remarks").val().trim();      
-        remarks = remarks.replace(/_/g, "-");
-        var remarksForId = remarks.replace(/ /g, "-");
+        // remarks = remarks.replace(/_/g, "-");
+        // var remarksForId = remarks.replace(/ /g, "-");
 
         var quantity = $("#quantity").val().trim();
         if (quantity == '0') {
@@ -241,24 +237,22 @@ $(function() {
                     equipment.equipmentId === equipmentId &&
                     equipment.status === status &&
                     equipment.state === state &&
-                    equipment.remarks === remarks &&
                     equipment.unavailableSince === f_unavailableSince &&
                     equipment.unavailableUntil === f_unavailableUntil &&
                     equipment.borrowerId === borrowerId
                     ) {
-                        const qtyId = `${equipmentId}_${status}_${state}_${remarksForId}_${f_unavailableSince}_${f_unavailableUntil}_${borrowerId}`;
+                        const qtyId = `${equipmentId}_${status}_${state}_${f_unavailableSince}_${f_unavailableUntil}_${borrowerId}`;
                         addQuantity(parseInt(quantity), qtyId);
                         equipment.qty += parseInt(quantity);
                         hasNoId = false;
                         addCell = false;
-                        console.log(addCell);
                         return; // Break out of the loop early
                     }
                 });
             }
 
             if (addCell) {
-                const qtyId = `${equipmentId}_${status}_${state}_${remarksForId}_${f_unavailableSince}_${f_unavailableUntil}_${borrowerId}`;
+                const qtyId = `${equipmentId}_${status}_${state}_${f_unavailableSince}_${f_unavailableUntil}_${borrowerId}`;
                 const inputs = [
                     `<input type="hidden" name="equipmentIds[]" value="${equipmentId}" />`,
                     `<input type="hidden" name="statuses[]" value="${status}" />`,
@@ -297,7 +291,6 @@ $(function() {
                     status,
                     state,
                     qty: parseInt(quantity),
-                    remarks,
                     borrowerId,
                     unavailableSince: f_unavailableSince,
                     unavailableUntil: f_unavailableUntil
@@ -338,7 +331,7 @@ function formatDate(dateString) {
 function deleteCurrentRow(obj) {
     var rowIndex = obj.parentNode.parentNode.rowIndex;
     var row = document.getElementById("equipment_list").rows[rowIndex];
-    var del_remarks = row.cells[5].textContent;
+    // var del_remarks = row.cells[5].textContent;
     var id = row.cells[4].id;
 
     document.getElementById("equipment_list").deleteRow(rowIndex);
@@ -356,7 +349,7 @@ function deleteCurrentRow(obj) {
         equipment.equipmentId === del_id &&
         equipment.status === del_status &&
         equipment.state === del_state &&
-        equipment.remarks === del_remarks &&
+        // equipment.remarks === del_remarks &&
         equipment.unavailableSince === del_uSince &&
         equipment.unavailableUntil === del_uUntil &&
         equipment.borrowerId === del_borId
