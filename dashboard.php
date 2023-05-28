@@ -384,8 +384,7 @@ include './config/sidebar.php';
             <!-- small box -->
             <div class="small-box bg-info text-reset" id="box_defective">
               <div class="inner">
-                <h3><?php echo $rDefective['defective_qty'];?></h3>
-
+                <h3><?php echo (!empty($rDefective['defective_qty']) || $rDefective['defective_qty'] != 0) ? $rDefective['defective_qty'] : "0";?></h3>
                 <p>Defective Equipment</p>
               </div>
               <div class="icon">
@@ -398,7 +397,7 @@ include './config/sidebar.php';
             <!-- small box -->
             <div class="small-box bg-info text-reset" id="box_recent">
               <div class="inner">
-                  <h3 class="responsive-h3"><?php echo $rRecent['equipment'];?></h3>
+                  <h3 class="responsive-h3"><?php echo (!empty($rRecent['equipment'])) ? $rRecent['equipment'] : "None";?></h3>
 
                   <p>Recently Added Equipment</p>
               </div>

@@ -7,10 +7,10 @@
     $state = $_GET['state'];
     $remarks = $_GET['remarks'];
 
-    $unavailableSince = $_GET['unavailableSince'];
-    $unavailableUntil = $_GET['unavailableUntil'];
+    $unavailableSince = $_GET['f_unavailableSince'];
+    $unavailableUntil = $_GET['f_unavailableUntil'];
     
-    $borrower = $_GET['borrower'];
+    $borrower = $_GET['borrowerId'];
 
     $q_join = '';
     $q_unavailable = '';

@@ -137,6 +137,8 @@ $(function() {
                 borrowerId = $("#borrower").val();
                 f_unavailableSince = formatDate($("#unavailableSince").val());
                 f_unavailableUntil = formatDate($("#unavailableUntil").val());
+            } else {
+                checkForm = false;
             }
         } else if (state === 'Missing' && $("#unavailableSince").val()) {
             f_unavailableSince = formatDate($("#unavailableSince").val());
@@ -146,16 +148,16 @@ $(function() {
         } else {
             if (status === 'Unavailable') {
                 checkForm = false;
+                console.log(checkForm);
             }
         }
 
         if (checkForm) {
             $.ajax({
-                url: "ajax/check_equipment.php",
+                url: "ajax/check_equipment_status.php",
                 type: 'GET',
                 data: {
                     'equipmentId': equipmentId,
-                    'equipmentName': equipmentName,
                     'status': status,
                     'state': state,
                     'remarks': remarks,
@@ -164,8 +166,7 @@ $(function() {
                     'f_unavailableUntil': f_unavailableUntil
                 },
                 cache: false,
-                
-                success: function (count, status, xhr) {
+                success: function (count) {
                     if(count > 0) {
                         showCustomMessage("This equipment has already been stored previously. Please check inventory or the Trash.");
                         $("#add_to_list").attr("disabled", "disabled");
