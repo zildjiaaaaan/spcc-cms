@@ -49,8 +49,8 @@ include './config/connection.php';
 
     $stmtYear = $con->prepare($queryYear);
     $stmtYear->execute();
-    $r = $stmtYear->fetch(PDO::FETCH_ASSOC);
-    $currentYearCount = $r['patient_name'];
+    $rPatient = $stmtYear->fetch(PDO::FETCH_ASSOC);
+    $currentYearCount = $rPatient['patient_name'];
 
     $stmtMonth = $con->prepare($queryMonth);
     $stmtMonth->execute();
@@ -564,7 +564,7 @@ include './config/sidebar.php';
     $("#box_recentpatient").on("mouseenter", function() {
       $(this).css("cursor", "pointer");
     }).on("click", function() {
-      window.open("patients.php", "_blank");
+      window.open("patient_history.php?search=is_recent&tag=<?php echo $rPatient['id']; ?>", "_blank");
     });
 
     // MEDICINES

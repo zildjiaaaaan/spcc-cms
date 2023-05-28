@@ -122,6 +122,33 @@ include './config/footer.php';
 
   $(document).ready(function() {
 
+    const url = new URL(window.location.href);
+    var search = url.searchParams.get("search");
+    var tag = url.searchParams.get("tag");
+
+    if (search === "is_recent") {
+      search = (tag !== '' && tag !== null) ? tag : '';
+      $("#patient").val(search);
+
+      if(search !== '') {
+        $.ajax({
+          url: "ajax/get_patient_history.php",
+          type: 'GET', 
+          data: {
+            'patient_id': search
+          },
+          cache:false,
+          async:false,
+          success: function (data, status, xhr) {
+              $("#history_data").html(data);
+          },
+          error: function (jqXhr, textStatus, errorMessage) {
+            showCustomMessage(errorMessage);
+          }
+        });
+      }
+    }
+
     $("#customSwitch1").on("change", function(){
         if($(this).prop("checked") == true){
             $("body").removeClass("dark-mode");
@@ -132,7 +159,6 @@ include './config/footer.php';
 
     $("#search").click(function() {
       var patientId = $("#patient").val();
-
       if(patientId !== '') {
 
         $.ajax({
@@ -150,11 +176,7 @@ include './config/footer.php';
             showCustomMessage(errorMessage);
           }
         });
-
-        //alert('hello');
-
       }
-
     });
 
 

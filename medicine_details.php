@@ -291,29 +291,27 @@ if(isset($_GET['message'])) {
 
     $(".exp_date").hide();
     
-    $(function(){
-      const url = new URL(window.location.href);
-      const search = url.searchParams.get("search");
+    const url = new URL(window.location.href);
+    const search = url.searchParams.get("search");
 
-      const dataTableOptions = {
-        order: [[4, 'asc']],
-        responsive: true,
-        lengthChange: false,
-        autoWidth: false,
-        buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    const dataTableOptions = {
+      order: [[4, 'asc']],
+      responsive: true,
+      lengthChange: false,
+      autoWidth: false,
+      buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    };
+
+    if (search === "is_expired:true" || search === "is_expiredinmonth:true" || search === "is_torestock:true") {
+      dataTableOptions.search = {
+        search: search
       };
+      dataTableOptions.order = (search === "is_torestock:true") ? [[3, 'asc']] : [[4, 'asc']];
+    } else {
+      dataTableOptions.order = [[0, 'asc']];
+    }
 
-      if (search === "is_expired:true" || search === "is_expiredinmonth:true" || search === "is_torestock:true") {
-        dataTableOptions.search = {
-          search: search
-        };
-        dataTableOptions.order = (search === "is_torestock:true") ? [[3, 'asc']] : [[4, 'asc']];
-      } else {
-        dataTableOptions.order = [[0, 'asc']];
-      }
-
-      $("#medicine_details").DataTable(dataTableOptions).buttons().container().appendTo('#medicine_details_wrapper .col-md-6:eq(0)');
-    })
+    $("#medicine_details").DataTable(dataTableOptions).buttons().container().appendTo('#medicine_details_wrapper .col-md-6:eq(0)');
         
     $('#expiry').datetimepicker({
       format: 'L',
