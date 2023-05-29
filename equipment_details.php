@@ -55,13 +55,23 @@ if(isset($_POST['submit'])) {
         '$remark', '0'
       );";
 
+    $q_select_equipment = "SELECT * FROM `equipments` WHERE `id` = '$equipmentId';";
+
     try {
       $con->beginTransaction();
 
       $stmt_equipment_details = $con->prepare($q_equipment_details);
       $stmt_equipment_details->execute();
-
       $lastInsertId = $con->lastInsertId();
+
+      $stmt_select_equipment = $con->prepare($q_select_equipment);
+      $stmt_select_equipment->execute();
+      $rowEquipment = $stmt_select_equipment->fetch(PDO::FETCH_ASSOC);
+      $total_qty = (is_null($rowEquipment['total_qty'])) ? $quantity : $rowEquipment['total_qty'] + $quantity;
+
+      $q_update_totalqty = "UPDATE `equipments` SET `total_qty` = '$total_qty' WHERE `id` = '$equipmentId';";
+      $stmt_update_totalqty = $con->prepare($q_update_totalqty);
+      $stmt_update_totalqty->execute();
 
       if ($borrowerId != '') {
         $q_borrowed = "INSERT INTO `borrowed` (`borrower_id`, `equipment_details_id`) VALUES ('$borrowerId', '$lastInsertId');";
@@ -71,7 +81,7 @@ if(isset($_POST['submit'])) {
       }
 
       $con->commit();
-      $message = "Equipment details successfully added.";
+      $message = "Equipment Details Successfully Added.";
 
     } catch (PDOException $ex) {
       $con->rollback();
@@ -169,7 +179,7 @@ include './config/sidebar.php';?>
                 
                 <div class="col-lg-3 col-md-2 col-sm-6 col-xs-12">
                   <label>Quantity Available</label>
-                  <input type="number" id="quantity" name="quantity" class="form-control form-control-sm rounded-0" min="1"/>
+                  <input type="number" id="quantity" name="quantity" class="form-control form-control-sm rounded-0" min="1" placeholder="Minimum of 1">
                 </div>
 
                 <div class="clearfix unavailable">&nbsp;</div>

@@ -21,60 +21,6 @@ $(function() {
         format: 'L'
     });
 
-    // Set quantity depending on the Equipment selected
-    $("#equipment").change(function() {
-        var equipmentDetailsId = $(this).val();
-        
-        if (equipmentDetailsId !== '') {
-            $.ajax({
-                url: "ajax/get_quantity.php",
-                type: 'GET',
-                data: {
-                    'equipmentDetailsId': equipmentDetailsId
-                },
-                cache: false,
-                success: function(data) {
-                    if (equipmentDetailsArr.length > 0) {
-                    var filteredEquipmentDetails = equipmentDetailsArr.filter(function(details) {
-                        return details.equipmentId === equipmentDetailsId;
-                    });
-            
-                    if (filteredEquipmentDetails.length > 0) {
-                        data -= filteredEquipmentDetails.reduce(function(total, details) {
-                        return total + details.qty;
-                        }, 0);
-            
-                        if (data < 0) {
-                        data = 0;
-                        }
-                    }
-                    }
-            
-                    $("#quantity").val(data);
-                    $("#quantity").attr({
-                    "max": data,
-                    "min": 0
-                    });
-            
-                    $("#quantity").on("input", function() {
-                    var value = $(this).val();
-                    var min = parseInt($(this).attr("min"));
-                    var max = parseInt($(this).attr("max"));
-            
-                    if (value < min) {
-                        $(this).val(min);
-                    } else if (value > max) {
-                        $(this).val(max);
-                    }
-                    });
-                },
-                error: function(jqXhr, textStatus, errorMessage) {
-                    showCustomMessage(errorMessage);
-                }
-            });
-        }
-    });
-
     // if #status is Available, then #state can be active or non-borrowable
     // if #status is Unavailable, then state can be used, missing, defective, borrowed
     $("#status").change(function() {
@@ -174,7 +120,6 @@ $(function() {
                         $("#add_to_list").removeAttr("disabled");
                     }
                 },
-
             })
         }
     });
