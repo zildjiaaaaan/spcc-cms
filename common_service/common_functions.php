@@ -1,17 +1,5 @@
 <?php 
 
-function getGender222() {
-	//do not use this function
-	exit;
-	$data = '<option value="">Select Gender</option>';
-
-	$data = $data .'<option value="Male">Male</option>';
-	$data = $data .'<option value="Female">Female</option>';
-	$data = $data .'<option value="Other">Other</option>';
-
-	return $data;
-}
-
 function getGender($gender = '') {
 	$data = '<option value="">Select Gender</option>';
 	
@@ -282,7 +270,7 @@ function getActiveBorrowers($con) {
 
 	
 
-	$data = '<option value="">Select Borrower</option>';
+	$data = '<option value=""></option>';
 
 	while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 		$fullname = $row['lname'].', '.$row['fname'].', '.$row['mname'];
