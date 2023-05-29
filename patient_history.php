@@ -122,6 +122,10 @@ include './config/footer.php';
 
   $(document).ready(function() {
 
+    $("#patient").select2({
+      width: 'resolve'
+    });
+
     const url = new URL(window.location.href);
     var search = url.searchParams.get("search");
     var tag = url.searchParams.get("tag");
@@ -178,13 +182,6 @@ include './config/footer.php';
         });
       }
     });
-
-
-    $("#abc").click(function() {
-
-    });
-
-//event driven programming
 
   });
 </script>

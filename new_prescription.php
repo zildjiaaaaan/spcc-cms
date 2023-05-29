@@ -344,6 +344,10 @@ if(isset($_GET['message'])) {
 
   $(document).ready(function() {
 
+    $("#medicine, #patient").select2({
+      width: 'resolve'
+    });
+
     $("#customSwitch1").on("change", function(){
         if($(this).prop("checked") == true){
             $("body").removeClass("dark-mode");

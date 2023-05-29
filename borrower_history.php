@@ -8,24 +8,8 @@ $borrowers = getActiveBorrowers($con);
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <?php include './config/site_css_links.php';?>
-
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-
+    <?php include './config/site_css_links.php';?>  
     <title>Borrower History - SPCC Caloocan Clinic</title>
-    <style>
-    .cell-link {
-        color: <?php echo ($_SESSION['dark_mode'] != "1") ? "black;" : "white;" ; ?>;
-        text-decoration: none;
-    }
-    .select2-selection {
-        background-color: <?php echo ($_SESSION['dark_mode'] != "1") ? "white" : "#343a40" ; ?>;
-    }
-
-    .select2-selection__rendered {
-        color: <?php echo ($_SESSION['dark_mode'] != "1") ? "black" : "white" ; ?>;
-    }
-    </style>
 
 </head>
 <body class="hold-transition sidebar-mini dark-mode layout-fixed layout-navbar-fixed">
@@ -130,7 +114,7 @@ include './config/footer.php';
 <!-- ./wrapper -->
 
 <?php include './config/site_js_links.php' ?>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 <script>
   showMenuSelected("#mnu_borrowers", "#mi_borrower_history");
 

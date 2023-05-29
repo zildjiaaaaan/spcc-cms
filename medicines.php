@@ -136,6 +136,7 @@ include './config/sidebar.php';?>
               <col width="35%">
               <col width="35%">
               <col width="10%">
+              <col width="10%">
             </colgroup>
 
             <thead>
@@ -143,6 +144,7 @@ include './config/sidebar.php';?>
                 <th class="text-center">#</th>
                 <th>Medicine Name</th>
                 <th>Medicine Brand</th>
+                <th>Total Quantity</th>
                 <th class="text-center">Action</th>
               </tr>
             </thead>
@@ -151,14 +153,29 @@ include './config/sidebar.php';?>
               <?php 
                 $serial = 0;
                 while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $serial++;
+                  $serial++;
+                  $id = $row['id'];
+                  $total_qty = 0;
+                  
+                  try {
+                    $q_total_qty = "SELECT SUM(`quantity`) AS `total_qty` FROM `medicine_details` WHERE `medicine_id` = '$id';";
+                    $stmt_total_qty = $con->prepare($q_total_qty);
+                    $stmt_total_qty->execute();
+                    $row_medicine = $stmt_total_qty->fetch(PDO::FETCH_ASSOC);
+                    $total_qty = (!empty($row_medicine['total_qty'])) ? $row_medicine['total_qty'] : 0;
+                  
+                  } catch(PDOException $ex) {
+                    echo $ex->getMessage();
+                    echo $e->getTraceAsString();
+                    exit;  
+                  }
+
               ?>
               <tr>
                 <td class="text-center"><?php echo $serial;?></td>
                 <td><?php echo $row['medicine_name'];?></td>
-                <td>
-                  <?php echo $row['medicine_brand'];?>
-                </td>
+                <td><?php echo $row['medicine_brand'];?></td>
+                <td><?php echo $total_qty;?></td>
                 <td class="text-center">
                   <a href="update_medicine.php?id=<?php echo $row['id'];?>" class="btn btn-primary btn-sm btn-flat">
                     <i class="fa fa-edit"></i>

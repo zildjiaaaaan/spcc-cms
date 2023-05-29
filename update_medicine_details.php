@@ -200,51 +200,55 @@ include './config/sidebar.php';?>
     }
 
     $(document).ready(function() {
-        
-        $('#expiry').datetimepicker({
-          format: 'L',
-          minDate:new Date()
-        });
-        
-        $("form :input").blur(function() {
-          var medicineId = $("#medicine").val();
-          var expiry = $("#exp_date").val().trim();
-          var medicineUnit = $("#packing").val().trim();
 
-          var parts = expiry.split("/");
-          var formattedDate = parts[2] + "-" + parts[0].padStart(2, "0") + "-" + parts[1].padStart(2, "0");
+      $("#medicine").select2({
+        width: 'resolve'
+      });
+        
+      $('#expiry').datetimepicker({
+        format: 'L',
+        minDate:new Date()
+      });
+        
+      $("form :input").blur(function() {
+        var medicineId = $("#medicine").val();
+        var expiry = $("#exp_date").val().trim();
+        var medicineUnit = $("#packing").val().trim();
 
-          $("#medicine").val(medicineId);
-          // $("#expiry").val(formattedDate);
-          $("#packing").val(medicineUnit);
-          
-          if(medicineUnit !== '') {
-            $.ajax({
-              url: "ajax/check_medicine_unit.php",
-              type: 'GET', 
-              data: {
-                'medicine_id': medicineId,
-                'medicine_unit': medicineUnit,
-                'exp_date': formattedDate,
-                'update_id': <?php echo $medicineDetailId; ?>
-              },
-              cache:false,
-              async:false,
-              success: function (count, status, xhr) {
-                if(count > 0) {
-                  showCustomMessage("This medicine unit has already been stored. Please check inventory or the Trash.");
-                  $("#save_medicine").attr("disabled", "disabled");
-                } else {
-                  $("#save_medicine").removeAttr("disabled");
-                }
-              },
-              error: function (jqXhr, textStatus, errorMessage) {
-                showCustomMessage(errorMessage);
+        var parts = expiry.split("/");
+        var formattedDate = parts[2] + "-" + parts[0].padStart(2, "0") + "-" + parts[1].padStart(2, "0");
+
+        $("#medicine").val(medicineId);
+        // $("#expiry").val(formattedDate);
+        $("#packing").val(medicineUnit);
+        
+        if(medicineUnit !== '') {
+          $.ajax({
+            url: "ajax/check_medicine_unit.php",
+            type: 'GET', 
+            data: {
+              'medicine_id': medicineId,
+              'medicine_unit': medicineUnit,
+              'exp_date': formattedDate,
+              'update_id': <?php echo $medicineDetailId; ?>
+            },
+            cache:false,
+            async:false,
+            success: function (count, status, xhr) {
+              if(count > 0) {
+                showCustomMessage("This medicine unit has already been stored. Please check inventory or the Trash.");
+                $("#save_medicine").attr("disabled", "disabled");
+              } else {
+                $("#save_medicine").removeAttr("disabled");
               }
-            });
-          }
+            },
+            error: function (jqXhr, textStatus, errorMessage) {
+              showCustomMessage(errorMessage);
+            }
+          });
+        }
 
-        });
+      });
 
     });
 

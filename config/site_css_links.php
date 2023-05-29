@@ -12,12 +12,14 @@
 
   <link rel="stylesheet" href="dist/css/adminlte.min.css">
 
-<link rel="stylesheet" href="dist/js/jquery_confirm/jquery-confirm.css">
- 
+  <link rel="stylesheet" href="dist/js/jquery_confirm/jquery-confirm.css">
+  
 
-<link rel="stylesheet" href="dist/css/default.css" />
+  <link rel="stylesheet" href="dist/css/default.css" />
 
-<link rel="icon" type="image/x-icon" href="dist/img/logo1.png">
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+  <link rel="icon" type="image/x-icon" href="dist/img/logo1.png">
 
 <style>
   #loader-overlay {
@@ -26,7 +28,8 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 15, 30, 0.95); 
+    /* background-color: rgba(0, 15, 30, 0.98);  */
+    background-color: <?php echo ($_SESSION['dark_mode'] != "1") ? "rgba(255, 255, 255, 0.98)" : "rgba(0, 15, 30, 0.98)" ; ?>;
     z-index: 9999;
     display: flex;
     align-items: center;
@@ -45,6 +48,18 @@
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+  }
+
+  .cell-link {
+      color: <?php echo ($_SESSION['dark_mode'] != "1") ? "black;" : "white;" ; ?>;
+      text-decoration: none;
+  }
+  .select2-selection {
+      background-color: <?php echo ($_SESSION['dark_mode'] != "1") ? "white" : "#343a40" ; ?>;
+  }
+
+  .select2-selection__rendered {
+      color: <?php echo ($_SESSION['dark_mode'] != "1") ? "black" : "white" ; ?>;
   }
 
 </style>

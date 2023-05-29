@@ -289,6 +289,10 @@ if(isset($_GET['message'])) {
 
   $(document).ready(function() {
 
+    $("#medicine").select2({
+      width: 'resolve'
+    });
+
     $(".exp_date").hide();
     
     const url = new URL(window.location.href);
