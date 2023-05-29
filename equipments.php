@@ -12,11 +12,11 @@ if(isset($_POST['save_equipment'])) {
   $acquiredDateArr = explode("/", $_POST['date_acquired']);
   $acquiredDate = $acquiredDateArr[2].'-'.$acquiredDateArr[0].'-'.$acquiredDateArr[1];
 
-  $total_qty = $_POST['quantity'];
+  $total_qty = "NULL";
 
-  if($equipmentName != '' && $equipmentBrand != '' && $acquiredDate != '' && $total_qty != '') {
+  if($equipmentName != '' && $equipmentBrand != '' && $acquiredDate != '') {
    $query = "INSERT INTO `equipments`(`equipment`, `brand`, `date_acquired`, `total_qty`)
-   VALUES('$equipmentName', '$equipmentBrand', '$acquiredDate', '$total_qty');";
+   VALUES('$equipmentName', '$equipmentBrand', '$acquiredDate', $total_qty);";
    
    try {
 
@@ -98,13 +98,13 @@ include './config/sidebar.php';?>
           <div class="card-body">
             <form method="post">
              <div class="row">
-              <div class="col-lg-3 col-md-6 col-sm-6 col-xs-10">
+              <div class="col-lg-4 col-md-6 col-sm-6 col-xs-10">
                 <label>Equipment Name</label>
                 <input type="text" id="equipment_name" name="equipment_name" required="required" placeholder="e.g. Disposable Syringe"
                 class="form-control form-control-sm rounded-0" autofocus/>
               </div>
 
-              <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+              <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
                   <label>Brand</label>
                   <input id="equipment_brand" name="equipment_brand" class="form-control form-control-sm rounded-0" placeholder="Leave it blank for generic brand" required="required" />
               </div>
@@ -124,10 +124,10 @@ include './config/sidebar.php';?>
                 </div>
               </div>
 
-              <div class="col-lg-2 col-md-6 col-sm-6 col-xs-12">
+              <!-- <div class="col-lg-2 col-md-6 col-sm-6 col-xs-12">
                 <label>Quantity</label>
                 <input type="number" min="1" id="quantity" name="quantity" class="form-control form-control-sm rounded-0"  required="required"/>
-              </div>
+              </div> -->
 
               <div class="col-lg-1 col-md-12 col-sm-12 col-xs-2">
                 <label>&nbsp;</label>
@@ -189,7 +189,7 @@ include './config/sidebar.php';?>
                 <td><?php echo $row['equipment'];?></td>
                 <td><?php echo $row['brand'];?></td>
                 <td><?php echo $row['date_acquired'];?></td>
-                <td><?php echo $row['total_qty'];?></td>
+                <td><?php echo (!is_null($row['total_qty'])) ? $row['total_qty'] : "<i>Not Set</i>" ;?></td>
                 <td class="text-center">
                   <a href="update_equipment.php?id=<?php echo $row['id'];?>" class="btn btn-primary btn-sm btn-flat">
                     <i class="fa fa-edit"></i>

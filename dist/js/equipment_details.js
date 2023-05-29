@@ -120,7 +120,6 @@ $(function() {
                         $("#add_to_list").removeAttr("disabled");
                     }
                 },
-
             })
         }
     });

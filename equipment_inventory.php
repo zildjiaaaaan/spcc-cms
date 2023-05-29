@@ -106,8 +106,12 @@ include './config/sidebar.php';?>
                     $serial++;
 
                     // convert date format to YYYY/MM/DD
-                    $row['unavailable_since'] = date('Y/m/d', strtotime($row['unavailable_since']));
-                    $row['unavailable_until'] = date('Y/m/d', strtotime($row['unavailable_until']));
+                    if ($row['unavailable_since'] != null) {
+                      $row['unavailable_since'] = date('Y/m/d', strtotime($row['unavailable_since']));
+                    }
+                    if ($row['unavailable_until'] != null) {
+                      $row['unavailable_until'] = date('Y/m/d', strtotime($row['unavailable_until']));
+                    }
                     
                     $rowBorrowed = array();
                     $b_id = "";
