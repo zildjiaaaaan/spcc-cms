@@ -97,7 +97,7 @@ include './config/sidebar.php';?>
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <label>State</label>
                   <select id="state" name="state" class="form-control form-control-sm rounded-0">
-                    <?php echo getState($row['state']);?>
+                    <?php echo getState($row['status'], $row['state']);?>
                   </select>
                 </div>
 
@@ -105,8 +105,7 @@ include './config/sidebar.php';?>
                 
                 <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
                   <label>Remarks</label>
-                  <textarea id="remarks" name="remarks" class="form-control form-control-sm rounded-0"><?php echo $row['remarks']; ?>
-                  </textarea>
+                  <textarea id="remarks" name="remarks" class="form-control form-control-sm rounded-0"><?php echo $row['remarks']; ?></textarea>
                 </div>
                 
                 <div class="col-lg-3 col-md-2 col-sm-6 col-xs-12">
@@ -199,48 +198,25 @@ if(isset($_GET['message'])) {
 <script src="plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
 <script>
 
-    $('#unavailable_since, #unavailable_until').datetimepicker({
-        format: 'L'
-    });
+  var serial = 1;
+  showMenuSelected("#mnu_equipments", "#mi_equipment_inventory");
 
-    var status = "<?php echo $row['status']; ?>";
-    var state = "<?php echo $row['state']; ?>";
+  var message = '<?php echo $message;?>';
 
-    if (status != "Unavailable") {
-        $(".unavailable").hide();
-    } else if (status != "Available" && state != "Borrowed") {
-        $(".borrower").hide();
-    }
-    
-    $(function () {
+  if(message !== '') {
+    showCustomMessage(message);
+  }
 
-      $("#customSwitch1").on("change", function(){
-          if($(this).prop("checked") == true){
-              $("body").removeClass("dark-mode");
-          } else {
-              $("body").addClass("dark-mode");
-          }
-      });
+  var status = "<?php echo $row['status']; ?>";
+  var state = "<?php echo $row['state']; ?>";
 
-      $("#status").change(function() {
-          var status = $("#status option:selected").text();
-          var html = '';
+  if (status != "Unavailable") {
+      $(".unavailable").hide();
+  } else if (status != "Available" && state != "Borrowed") {
+      $(".borrower").hide();
+  }
 
-          if (status === 'Available') {
-              html = '<option value="Active">Active</option>';
-              html += '<option value="Non-Borrowable">Non-Borrowable</option>';
-          } else if (status === 'Unavailable') {
-              html = '<option value="Used">Used</option>';
-              html += '<option value="Missing">Missing</option>';
-              html += '<option value="Defective">Defective</option>';
-              html += '<option value="In Repair">In Repair</option>';
-              html += '<option value="Borrowed">Borrowed</option>';
-              html += '<option value="Transferred">Transferred</option>';
-          }
-
-          $("#state").html(html);
-      });
-    });
 </script>
+<script src="dist/js/update_equipment_inventory.js"></script>
 </body>
 </html>

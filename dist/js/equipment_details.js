@@ -1,6 +1,17 @@
 var equipmentDetailsArr = [];
 
 $(function() {
+
+    $("#equipment").select2({
+        width: 'resolve',
+        placeholder: "Select Equipment"
+    });
+
+    $("#borrower").select2({
+        width: 'resolve',
+        placeholder: "Select Borrower"
+    });
+    
     // Set the height of the quantity input
     $("#quantity").css("height", "52px");
 
@@ -16,7 +27,7 @@ $(function() {
         }
     });
 
-    // Set datetimepicker format
+    //Set datetimepicker format
     $('#unavailable_since, #unavailable_until').datetimepicker({
         format: 'L'
     });
@@ -72,9 +83,9 @@ $(function() {
     var f_unavailableSince = '';
     var f_unavailableUntil = '';
 
-    $("form :input").change(function() {
+    $("form :input").blur(function() {
         var equipmentId = $("#equipment").val();
-        var equipmentName = $("#equipment option:selected").text();
+        // var equipmentName = $("#equipment option:selected").text();
         var remarks = $("#remarks").val().trim();
         var checkForm = true;
         
@@ -94,7 +105,6 @@ $(function() {
         } else {
             if (status === 'Unavailable') {
                 checkForm = false;
-                console.log(checkForm);
             }
         }
 

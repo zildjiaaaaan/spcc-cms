@@ -19,11 +19,13 @@ function getGender($gender = '') {
 	return $data;
 }
 
-function getState($state = '') {
+function getState($status, $state = '') {
 	$data = '<option value="">Select State</option>';
-	
-	$arr = array("Active", "Non-Borrowable", "Used", "Missing", "Defective", "In Repair", "Borrowed", "Transferred");
 
+	$arr = ($status == "Unavailable")
+		? ["Used", "Missing", "Defective", "Borrowed"]
+		: ["Active", "Non-Borrowable"];
+	
 	$i = 0;
 	$size = sizeof($arr);
 

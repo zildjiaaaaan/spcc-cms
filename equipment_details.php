@@ -303,17 +303,7 @@ if(isset($_GET['message'])) {
 <script src="plugins/daterangepicker/daterangepicker.js"></script>
 <script src="plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
 
-<script>
-
-  $("#equipment").select2({
-    width: 'resolve',
-    placeholder: "Select Equipment"
-  });
-
-  $("#borrower").select2({
-    width: 'resolve',
-    placeholder: "Select Borrower"
-  });
+<script>  
 
   var serial = 1;
   showMenuSelected("#mnu_equipments", "#mi_equipment_details");
