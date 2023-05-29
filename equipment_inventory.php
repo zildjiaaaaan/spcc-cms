@@ -149,7 +149,12 @@ include './config/sidebar.php';?>
                           echo ($row['status'] == "Available") ? "isAvailable" : "";
                       ?></p>
                       </a></td>
-                    <td><a class="cell-link" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="<?php echo (!empty($rowBorrowed)) ? "Borrowed by: ".$rowBorrowed['borrower_id']." - ".strtoupper($rowBorrowed['lname']) : "";?>"><?php echo $row['state'];?></a></td>
+                    <td>
+                      <a class="cell-link" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="<?php echo (!empty($rowBorrowed)) ? "Borrowed by: ".$rowBorrowed['borrower_id']." - ".strtoupper($rowBorrowed['lname']) : "";?>"><?php echo $row['state'];?></a>
+                      <p class="search_tag"><?php
+                          echo (!empty($rowBorrowed)) ? "Borrowed by: ".$rowBorrowed['borrower_id']." - ".strtoupper($rowBorrowed['lname']) : "";
+                      ?></p>
+                    </td>
                     <td><?php echo $row['quantity'];?></td>
                     <td><?php echo $row['remarks'];?></td>
                     
