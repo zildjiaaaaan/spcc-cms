@@ -110,7 +110,7 @@ include './config/sidebar.php';?>
           <div class="card-body">
             <form method="post">
               <div class="row">
-                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 medicine-select">
                   <label>Select Medicine</label>
                   <select id="medicine" name="medicine" class="form-control form-control-sm rounded-0" required="required">
                     <?php echo $medicines;?>
@@ -293,6 +293,14 @@ if(isset($_GET['message'])) {
       width: 'resolve'
     });
 
+    // setTimeout(function() {
+    //   $('.select2-container-active').removeClass('select2-container-active');
+    //   $(':focus').blur();
+
+    //   // Check if the Select2 element is blurred
+    //   console.log("Is Select2 element blurred?", !$(':focus').is('.select2-container-active'));
+    // }, 1);
+
     $(".exp_date").hide();
     
     const url = new URL(window.location.href);
@@ -322,41 +330,66 @@ if(isset($_GET['message'])) {
       minDate:new Date()
     });
 
+    var selectClicked = false;
 
-    $("form :input").blur(function() {
-      
-      var medicineId = $("#medicine").val();
-      var medicineUnit = $("#packing").val().trim();
-
-      $("#medicine").val(medicineId);
-      $("#packing").val(medicineUnit);
-      
-      if(medicineUnit !== '') {
-        $.ajax({
-          url: "ajax/check_medicine_unit.php",
-          type: 'GET', 
-          data: {
-            'medicine_id': medicineId,
-            'medicine_unit': medicineUnit
-          },
-          cache:false,
-          async:false,
-          success: function (count, status, xhr) {
-            if(count > 0) {
-              showCustomMessage("This medicine unit has already been stored. Please check inventory or the Trash.");
-              $("#save_medicine").attr("disabled", "disabled");
-            } else {
-              $("#save_medicine").removeAttr("disabled");
-            }
-          },
-          error: function (jqXhr, textStatus, errorMessage) {
-            showCustomMessage(errorMessage);
-          }
-        });
-      }
-
+    $('.medicine-select').on('click', function() {
+      selectClicked = true;
     });
+
+    // Event listener for clicks outside the <select> element
+    $(document).on('click', function(event) {
+      var target = $(event.target);
+
+      // Check if the click occurred outside the <select> element just after clicking inside it
+      if (!target.is('.medicine-select') && !target.parents().is('.medicine-select') && selectClicked) {
+        // Force blur on Select2 element
+        setTimeout(function() {
+          $('.select2-container-active').removeClass('select2-container-active');
+          $(':focus').blur();
+          handleBlurEvent();
+          console.log("Is Select2 element blurred?", !$(':focus').is('.select2-container-active'));
+        }, 1);
+
+        // Reset selectClicked flag
+        selectClicked = false;
+      }
+    });
+
+    $("form :input").blur(handleBlurEvent);
+    
   });
+
+  function handleBlurEvent() {
+    var medicineId = $("#medicine").val();
+    var medicineUnit = $("#packing").val().trim();
+
+    $("#medicine").val(medicineId);
+    $("#packing").val(medicineUnit);
+
+    if (medicineUnit !== '') {
+      $.ajax({
+        url: "ajax/check_medicine_unit.php",
+        type: 'GET',
+        data: {
+          'medicine_id': medicineId,
+          'medicine_unit': medicineUnit
+        },
+        cache: false,
+        async: false,
+        success: function(count, status, xhr) {
+          if (count > 0) {
+            showCustomMessage("This medicine unit has already been stored. Please check inventory or the Trash.");
+            $("#save_medicine").attr("disabled", "disabled");
+          } else {
+            $("#save_medicine").removeAttr("disabled");
+          }
+        },
+        error: function(jqXhr, textStatus, errorMessage) {
+          showCustomMessage(errorMessage);
+        }
+      });
+    }
+  }
 
 </script>
 </body>
