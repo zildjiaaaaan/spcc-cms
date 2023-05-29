@@ -124,7 +124,7 @@ function getUniqueMedicines($con, $medicineId = 0) {
 		exit;
 	}
 
-	$data = '<option value="">Select Medicine</option>';
+	$data = '<option value=""></option>';
 
 	while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 		if($medicineId == $row['id']) {
@@ -205,7 +205,7 @@ function getActivePatients($con) {
 		exit;
 	}
 
-	$data = '<option value="">Select Patient</option>';
+	$data = '<option value=""></option>';
 
 	while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 		$data = $data.'<option value="'.$row['id'].'">'.$row['patient_name'].' ('.$row['cnic'].')'.'</option>';
@@ -228,7 +228,7 @@ function getUniqueEquipments($con, $equipmentId = 0) {
 		exit;
 	}
 
-	$data = '<option value="">Select Equipment</option>';
+	$data = '<option value=""></option>';
 
 	while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 		if($equipmentId == $row['id']) {

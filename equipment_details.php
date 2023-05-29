@@ -306,7 +306,13 @@ if(isset($_GET['message'])) {
 <script>
 
   $("#equipment").select2({
-    width: 'resolve'
+    width: 'resolve',
+    placeholder: "Select Equipment"
+  });
+
+  $("#borrower").select2({
+    width: 'resolve',
+    placeholder: "Select Borrower"
   });
 
   var serial = 1;

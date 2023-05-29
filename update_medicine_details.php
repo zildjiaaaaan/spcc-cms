@@ -8,7 +8,7 @@ if(isset($_POST['submit'])) {
 
   $medicineId = $_POST['medicine'];
   $medicineDetailId = $_POST['hidden_id'];
-  $packing = $_POST['packing'];
+  $packing = ucwords(strtolower(trim($_POST['packing'])));
   $quantity = $_POST['quantity'];
 
   $expDateArr = explode("/", $_POST['expiry']);
@@ -117,7 +117,7 @@ include './config/sidebar.php';?>
               value="<?php echo $medicineDetailId;?>" />
 
               <div class="row">
-                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 select-select2">
                   <label>Select Medicine</label>
                   <select id="medicine" name="medicine" class="form-control form-control-sm rounded-0" required="required">
                     <?php echo $medicines;?>
@@ -202,7 +202,8 @@ include './config/sidebar.php';?>
     $(document).ready(function() {
 
       $("#medicine").select2({
-        width: 'resolve'
+        width: 'resolve',
+        placeholder: "Enter borrower name"
       });
         
       $('#expiry').datetimepicker({
@@ -210,47 +211,48 @@ include './config/sidebar.php';?>
         minDate:new Date()
       });
         
-      $("form :input").blur(function() {
-        var medicineId = $("#medicine").val();
-        var expiry = $("#exp_date").val().trim();
-        var medicineUnit = $("#packing").val().trim();
-
-        var parts = expiry.split("/");
-        var formattedDate = parts[2] + "-" + parts[0].padStart(2, "0") + "-" + parts[1].padStart(2, "0");
-
-        $("#medicine").val(medicineId);
-        // $("#expiry").val(formattedDate);
-        $("#packing").val(medicineUnit);
-        
-        if(medicineUnit !== '') {
-          $.ajax({
-            url: "ajax/check_medicine_unit.php",
-            type: 'GET', 
-            data: {
-              'medicine_id': medicineId,
-              'medicine_unit': medicineUnit,
-              'exp_date': formattedDate,
-              'update_id': <?php echo $medicineDetailId; ?>
-            },
-            cache:false,
-            async:false,
-            success: function (count, status, xhr) {
-              if(count > 0) {
-                showCustomMessage("This medicine unit has already been stored. Please check inventory or the Trash.");
-                $("#save_medicine").attr("disabled", "disabled");
-              } else {
-                $("#save_medicine").removeAttr("disabled");
-              }
-            },
-            error: function (jqXhr, textStatus, errorMessage) {
-              showCustomMessage(errorMessage);
-            }
-          });
-        }
-
-      });
+      $("form :input").blur(handleBlurEvent);
 
     });
+
+    function handleBlurEvent() {
+      var medicineId = $("#medicine").val();
+      var expiry = $("#exp_date").val().trim();
+      var medicineUnit = $("#packing").val().trim();
+
+      var parts = expiry.split("/");
+      var formattedDate = parts[2] + "-" + parts[0].padStart(2, "0") + "-" + parts[1].padStart(2, "0");
+
+      $("#medicine").val(medicineId);
+      // $("#expiry").val(formattedDate);
+      $("#packing").val(medicineUnit);
+      
+      if(medicineUnit !== '') {
+        $.ajax({
+          url: "ajax/check_medicine_unit.php",
+          type: 'GET', 
+          data: {
+            'medicine_id': medicineId,
+            'medicine_unit': medicineUnit,
+            'exp_date': formattedDate,
+            'update_id': <?php echo $medicineDetailId; ?>
+          },
+          cache:false,
+          async:false,
+          success: function (count, status, xhr) {
+            if(count > 0) {
+              showCustomMessage("This medicine unit has already been stored. Please check inventory or the Trash.");
+              $("#save_medicine").attr("disabled", "disabled");
+            } else {
+              $("#save_medicine").removeAttr("disabled");
+            }
+          },
+          error: function (jqXhr, textStatus, errorMessage) {
+            showCustomMessage(errorMessage);
+          }
+        });
+      }
+    }
 
 
   </script>

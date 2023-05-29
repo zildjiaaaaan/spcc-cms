@@ -132,9 +132,6 @@ $(function() {
 
         var equipmentId = $("#equipment").val();
         var equipmentName = $("#equipment option:selected").text();
-        
-        // var status = $("#status").val();
-        // var state = $("#state").val();
 
         // if remarks has "_" then replace it with "-"
         var remarks = $("#remarks").val().trim();      
@@ -260,6 +257,7 @@ $(function() {
         // reset the form
         if (clearForm) {
             $("#equipment, #status, #state, #remarks, #quantity").val('');
+            $("#equipment").select2("val", "");
 
             if (status === 'Unavailable') {
                 $("#unavailable_since, #unavailable_until").val('');

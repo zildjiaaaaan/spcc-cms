@@ -121,7 +121,8 @@ include './config/footer.php';
   $(document).ready(function() {
 
     $("#borrower").select2({
-      width: 'resolve'
+      width: 'resolve',
+      placeholder: "Enter borrower name"
     });
 
     $("#search").click(function() {

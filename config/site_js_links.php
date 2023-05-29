@@ -51,7 +51,7 @@ $(function () {
 
         var isLightMode = $("#customSwitch1").prop("checked");
         toggleMode(isLightMode);
-    }, 750);
+    }, 1500);
 
     var isLightMode = $("#customSwitch1").prop("checked");
     toggleMode(isLightMode);
@@ -70,6 +70,33 @@ $(function () {
                 //console.log(data);
             }
         });
+    });
+
+
+    // Force blur to select2 elements
+    var selectClicked = false;
+
+    $('.select-select2').on('click', function() {
+      selectClicked = true;
+    });
+
+    // Event listener for clicks outside the <select> element
+    $(document).on('click', function(event) {
+      var target = $(event.target);
+
+      // Check if the click occurred outside the <select> element just after clicking inside it
+      if (!target.is('.select-select2') && !target.parents().is('.select-select2') && selectClicked) {
+        // Force blur on Select2 element
+        setTimeout(function() {
+          $('.select2-container-active').removeClass('select2-container-active');
+          $(':focus').blur();
+          handleBlurEvent();
+          // console.log("Is Select2 element blurred?", !$(':focus').is('.select2-container-active'));
+        }, 1);
+
+        // Reset selectClicked flag
+        selectClicked = false;
+      }
     });
 });
 

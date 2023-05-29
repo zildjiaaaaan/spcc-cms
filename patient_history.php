@@ -123,7 +123,8 @@ include './config/footer.php';
   $(document).ready(function() {
 
     $("#patient").select2({
-      width: 'resolve'
+      width: 'resolve',
+      placeholder: "Enter patient name"
     });
 
     const url = new URL(window.location.href);

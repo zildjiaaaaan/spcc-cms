@@ -13,7 +13,8 @@
                   FROM `medicine_details` 
                   WHERE `medicine_id` = '$medicineId'
                     AND `packing` = '$medicineUnit'
-                    AND `exp_date` = '$exp_date';";
+                    AND `exp_date` = '$exp_date'
+                    AND `id` <> '$id';";
     }
 
   $stmt = $con->prepare($query);

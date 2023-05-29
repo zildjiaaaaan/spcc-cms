@@ -29,7 +29,7 @@
     width: 100%;
     height: 100%;
     /* background-color: rgba(0, 15, 30, 0.98);  */
-    background-color: <?php echo ($_SESSION['dark_mode'] != "1") ? "rgba(255, 255, 255, 0.98)" : "rgba(0, 15, 30, 0.98)" ; ?>;
+    background-color: <?php echo ($_SESSION['dark_mode'] != "1") ? "rgba(255, 255, 255, 0.99)" : "rgba(0, 15, 30, 0.99)" ; ?>;
     z-index: 9999;
     display: flex;
     align-items: center;

@@ -41,7 +41,6 @@ if(isset($_POST['submit'])) {
 
 
 $medicines = getUniqueMedicines($con);
-//$brands = getBrands($con);
 
 $query = "SELECT `m`.`medicine_name`, `m`.`medicine_brand`, `md`.`id`, `md`.`packing`,  `md`.`medicine_id`, `md`.`exp_date`, `md`.`quantity`
           FROM `medicines` as `m`, `medicine_details` as `md` 
@@ -110,7 +109,7 @@ include './config/sidebar.php';?>
           <div class="card-body">
             <form method="post">
               <div class="row">
-                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 medicine-select">
+                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 select-select2">
                   <label>Select Medicine</label>
                   <select id="medicine" name="medicine" class="form-control form-control-sm rounded-0" required="required">
                     <?php echo $medicines;?>
@@ -290,16 +289,9 @@ if(isset($_GET['message'])) {
   $(document).ready(function() {
 
     $("#medicine").select2({
-      width: 'resolve'
+      width: 'resolve',
+      placeholder: "Select Medicine"
     });
-
-    // setTimeout(function() {
-    //   $('.select2-container-active').removeClass('select2-container-active');
-    //   $(':focus').blur();
-
-    //   // Check if the Select2 element is blurred
-    //   console.log("Is Select2 element blurred?", !$(':focus').is('.select2-container-active'));
-    // }, 1);
 
     $(".exp_date").hide();
     
@@ -330,33 +322,8 @@ if(isset($_GET['message'])) {
       minDate:new Date()
     });
 
-    var selectClicked = false;
-
-    $('.medicine-select').on('click', function() {
-      selectClicked = true;
-    });
-
-    // Event listener for clicks outside the <select> element
-    $(document).on('click', function(event) {
-      var target = $(event.target);
-
-      // Check if the click occurred outside the <select> element just after clicking inside it
-      if (!target.is('.medicine-select') && !target.parents().is('.medicine-select') && selectClicked) {
-        // Force blur on Select2 element
-        setTimeout(function() {
-          $('.select2-container-active').removeClass('select2-container-active');
-          $(':focus').blur();
-          handleBlurEvent();
-          console.log("Is Select2 element blurred?", !$(':focus').is('.select2-container-active'));
-        }, 1);
-
-        // Reset selectClicked flag
-        selectClicked = false;
-      }
-    });
-
     $("form :input").blur(handleBlurEvent);
-    
+
   });
 
   function handleBlurEvent() {

@@ -157,7 +157,7 @@ include './config/sidebar.php';?>
             <!-- best practices-->
             <form method="post">
               <div class="row">
-                <div class="col-lg-5 col-md-4 col-sm-6 col-xs-12">
+                <div class="col-lg-5 col-md-4 col-sm-6 col-xs-12 select-select2">
                   <label>Select Patient</label>
                   <select id="patient" name="patient" class="form-control form-control-sm rounded-0" 
                   required="required" autofocus>
@@ -231,7 +231,7 @@ include './config/sidebar.php';?>
     <div class="clearfix">&nbsp;</div>
 
     <div class="row">
-     <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+     <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 select-select2">
       <label>Select Medicine</label>
       <select id="medicine" class="form-control form-control-sm rounded-0">
         <?php echo $medicines;?>
@@ -344,8 +344,14 @@ if(isset($_GET['message'])) {
 
   $(document).ready(function() {
 
-    $("#medicine, #patient").select2({
-      width: 'resolve'
+    $("#patient").select2({
+      width: 'resolve',
+      placeholder: "Select Patient"
+    });
+
+    $("#medicine").select2({
+      width: 'resolve',
+      placeholder: "Select Medicine"
     });
 
     $("#customSwitch1").on("change", function(){
@@ -356,19 +362,7 @@ if(isset($_GET['message'])) {
         }
     });
 
-    $("form :input").blur(function() {
-      var bp = $("#bp").val().trim();
-      var weight = $("#weight").val().trim();
-
-      if (bp != '' && /[^0-9/NA]/.test(bp)) {
-        showCustomMessage("Invalid characters in Blood Pressure field.");
-        $("#save_Patient").attr("disabled", "disabled");
-      } else if (/\D/.test(weight)) {
-        showCustomMessage("Invalid characters in Weight field.");
-        $("#save_Patient").attr("disabled", "disabled");
-      }
-    });
-    
+    $("form :input").blur(handleBlurEvent);
     
     $('#medication_list').find('td').addClass("px-2 py-1 align-middle")
     $('#medication_list').find('th').addClass("p-1 align-middle")
@@ -547,6 +541,19 @@ if(isset($_GET['message'])) {
       }
     }
 
+  }
+
+  function handleBlurEvent() {
+    var bp = $("#bp").val().trim();
+    var weight = $("#weight").val().trim();
+
+    if (bp != '' && /[^0-9/NA]/.test(bp)) {
+      showCustomMessage("Invalid characters in Blood Pressure field.");
+      $("#save_Patient").attr("disabled", "disabled");
+    } else if (/\D/.test(weight)) {
+      showCustomMessage("Invalid characters in Weight field.");
+      $("#save_Patient").attr("disabled", "disabled");
+    }
   }
 </script>
 </body>
