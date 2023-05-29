@@ -28,8 +28,22 @@ $(function() {
     });
 
     //Set datetimepicker format
-    $('#unavailable_since, #unavailable_until').datetimepicker({
-        format: 'L'
+    // $('#unavailable_since, #unavailable_until').datetimepicker({
+    //     format: 'L',
+    // });
+
+    $('#unavailable_since').datetimepicker({
+        format: 'L',
+    });
+    $('#unavailable_until').datetimepicker({
+        format: 'L',
+        useCurrent: false
+    });
+    $("#unavailable_since").on("change.datetimepicker", function (e) {
+        $('#unavailable_until').datetimepicker('minDate', e.date);
+    });
+    $("#unavailable_until").on("change.datetimepicker", function (e) {
+        $('#unavailable_since').datetimepicker('maxDate', e.date);
     });
 
     // if #status is Available, then #state can be active or non-borrowable

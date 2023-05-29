@@ -187,8 +187,7 @@ include './config/sidebar.php';?>
                 <div class="col-lg-4 col-md-6 col-sm-6 col-xs-10 unavailable">
                   <div class="form-group">
                     <label>Unavailable Since</label>
-                    <div class="input-group date" id="unavailable_since" 
-                        data-target-input="nearest">
+                    <div class="input-group date" id="unavailable_since" data-target-input="nearest">
                         <input type="text" value="<?php echo date("m/d/Y"); ?>" id="unavailableSince" class="form-control form-control-sm rounded-0 datetimepicker-input" data-target="#unavailable_since" name="unavailable_since" data-toggle="datetimepicker" autocomplete="off"/>
                         <div class="input-group-append" 
                         data-target="#unavailable_since" 
