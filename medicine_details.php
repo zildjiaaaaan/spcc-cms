@@ -109,34 +109,25 @@ include './config/sidebar.php';?>
           <div class="card-body">
             <form method="post">
               <div class="row">
-                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 select-select2">
+                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 select-select2">
                   <label>Select Medicine</label>
                   <select id="medicine" name="medicine" class="form-control form-control-sm rounded-0 select2" required="required">
                     <?php echo $medicines;?>
                   </select>
                 </div>
 
-                <!-- <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                  <label>Select Brand</label>
-                  <select id="brand" name="brand" class="form-control form-control-sm rounded-0" required="required">
-                    
-                  </select>
-                </div> -->
-
-                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
                   <label>Unit</label>
                   <input id="packing" name="packing" class="form-control form-control-sm rounded-0"  required="required" placeholder="e.g. Tablet, Capsule, Syrup, etc."/>
                 </div>
 
-                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-10">
+                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-10">
                   <div class="form-group">
                     <label>Expiration Date</label>
                     <div class="input-group date" id="expiry" 
                         data-target-input="nearest">
                         <input type="text" class="form-control form-control-sm rounded-0 datetimepicker-input" data-target="#expiry" name="expiry" required="required" data-toggle="datetimepicker" autocomplete="off"/>
-                        <div class="input-group-append" 
-                        data-target="#expiry" 
-                        data-toggle="datetimepicker">
+                        <div class="input-group-append" data-target="#expiry" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                       </div>
                     </div>
@@ -145,7 +136,12 @@ include './config/sidebar.php';?>
 
                 <div class="col-lg-2 col-md-6 col-sm-6 col-xs-12">
                   <label>Quantity</label>
-                  <input type="number" min="1" id="quantity" name="quantity" class="form-control form-control-sm rounded-0"  required="required"/>
+                  <input type="number" min="1" id="quantity" name="quantity" class="form-control form-control-sm rounded-0" required="required"/>
+                </div>
+
+                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-10">
+                  <label>Picture (Optional)</label>
+                  <input type="file" id="img_medicine" name="img_medicine" class="form-control form-control-sm rounded-0" />
                 </div>
 
                 <div class="col-lg-1 col-md-12 col-sm-12 col-xs-12">

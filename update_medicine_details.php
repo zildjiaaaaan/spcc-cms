@@ -48,8 +48,8 @@ $packing = $_GET['packing'];
 $medicines = getUniqueMedicines($con, $medicineId);
 
 try {
-  $query = "SELECT date_format(`exp_date`, '%m/%d/%Y') AS `exp_date`, `quantity`
-            FROM `medicine_details` where `id` = '$medicineDetailId';";
+  $query = "SELECT `medicine_name`, `medicine_brand`, `packing`, date_format(`exp_date`, '%m/%d/%Y') AS `exp_date`, `quantity`
+            FROM `medicine_details`, `medicines` WHERE `medicine_details`.`id` = '$medicineDetailId';";
   
     $stmtMedDetails = $con->prepare($query);
     $stmtMedDetails->execute();
@@ -72,6 +72,9 @@ try {
  <?php include './config/site_css_links.php';?>
  <?php include './config/data_tables_css.php';?>
  <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+ <link rel="stylesheet" href="plugins/ekko-lightbox/ekko-lightbox.css">
+ <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.css" integrity="sha512-Velp0ebMKjcd9RiCoaHhLXkR1sFoCCWXNp6w4zj1hfMifYB5441C+sKeBl/T/Ka6NjBiRfBBQRaQq65ekYz3UQ==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
+
  <title>Update Medicine Details - SPCC Caloocan Clinic</title>
 
 </head>
@@ -157,10 +160,41 @@ include './config/sidebar.php';?>
                   <button id="save_medicine" type="submit" id="submit" name="submit" 
                   class="btn btn-primary btn-sm btn-flat btn-block">Save</button>
                 </div>
+                
               </div>
             </form>
           </div>
           <!-- /.card-body -->
+          <div class="col-md-12"><hr /></div>
+          <!-- <div class="clearfix">&nbsp;</div> -->
+
+          <div class="card-body">
+            <h6><b>Photo Uploaded</b></h6>
+            <div class="row d-flex justify-content-center">  
+              <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+
+              <?php
+                // change
+                $filename = 'user_images\sample.jpg';
+
+                $exif = exif_read_data($filename, 'EXIF', true);
+                
+                $timestamp = strtotime($exif['EXIF']['DateTimeOriginal']);
+                $formattedDate = date("F d, Y", $timestamp);
+                $formattedTime = date("h:ia", $timestamp);
+                
+                $dateTaken = "$formattedDate at $formattedTime";
+                $title = strtoupper($row['medicine_name'])." — ".$row['medicine_brand']." (".$row['packing'].") - ".$row['quantity']." pcs.";
+              ?>
+
+                <a href="user_images\sample.jpg" data-toggle="lightbox" data-title="<?php echo $title; ?>" data-footer="Date Taken: <?php echo $dateTaken; ?>">
+                    <img src="user_images\sample.jpg" class="img-fluid">
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="clearfix">&nbsp;</div>
+          <div class="clearfix">&nbsp;</div>
           
         </div>
         <!-- /.card -->
@@ -171,6 +205,8 @@ include './config/sidebar.php';?>
 
       <!-- /.content-wrapper -->
     </div>
+
+    
 
     <?php include './config/footer.php';
 
@@ -189,6 +225,14 @@ include './config/sidebar.php';?>
   <script src="plugins/moment/moment.min.js"></script>
   <script src="plugins/daterangepicker/daterangepicker.js"></script>
   <script src="plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.min.js" integrity="sha512-Y2IiVZeaBwXG1wSV7f13plqlmFOx8MdjuHyYFVoYzhyRr3nH/NMDjTBSswijzADdNzMyWNetbLMfOpIPl6Cv9g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.js" integrity="sha512-YibiFIKqwi6sZFfPm5HNHQYemJwFbyyYHjrr3UT+VobMt/YBo1kBxgui5RWc4C3B4RJMYCdCAJkbXHt+irKfSA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+  
+  <script src="plugins/ekko-lightbox/ekko-lightbox.min.js"></script>
+  <script src="plugins/ekko-lightbox/ekko-lightbox.js"></script>
+  <!-- <script src="plugins/ekko-lightbox/ekko-lightbox.js.map"></script>
+  <script src="plugins/ekko-lightbox/ekko-lightbox.min.js.map"></script> -->
+
 
   <script>
     showMenuSelected("#mnu_medicines", "#mi_medicine_details");
@@ -200,6 +244,11 @@ include './config/sidebar.php';?>
     }
 
     $(document).ready(function() {
+
+      $(document).on('click', '[data-toggle="lightbox"]', function(event) {
+          event.preventDefault();
+          $(this).ekkoLightbox();
+      });
 
       $("#medicine").select2({
         width: 'resolve',

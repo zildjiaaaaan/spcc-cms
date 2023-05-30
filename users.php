@@ -62,7 +62,7 @@ header("location:congratulation.php?goto_page=users.php&message=$message");
 exit;
 }
   //https://www.w3schools.com/php/php_file_upload.asp
-/**
+/*
 we will save the user picture in a separate folder.
 and in database we will store the picture name only.
 
