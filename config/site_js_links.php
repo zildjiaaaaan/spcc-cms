@@ -42,6 +42,16 @@ function hideLoader() {
     }
 }
 
+function updateLiveTime() {
+  var now = new Date();
+  var options = { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true };
+  var time = now.toLocaleString('en-US', options);
+  $('#live-time').text("Today is " + time);
+}
+
+// Update the live time every second
+setInterval(updateLiveTime, 1000);
+
 $(function () {
 
     showLoader();

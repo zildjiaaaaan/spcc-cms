@@ -106,9 +106,11 @@ include './config/sidebar.php';
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1><?php 
-            date_default_timezone_set("Asia/Singapore");
-            echo "Today is ".date("M d, Y")." — ".date("h:ia"); ?>
+            <h1 id="live-time">
+              <?php
+                // date_default_timezone_set("Asia/Singapore");
+                // echo "Today is ".date("M d, Y")." — ".date("h:ia");
+              ?>
             </h1>
           </div>
         </div>
