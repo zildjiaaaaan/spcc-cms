@@ -149,7 +149,7 @@ include './config/sidebar.php';?>
               <div class="row">
                 <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 select-select2">
                   <label>Select Equipment</label>
-                  <select id="equipment" name="equipment" class="form-control form-control-sm rounded-0">
+                  <select id="equipment" name="equipment" class="form-control form-control-sm rounded-0 select2">
                     <?php echo $equipments;?>
                   </select>
                 </div>
@@ -215,7 +215,7 @@ include './config/sidebar.php';?>
 
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 unavailable borrower select-select2">
                   <label>Borrower</label>
-                  <select id="borrower" name="borrower" class="form-control form-control-sm rounded-0">
+                  <select id="borrower" name="borrower" class="form-control form-control-sm rounded-0 select2">
                     <?php echo $borrowers;?>
                   </select>
                 </div>

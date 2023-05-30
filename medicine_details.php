@@ -111,7 +111,7 @@ include './config/sidebar.php';?>
               <div class="row">
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 select-select2">
                   <label>Select Medicine</label>
-                  <select id="medicine" name="medicine" class="form-control form-control-sm rounded-0" required="required">
+                  <select id="medicine" name="medicine" class="form-control form-control-sm rounded-0 select2" required="required">
                     <?php echo $medicines;?>
                   </select>
                 </div>

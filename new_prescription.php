@@ -159,7 +159,7 @@ include './config/sidebar.php';?>
               <div class="row">
                 <div class="col-lg-5 col-md-4 col-sm-6 col-xs-12 select-select2">
                   <label>Select Patient</label>
-                  <select id="patient" name="patient" class="form-control form-control-sm rounded-0" 
+                  <select id="patient" name="patient" class="form-control form-control-sm rounded-0 select2" 
                   required="required" autofocus>
                   <?php echo $patients; ?>
                 </select>
@@ -233,7 +233,7 @@ include './config/sidebar.php';?>
     <div class="row">
      <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 select-select2">
       <label>Select Medicine</label>
-      <select id="medicine" class="form-control form-control-sm rounded-0">
+      <select id="medicine" class="form-control form-control-sm rounded-0 select2">
         <?php echo $medicines;?>
       </select>
     </div>
