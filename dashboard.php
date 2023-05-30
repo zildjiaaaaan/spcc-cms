@@ -119,6 +119,8 @@ include './config/sidebar.php';
     <section class="content">
       <div class="container-fluid">
         <!-- Small boxes (Stat box) -->
+        <!--------------------------------------------- PATIENTS -------------------------------------->
+
         <div class="row">
           <div class="col-lg-3 col-6">
             <!-- small box -->
@@ -414,22 +416,10 @@ include './config/sidebar.php';
 
         try {
 
-            $queryDel = "SELECT COUNT(*) AS `deleted`
-                          FROM (
-                              SELECT `is_del` FROM `medicines`
-                              UNION ALL
-                              SELECT `is_del` FROM `patients`
-                              UNION ALL
-                              SELECT `is_del` FROM `medicine_details`
-                              UNION ALL
-                              SELECT `is_del` FROM `equipments`
-                              UNION ALL
-                              SELECT `is_del` FROM `equipment_details`
-                              UNION ALL
-                              SELECT `is_del` FROM `borrowers`
-                          ) AS `combined`
-                          WHERE `is_del` = '1';
-                        ";
+            $queryBorrower = "SELECT `borrowed`.*, `borrowers`.*, `borrowers`.`borrower_id` AS `person_id`
+                              FROM `borrowed`
+                              JOIN `borrowers` ON `borrowed`.`borrower_id` = `borrowers`.`id`
+                              ORDER BY `borrowed`.`id` DESC LIMIT 1;";
 
             $queryUser = "SELECT COUNT(*) AS `attendant` FROM `users`";
 
@@ -442,9 +432,9 @@ include './config/sidebar.php';
             $queryExpiry = "SELECT COUNT(*) AS `exp_date` FROM `medicine_details` WHERE `exp_date` >= '$currentDate' AND `exp_date` <= '$nextMonthEndDate'";
             
             
-              $stmtDel = $con->prepare($queryDel);
-              $stmtDel->execute();
-              $rDel = $stmtDel->fetch(PDO::FETCH_ASSOC);
+              $stmtBorrower = $con->prepare($queryBorrower);
+              $stmtBorrower->execute();
+              $rBorrower = $stmtBorrower->fetch(PDO::FETCH_ASSOC);
 
               $stmtUser = $con->prepare($queryUser);
               $stmtUser->execute();
@@ -498,9 +488,13 @@ include './config/sidebar.php';
             <!-- small box -->
             <div class="small-box bg-navy text-reset">
               <div class="inner">
-                <h3><?php echo $rDel['deleted'];?></h3>
-
-                <p>Deleted Items</p>
+                <h3><?php
+                  // $names = explode(", ", $currentYearCount);
+                  // //echo ucwords(strtolower($names[1]))." ".$names[0][0].".";
+                  // echo $names[1][0].". ".ucwords(strtolower($names[0]));
+                  echo $rBorrower['fname'][0].". ".$rBorrower['lname'];
+                ?></h3>
+                <p>Recent Borrower</p>
               </div>
               <div class="icon">
                 <i class="fa fa-trash"></i>
@@ -533,6 +527,60 @@ include './config/sidebar.php';
         </div>
 
       </div>
+    </section>
+
+    <section class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+          </div>
+        </div><!-- /.container-fluid -->
+      </section>
+      <div class="clearfix">&nbsp;</div>
+      <!-- Main content -->
+      <section class="content">
+        <!-- Default box -->
+        <?php 
+
+          $labels = ["Patients", "Medicine Brand", "Medicine Item", "Equipment Brand", "Equipment Unit", "Borrower"];
+          try {
+
+            $queryDel = "SELECT COUNT(*) AS `deleted` FROM `patients` WHERE `is_del` = 1 UNION ALL
+                SELECT COUNT(*) FROM `medicines` WHERE `is_del` = 1 UNION ALL
+                SELECT COUNT(*) FROM `medicine_details` WHERE `is_del` = 1 UNION ALL
+                SELECT COUNT(*) FROM `equipments` WHERE `is_del` = 1 UNION ALL
+                SELECT COUNT(*) FROM `equipment_details` WHERE `is_del` = 1 UNION ALL
+                SELECT COUNT(*) FROM `borrowers` WHERE `is_del` = 1;          
+                ";            
+            
+              $stmtDel = $con->prepare($queryDel);
+              $stmtDel->execute();
+              //$row = $stmtDel->fetch(PDO::FETCH_ASSOC);
+            
+            } catch(PDOException $ex) {
+              echo $ex->getMessage();
+              echo $ex->getTraceAsString();
+              exit;
+            }
+        ?>
+        <div class="container-fluid">
+        <div class="row">
+          <?php 
+            $i = 0;
+            while ($row = $stmtDel->fetch(PDO::FETCH_ASSOC)){ 
+          ?>
+          <div class="col-lg-4 col-6">
+            <div class="info-box bg-<?php echo ($row['deleted'] < 1) ? "success" : "danger"; ?>">
+              <span class="info-box-icon"><i class="fa fa-trash"></i></span>
+              <div class="info-box-content responsive-h3">
+                <span class="info-box-text"><?php echo $labels[$i]; ?></span>
+                <span class="info-box-number"><?php echo $row['deleted']; ?></span>
+              </div>
+            </div>
+          </div>
+          <?php $i++; } ?>
+        </div>
+        </div>
+      <!-- /.card -->
     </section>
 
     <!-- /.content -->
