@@ -182,9 +182,7 @@ include './config/sidebar.php';?>
 
         <div class="card-body">
             <div class="row table-responsive">
-              <table id="medicine_details" 
-              class="table table-striped dataTable table-bordered dtr-inline" 
-               role="grid" aria-describedby="medicine_details_info">
+              <table id="medicine_details" class="table table-striped dataTable table-bordered dtr-inline" role="grid" aria-describedby="medicine_details_info">
                 <colgroup>
                   <col width="2%">
                   <col width="30%">
@@ -192,6 +190,7 @@ include './config/sidebar.php';?>
                   <col width="5%">
                   <col width="20%">
                   <col width="5%">
+                  <col width="0%">
                 </colgroup>
                 <thead>
                   <tr>
@@ -201,6 +200,7 @@ include './config/sidebar.php';?>
                     <th>Quantity</th>
                     <th>Expiration Date</th>
                     <th>Action</th>
+                    <th>Tags</th>
                   </tr>
                 </thead>
 
@@ -217,21 +217,6 @@ include './config/sidebar.php';?>
                     <td><?php echo $row['quantity'];?></td>
                     <td>
                       <?php echo $row['exp_date'];?>
-                      <p class="exp_date"><?php
-
-                        echo (strtotime($row['exp_date']) > strtotime(date('Y-m-d'))) ? "is_expired:false" : "is_expired:true";
-
-                        $date1 = new DateTime($row['exp_date']);
-                        $date2 = new DateTime(date('Y-m-d'));
-                        $interval = $date1->diff($date2);
-                        $days = $interval->days;
-
-                        $days = (!$interval->invert) ? -$days : $days;
-
-                        echo ($days > 30 || $days < 0) ? ", is_expiredinmonth:false" : ", is_expiredinmonth:true";
-                        echo ($row['quantity'] > 0) ? ", is_torestock:false" : ", is_torestock:true";
-
-                      ?></p>
                     </td>
                     
                     <td class="text-center">
@@ -243,6 +228,24 @@ include './config/sidebar.php';?>
                         <i class="fa fa-trash"></i>
                       </a>
                     </td>
+                    <td>
+                      <p>
+                        <?php
+                          echo (strtotime($row['exp_date']) > strtotime(date('Y-m-d'))) ? "is_expired:false" : "is_expired:true";
+
+                          $date1 = new DateTime($row['exp_date']);
+                          $date2 = new DateTime(date('Y-m-d'));
+                          $interval = $date1->diff($date2);
+                          $days = $interval->days;
+  
+                          $days = (!$interval->invert) ? -$days : $days;
+  
+                          echo ($days > 30 || $days < 0) ? ", is_expiredinmonth:false" : ", is_expiredinmonth:true";
+                          echo ($row['quantity'] > 0) ? ", is_torestock:false" : ", is_torestock:true";
+                        ?>
+                      </p>
+                    </td>
+
                    
                   </tr>
                 <?php
@@ -298,13 +301,56 @@ if(isset($_GET['message'])) {
     const url = new URL(window.location.href);
     const search = url.searchParams.get("search");
 
+    var tbl = $('#medicine_details');
+
     const dataTableOptions = {
-      order: [[4, 'asc']],
-      responsive: true,
-      lengthChange: false,
-      autoWidth: false,
-      buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"]
+      'order': [[4, 'asc']],
+      'responsive': true,
+      'lengthChange': false,
+      'autoWidth': false,
+      'columnDefs': [{
+        'targets': 6,
+        'visible': false
+      }],
+      // 'buttons': ["copy", "csv", "excel", "pdf", "print", "colvis"]
     };
+    
+    var exportColumns = [0, 1, 2, 3, 4];
+
+    dataTableOptions.buttons = [
+      {
+        extend: 'copyHtml5',
+        exportOptions: {
+          columns: exportColumns
+        }
+      },
+      {
+        extend: 'csvHtml5',
+        exportOptions: {
+          columns: exportColumns
+        }
+      },
+      {
+        extend: 'excelHtml5',
+        exportOptions: {
+          columns: exportColumns
+        }
+      },
+      {
+        extend: 'pdfHtml5',
+        download: 'open',
+        exportOptions: {
+          columns: exportColumns
+        }
+      },
+      {
+        extend: 'print',
+        exportOptions: {
+          columns: exportColumns
+        }
+      },
+      "colvis"
+    ];
 
     if (search === "is_expired:true" || search === "is_expiredinmonth:true" || search === "is_torestock:true") {
       dataTableOptions.search = {
