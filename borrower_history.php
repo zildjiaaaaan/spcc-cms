@@ -118,37 +118,50 @@ include './config/footer.php';
 <script>
   showMenuSelected("#mnu_borrowers", "#mi_borrower_history");
 
-  $(document).ready(function() {
-
+  $(function() {
     $("#borrower").select2({
       width: 'resolve',
       placeholder: "Enter borrower name"
     });
 
-    $("#search").click(function() {
-      var borrowerId = $("#borrower").val();
+    const url = new URL(window.location.href);
+    var search = url.searchParams.get("search");
+    var tag = url.searchParams.get("tag");
 
-      if(borrowerId !== '') {
+    if (search === "is_recent") {
+      search = (tag !== '' && tag !== null) ? tag : '';
+      $("#borrower").val(search);
 
+      if (search !== '') {
+        getBorrowerHistory(search);
+      }
+    }
+
+    $("#borrower").on("change", function() {
+      var borrowerId = $(this).val();
+      getBorrowerHistory(borrowerId);
+    });
+
+    function getBorrowerHistory(borrowerId) {
+      if (borrowerId !== '') {
         $.ajax({
           url: "ajax/get_borrower_history.php",
-          type: 'GET', 
+          type: 'GET',
           data: {
             'borrower_id': borrowerId
           },
-          cache:false,
-          async:false,
-          success: function (data, status, xhr) {
-              $("#history_data").html(data);
+          cache: false,
+          success: function(data, status, xhr) {
+            $("#history_data").html(data);
           },
-          error: function (jqXhr, textStatus, errorMessage) {
+          error: function(jqXhr, textStatus, errorMessage) {
             showCustomMessage(errorMessage);
           }
         });
       }
-    });
-
+    }
   });
+
 </script>
 
 </body>

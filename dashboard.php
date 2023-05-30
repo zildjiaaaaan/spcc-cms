@@ -416,7 +416,7 @@ include './config/sidebar.php';
 
         try {
 
-            $queryBorrower = "SELECT `borrowed`.*, `borrowers`.*, `borrowers`.`borrower_id` AS `person_id`
+            $queryBorrower = "SELECT `borrowed`.*, `borrowers`.*, `borrowers`.`id` AS `person_id`
                               FROM `borrowed`
                               JOIN `borrowers` ON `borrowed`.`borrower_id` = `borrowers`.`id`
                               ORDER BY `borrowed`.`id` DESC LIMIT 1;";
@@ -486,18 +486,15 @@ include './config/sidebar.php';
           <!-- ./col -->
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-navy text-reset">
+            <div class="small-box bg-navy text-reset" id="box_recentborrower">
               <div class="inner">
-                <h3><?php
-                  // $names = explode(", ", $currentYearCount);
-                  // //echo ucwords(strtolower($names[1]))." ".$names[0][0].".";
-                  // echo $names[1][0].". ".ucwords(strtolower($names[0]));
+                <h3 class="responsive-h3"><?php
                   echo $rBorrower['fname'][0].". ".$rBorrower['lname'];
                 ?></h3>
                 <p>Recent Borrower</p>
               </div>
               <div class="icon">
-                <i class="fa fa-trash"></i>
+                <i class="fas fa-user-tag"></i>
               </div>
             </div>
           </div>
@@ -541,7 +538,14 @@ include './config/sidebar.php';
         <!-- Default box -->
         <?php 
 
-          $labels = ["Patients", "Medicine Brand", "Medicine Item", "Equipment Brand", "Equipment Unit", "Borrower"];
+          $labels = array(
+              array('label' => 'Patients', 'icon' => 'fas fa-user-injured', 'recover' => 'patient'),
+              array('label' => 'Medicine Brands', 'icon' => 'fa fa-medkit', 'recover' => 'medicine'),
+              array('label' => 'Medicine Items', 'icon' => 'fa fa-pills', 'recover' => 'medicine_details'),
+              array('label' => 'Equipment Brands', 'icon' => 'fa fa-tools', 'recover' => 'equipments'),
+              array('label' => 'Equipment Units', 'icon' => 'fa fa-stethoscope', 'recover' => 'equipment_inventory'),
+              array('label' => 'Borrowers', 'icon' => 'fas fa-user-tag', 'recover' => 'borrower')
+          );
           try {
 
             $queryDel = "SELECT COUNT(*) AS `deleted` FROM `patients` WHERE `is_del` = 1 UNION ALL
@@ -549,7 +553,7 @@ include './config/sidebar.php';
                 SELECT COUNT(*) FROM `medicine_details` WHERE `is_del` = 1 UNION ALL
                 SELECT COUNT(*) FROM `equipments` WHERE `is_del` = 1 UNION ALL
                 SELECT COUNT(*) FROM `equipment_details` WHERE `is_del` = 1 UNION ALL
-                SELECT COUNT(*) FROM `borrowers` WHERE `is_del` = 1;          
+                SELECT COUNT(*) FROM `borrowers` WHERE `is_del` = 1;
                 ";            
             
               $stmtDel = $con->prepare($queryDel);
@@ -569,11 +573,14 @@ include './config/sidebar.php';
             while ($row = $stmtDel->fetch(PDO::FETCH_ASSOC)){ 
           ?>
           <div class="col-lg-4 col-6">
-            <div class="info-box bg-<?php echo ($row['deleted'] < 1) ? "success" : "danger"; ?>">
-              <span class="info-box-icon"><i class="fa fa-trash"></i></span>
+            <div class="info-box bg-<?php echo ($row['deleted'] < 1) ? "grey" : "danger"; ?>" id="box_trash<?php echo str_replace(' ', '', $labels[$i]['label']);?>">
+              <span class="info-box-icon"><i class="<?php echo $labels[$i]['icon']; ?>"></i></i></span>
               <div class="info-box-content responsive-h3">
-                <span class="info-box-text"><?php echo $labels[$i]; ?></span>
+                <span class="info-box-text"><?php echo $labels[$i]['label']; ?></span>
                 <span class="info-box-number"><?php echo $row['deleted']; ?></span>
+              </div>
+              <div class="icon" style="opacity: 20%;">
+                <i class="fa fa-trash"></i>
               </div>
             </div>
           </div>
@@ -675,7 +682,27 @@ include './config/sidebar.php';
       window.open("users.php", "_blank");
     });
 
+    $("#box_recentborrower").on("mouseenter", function() {
+      $(this).css("cursor", "pointer");
+    }).on("click", function() {
+      window.open("borrower_history.php?search=is_recent&tag=<?php echo $rBorrower['person_id']; ?>", "_blank");
+    });
+
+    // TRASH
+    <?php
+      foreach ($labels as $label) {
+
+        $box_id = "#box_trash".str_replace(' ', '', $label['label']);
+        $rec = $label['recover'];
+
+        echo '$("'.$box_id.'").on("mouseenter", function() {
+                $(this).css("cursor", "pointer");
+              }).on("click", function() {
+                window.open("trash.php?recover='.$rec.'", "_blank");
+              });';
+      }
     
+    ?>
 
   });
 </script>

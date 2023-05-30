@@ -120,8 +120,7 @@ include './config/footer.php';
 <script>
   showMenuSelected("#mnu_patients", "#mi_patient_history");
 
-  $(document).ready(function() {
-
+  $(function() {
     $("#patient").select2({
       width: 'resolve',
       placeholder: "Enter patient name"
@@ -135,56 +134,36 @@ include './config/footer.php';
       search = (tag !== '' && tag !== null) ? tag : '';
       $("#patient").val(search);
 
-      if(search !== '') {
+      if (search !== '') {
+        getPatientHistory(search);
+      }
+    }
+
+    $("#patient").on("change", function() {
+      var patientId = $(this).val();
+      getPatientHistory(patientId);
+    });
+
+    function getPatientHistory(patientId) {
+      if (patientId !== '') {
         $.ajax({
           url: "ajax/get_patient_history.php",
-          type: 'GET', 
+          type: 'GET',
           data: {
-            'patient_id': search
+            'patient_id': patientId
           },
-          cache:false,
-          async:false,
-          success: function (data, status, xhr) {
-              $("#history_data").html(data);
+          cache: false,
+          success: function(data, status, xhr) {
+            $("#history_data").html(data);
           },
-          error: function (jqXhr, textStatus, errorMessage) {
+          error: function(jqXhr, textStatus, errorMessage) {
             showCustomMessage(errorMessage);
           }
         });
       }
     }
-
-    $("#customSwitch1").on("change", function(){
-        if($(this).prop("checked") == true){
-            $("body").removeClass("dark-mode");
-        } else {
-            $("body").addClass("dark-mode");
-        }
-    });
-
-    $("#search").click(function() {
-      var patientId = $("#patient").val();
-      if(patientId !== '') {
-
-        $.ajax({
-          url: "ajax/get_patient_history.php",
-          type: 'GET', 
-          data: {
-            'patient_id': patientId
-          },
-          cache:false,
-          async:false,
-          success: function (data, status, xhr) {
-              $("#history_data").html(data);
-          },
-          error: function (jqXhr, textStatus, errorMessage) {
-            showCustomMessage(errorMessage);
-          }
-        });
-      }
-    });
-
   });
+
 </script>
 
 </body>
