@@ -93,60 +93,8 @@ $(function() {
         }
     });
 
-    var borrowerId = '';
-    var f_unavailableSince = '';
-    var f_unavailableUntil = '';
-
-    $("form :input").blur(function() {
-        var equipmentId = $("#equipment").val();
-        // var equipmentName = $("#equipment option:selected").text();
-        var remarks = $("#remarks").val().trim();
-        var checkForm = true;
-        
-        if (state === 'Borrowed') {
-            if ($("#borrower").val() && $("#unavailableSince").val() && $("#unavailableUntil").val()) {
-                borrowerId = $("#borrower").val();
-                f_unavailableSince = formatDate($("#unavailableSince").val());
-                f_unavailableUntil = formatDate($("#unavailableUntil").val());
-            } else {
-                checkForm = false;
-            }
-        } else if (state === 'Missing' && $("#unavailableSince").val()) {
-            f_unavailableSince = formatDate($("#unavailableSince").val());
-        } else if (status === 'Unavailable' && $("#unavailableSince").val() && $("#unavailableUntil").val()) {
-            f_unavailableSince = formatDate($("#unavailableSince").val());
-            f_unavailableUntil = formatDate($("#unavailableUntil").val());
-        } else {
-            if (status === 'Unavailable') {
-                checkForm = false;
-            }
-        }
-
-        if (checkForm) {
-            $.ajax({
-                url: "ajax/check_equipment_status.php",
-                type: 'GET',
-                data: {
-                    'equipmentId': equipmentId,
-                    'status': status,
-                    'state': state,
-                    'remarks': remarks,
-                    'borrowerId': borrowerId,
-                    'f_unavailableSince': f_unavailableSince,
-                    'f_unavailableUntil': f_unavailableUntil
-                },
-                cache: false,
-                success: function (count) {
-                    if(count > 0) {
-                        showCustomMessage("This equipment has already been stored previously. Please check inventory or the Trash.");
-                        $("#add_to_list").attr("disabled", "disabled");
-                    } else {
-                        $("#add_to_list").removeAttr("disabled");
-                    }
-                },
-            })
-        }
-    });
+    // Handle blur event
+    $("form :input").blur(handleBlurEvent);
 
     $('#equipment_list').find('td').addClass("px-2 py-1 align-middle")
     $('#equipment_list').find('th').addClass("p-1 align-middle")
@@ -167,9 +115,9 @@ $(function() {
             quantity = '';
         }
 
-        borrowerId = '*';
-        f_unavailableSince = '';
-        f_unavailableUntil = '';
+        var borrowerId = '*';
+        var f_unavailableSince = '';
+        var f_unavailableUntil = '';
 
         if (state === 'Borrowed') {
             if ($("#borrower").val() && $("#unavailableSince").val() && $("#unavailableUntil").val()) {
@@ -293,6 +241,64 @@ $(function() {
         }    
     });
 });
+
+function handleBlurEvent() {
+
+    var status = $("#status option:selected").text();
+    var state = $("#state option:selected").text();
+
+    var borrowerId = '';
+    var f_unavailableSince = '';
+    var f_unavailableUntil = '';
+
+    var equipmentId = $("#equipment").val();
+    var remarks = $("#remarks").val().trim();
+    var checkForm = true;
+    
+    if (state === 'Borrowed') {
+        if ($("#borrower").val() && $("#unavailableSince").val() && $("#unavailableUntil").val()) {
+            borrowerId = $("#borrower").val();
+            f_unavailableSince = formatDate($("#unavailableSince").val());
+            f_unavailableUntil = formatDate($("#unavailableUntil").val());
+        } else {
+            checkForm = false;
+        }
+    } else if (state === 'Missing' && $("#unavailableSince").val()) {
+        f_unavailableSince = formatDate($("#unavailableSince").val());
+    } else if (status === 'Unavailable' && $("#unavailableSince").val() && $("#unavailableUntil").val()) {
+        f_unavailableSince = formatDate($("#unavailableSince").val());
+        f_unavailableUntil = formatDate($("#unavailableUntil").val());
+    } else {
+        if (status === 'Unavailable') {
+            checkForm = false;
+        }
+    }
+
+    if (checkForm) {
+        $.ajax({
+            url: "ajax/check_equipment_status.php",
+            type: 'GET',
+            data: {
+                'equipmentId': equipmentId,
+                'status': status,
+                'state': state,
+                'remarks': remarks,
+                'borrowerId': borrowerId,
+                'f_unavailableSince': f_unavailableSince,
+                'f_unavailableUntil': f_unavailableUntil
+            },
+            cache: false,
+            success: function (count) {
+                if(count > 0) {
+                    showCustomMessage("This equipment has already been stored previously. Please check inventory or the Trash.");
+                    $("#add_to_list").attr("disabled", "disabled");
+                } else {
+                    $("#add_to_list").removeAttr("disabled");
+                }
+            },
+        })
+    }
+}
 
 function formatDate(dateString) {
     var parts = dateString.split("/");

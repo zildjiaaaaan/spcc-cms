@@ -147,7 +147,7 @@ include './config/sidebar.php';?>
             <!-- best practices-->
             <form method="post">
               <div class="row">
-                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 select-select2">
                   <label>Select Equipment</label>
                   <select id="equipment" name="equipment" class="form-control form-control-sm rounded-0">
                     <?php echo $equipments;?>
@@ -213,7 +213,7 @@ include './config/sidebar.php';?>
                   </div>
                 </div>
 
-                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 unavailable borrower">
+                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 unavailable borrower select-select2">
                   <label>Borrower</label>
                   <select id="borrower" name="borrower" class="form-control form-control-sm rounded-0">
                     <?php echo $borrowers;?>
