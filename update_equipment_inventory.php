@@ -22,6 +22,7 @@ try {
 
     $unavailable_since = $row['unavailable_since'];
     $unavailable_until = $row['unavailable_until'];
+    $equipment_details_id = $row['id'];
 
 } catch(PDOException $ex) {
 
@@ -38,6 +39,15 @@ try {
 
  <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
  <title>Update Equipment Details - SPCC Caloocan Clinic</title>
+ <style>
+  #unavailableUntil {
+    cursor: <?php echo ($row['state'] == "Missing") ? "not-allowed" : "default"; ?>;
+  }
+
+  .hidden {
+    display: none;
+  }
+ </style>
 
 </head>
 <body class="hold-transition sidebar-mini dark-mode layout-fixed layout-navbar-fixed">
@@ -78,9 +88,11 @@ include './config/sidebar.php';?>
             <!-- best practices-->
             <form method="post">
               <div class="row">
-                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                <input type="hidden" id="update_id" name="hidden_id" value="<?php echo $equipment_details_id;?>" />
+
+                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 select-select2">
                   <label>Select Equipment</label>
-                  <select id="equipment" name="equipment" class="form-control form-control-sm rounded-0">
+                  <select id="equipment" name="equipment" class="form-control form-control-sm rounded-0 select2">
                     <?php echo $equipments;?>
                   </select>
                 </div>
@@ -140,7 +152,7 @@ include './config/sidebar.php';?>
                     <label>Unavailable Until</label>
                     <div class="input-group date" id="unavailable_until" 
                         data-target-input="nearest">
-                        <input type="text" value="<?php echo (!is_null($unavailable_until)) ? $unavailable_until : "" ; ?>" id="unavailableUntil" class="form-control form-control-sm rounded-0 datetimepicker-input" data-target="#unavailable_until" name="unavailable_until" data-toggle="datetimepicker" autocomplete="off"/>
+                        <input type="text" value="<?php echo (!is_null($unavailable_until)) ? $unavailable_until : "" ; ?>" id="unavailableUntil" class="form-control form-control-sm rounded-0 datetimepicker-input" data-target="#unavailable_until" name="unavailable_until" data-toggle="datetimepicker" autocomplete="off" <?php echo ($row['state'] == "Missing") ? "disabled" : ""; ?>/>
                         <div class="input-group-append" 
                         data-target="#unavailable_until" 
                         data-toggle="datetimepicker">
@@ -150,9 +162,9 @@ include './config/sidebar.php';?>
                   </div>
                 </div>
 
-                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 unavailable borrower">
-                  <label>Borrower</label>
-                  <select id="borrower" name="borrower" class="form-control form-control-sm rounded-0">
+                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 unavailable borrower select-select2">
+                  <label>Borrower</label><br>
+                  <select id="borrower" name="borrower" class="form-control form-control-sm rounded-0 select2">
                     <?php echo $borrowers;?>
                   </select>
                 </div>
@@ -206,14 +218,16 @@ if(isset($_GET['message'])) {
     showCustomMessage(message);
   }
 
-  var status = "<?php echo $row['status']; ?>";
-  var state = "<?php echo $row['state']; ?>";
+  $(function(){
+    var status = "<?php echo $row['status']; ?>";
+    var state = "<?php echo $row['state']; ?>";
 
-  if (status != "Unavailable") {
-      $(".unavailable").hide();
-  } else if (status != "Available" && state != "Borrowed") {
-      $(".borrower").hide();
-  }
+    if (status != "Unavailable") {
+        $(".unavailable").hide();
+    } else if (status != "Available" && state != "Borrowed") {
+        $(".borrower").hide();
+    }
+  });
 
 </script>
 <script src="dist/js/update_equipment_inventory.js"></script>

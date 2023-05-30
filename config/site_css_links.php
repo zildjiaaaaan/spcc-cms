@@ -62,4 +62,8 @@
       color: <?php echo ($_SESSION['dark_mode'] != "1") ? "black" : "white" ; ?>;
   }
 
+  .select2 {
+    width: 100% !important;
+  }
+
 </style>

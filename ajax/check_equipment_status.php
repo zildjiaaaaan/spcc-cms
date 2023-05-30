@@ -44,12 +44,28 @@
 
     if (isset($_GET['update_id'])) {
         $id = $_GET['update_id'];
+
+        if ($unavailableSince != '') {
+    
+          $q_unavailable = " AND `unavailable_since` = '$unavailableSince'";
+    
+          if ($unavailableUntil != '') {
+            $q_unavailable .= " AND `unavailable_until` = '$unavailableUntil'";
+          }
+    
+          if ($state == 'Borrowed') {
+            $q_unavailable .= " AND `borrower_id` = '$borrower'";
+            $q_join = " JOIN `borrowed` ON `equipment_details`.`id` = `equipment_details_id`";
+          }                             
+        }
+
         $query = "SELECT count(*) AS `count`
-                  FROM `equipment_details` 
-                  WHERE `equipment_id` = '$equipmentId'
-                    AND `status` = '$equipmentStatus'
-                    AND `date_acquired` = '$dateAcquired'
-                    AND `id` <> '$id';";
+              FROM `equipment_details`".$q_join."
+              WHERE `equipment_id` = '$equipmentId'
+                AND `equipment_details`.`id` <> '$id'
+                AND `status` = '$status'
+                AND `state` = '$state'
+                AND `remarks` = '$remarks'".$q_unavailable.";";
     }
 
   $stmt = $con->prepare($query);

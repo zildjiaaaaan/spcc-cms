@@ -143,7 +143,7 @@ function getUniqueBorrowers($con, $borrowerID = 0) {
 		exit;
 	}
 
-	$data = '<option value="">Select Borrowers</option>';
+	$data = '<option value="">Select Borrower</option>';
 
 	while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 		if($borrowerID == $row['id']) {

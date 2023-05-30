@@ -27,11 +27,7 @@ $(function() {
         }
     });
 
-    //Set datetimepicker format
-    // $('#unavailable_since, #unavailable_until').datetimepicker({
-    //     format: 'L',
-    // });
-
+    //Set linked datetimepicker format
     $('#unavailable_since').datetimepicker({
         format: 'L',
     });
