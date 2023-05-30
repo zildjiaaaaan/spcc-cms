@@ -1,3 +1,4 @@
+<div style="height:10px;"></div>
 <footer class="main-footer">
     <strong>Copyright &copy; <?php echo date('Y');?> 
     <a href="#">Systems Plus Computer College - Caloocan Clinic Management System</a>.</strong> All rights reserved.

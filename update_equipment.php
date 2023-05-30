@@ -147,7 +147,6 @@ include './config/sidebar.php';?>
       </div>
     </section>	
   </div>
-  <div style="height:8px;"></div>
   <!-- /.content-wrapper -->
 <?php 
  include './config/footer.php';
