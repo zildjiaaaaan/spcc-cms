@@ -1,10 +1,14 @@
 UPDATE `equipment_details`
       SET `status` = 'Available',
       `state` = 'Active',
-      `quantity` = '4',
       `remarks` = 'this is a test',
       `unavailable_since` = NULL,
       `unavailable_until` = NULL
       WHERE `id` = '6';
   
-UPDATE `borrowed` SET `is_returned` = '1' WHERE `borrower_id` = '4';
+UPDATE `borrowed`
+      SET `is_returned` = '1',
+      `borrowed_date` = '2023-05-29',
+      `returned_date` = '2023-05-31'
+      WHERE `borrower_id` = '4'
+  ;

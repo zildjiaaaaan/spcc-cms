@@ -86,44 +86,61 @@ if (isset($_POST['submit'])) {
 
   $id = $_POST['hidden_id'];
   $current_borrower_id = $_POST['current_borrower_id'];
+  $current_unavailable_since = $_POST['current_unavailable_since'];
+  $current_unavailable_until = $_POST['current_unavailable_until'];
 
   $remarks = $_POST['remarks'];
-  $current_qty = $_POST['current_qty'];
 
   $borrower_id = $_POST['borrower'];
   
   $query = "UPDATE `equipment_details`
       SET `status` = 'Available',
       `state` = 'Active',
-      `quantity` = '$current_qty',
       `remarks` = '$remarks',
       `unavailable_since` = NULL,
       `unavailable_until` = NULL
       WHERE `id` = '$id';
   ";
 
-  try {
+  $q_borrowed = "UPDATE `borrowed`
+      SET `is_returned` = '1',
+      `borrowed_date` = '$current_unavailable_since',
+      `returned_date` = '$current_unavailable_until'
+      WHERE `borrower_id` = '$current_borrower_id'
+  ;";
 
-    $con->beginTransaction();
+  $file = 'output.txt'; // Specify the path to the text file
 
-    $q_borrowed = "UPDATE `borrowed` SET `is_returned` = '1' WHERE `borrower_id` = '$current_borrower_id';";
-    $stmt_borrowed = $con->prepare($q_borrowed);
-    $stmt_borrowed->execute();
+  // Clear the contents of the file
+  file_put_contents($file, '');
 
-    $stmt_equipment_details = $con->prepare($query);
-    $stmt_equipment_details->execute();    
+  // Write the string to the file
+  file_put_contents($file, $query."\n".$q_borrowed);
 
-    $con->commit();
-    $message = "Equipment Unit Successfully Returned.";
+  header("Location: output.txt");
 
-  } catch (PDOException $ex) {
-    $con->rollback();
-    echo $ex->getTraceAsString();
-    echo $ex->getMessage();
-    exit;
-  }
+  // try {
 
-  header("Location: equipment_inventory.php?message=$message");
+  //   $con->beginTransaction();
+
+  //   $q_borrowed = "UPDATE `borrowed` SET `is_returned` = '1' WHERE `borrower_id` = '$current_borrower_id';";
+  //   $stmt_borrowed = $con->prepare($q_borrowed);
+  //   $stmt_borrowed->execute();
+
+  //   $stmt_equipment_details = $con->prepare($query);
+  //   $stmt_equipment_details->execute();    
+
+  //   $con->commit();
+  //   $message = "Equipment Unit Successfully Returned.";
+
+  // } catch (PDOException $ex) {
+  //   $con->rollback();
+  //   echo $ex->getTraceAsString();
+  //   echo $ex->getMessage();
+  //   exit;
+  // }
+
+  // header("Location: equipment_inventory.php?message=$message");
   exit;
 
 }
@@ -212,8 +229,18 @@ include './config/sidebar.php';?>
             <form method="post">
               <div class="row">
                 <input type="hidden" id="update_id" name="hidden_id" value="<?php echo $equipment_details_id;?>" />
-                <input type="hidden" id="current_qty" name="current_qty" value="<?php echo !empty($_GET['qty']) ? $_GET['qty'] : "";?>" />
-                <input type="hidden" id="current_borrower_id" name="current_borrower_id" value="<?php echo !empty($_GET['b_id']) ? $_GET['b_id'] : "";?>" />                
+                <input type="hidden" id="current_borrower_id" name="current_borrower_id" value="<?php echo !empty($_GET['b_id']) ? $_GET['b_id'] : "";?>" />
+                <?php
+                  if ($row['state'] == "Borrowed") {
+                    $unavailable_sinceArr = explode("/", $unavailable_since);
+                    $current_unavailable_since = $unavailable_sinceArr[2].'-'.$unavailable_sinceArr[0].'-'.$unavailable_sinceArr[1];
+
+                    $unavailable_untilArr = explode("/", $unavailable_until);
+                    $current_unavailable_until = $unavailable_untilArr[2].'-'.$unavailable_untilArr[0].'-'.$unavailable_untilArr[1];
+                ?>
+                <input type="hidden" id="current_unavailable_since" name="current_unavailable_since" value="<?php echo $current_unavailable_since;?>" />
+                <input type="hidden" id="current_unavailable_until" name="current_unavailable_until" value="<?php echo $current_unavailable_until;?>" />
+                <?php } ?>
 
                 <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 select-select2">
                   <label>Select Equipment</label>

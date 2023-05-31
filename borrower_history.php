@@ -75,6 +75,7 @@ include './config/sidebar.php';?>
                     <col width="10%">
                     <col width="10%">
                     <col width="40%">
+                    <col width="10%">
                   </colgroup>
                   <thead>
                     <tr class="bg-gradient-primary text-light">
@@ -85,6 +86,7 @@ include './config/sidebar.php';?>
                         <th class="p-1 text-center">Return Date</th>
                         <th class="p-1 text-center">Contact</th>
                         <th class="p-1 text-center">Remarks</th>
+                        <th class="p-1 text-center">Status</th>
                     </tr>
                   </thead>
 
