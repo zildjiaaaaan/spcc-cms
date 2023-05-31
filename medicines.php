@@ -8,7 +8,35 @@ if(isset($_POST['save_medicine'])) {
   $medicineBrand = trim($_POST['medicine_brand']);
   $medicineName = ucwords(strtolower($medicineName));
   $medicineBrand = ucwords(strtolower($medicineBrand));
-  if($medicineName != '' && $medicineBrand != '') {
+
+  $insert = true;
+
+  try {
+
+    $query = "SELECT COUNT(*) AS `duplicate` FROM `medicines` WHERE `medicine_name` = '$medicineName' AND `medicine_brand` = '$medicineBrand';";
+
+    $stmtMedicine = $con->prepare($query);
+    $stmtMedicine->execute();
+    $row = $stmtMedicine->fetch(PDO::FETCH_ASSOC);
+
+    if ($row['duplicate'] > 0) {
+      $insert = false;
+    }
+    
+  } catch (PDOException $ex) {
+
+    $con->rollback();
+
+    echo $ex->getMessage();
+    echo $ex->getTraceAsString();
+    exit;
+
+  }
+
+
+
+
+  if($medicineName != '' && $medicineBrand != '' && $insert) {
 
     $query = "INSERT INTO `medicines`(`medicine_name`, `medicine_brand`)
     VALUES('$medicineName', '$medicineBrand');";
@@ -32,10 +60,15 @@ if(isset($_POST['save_medicine'])) {
   }
 
 } else {
- $message = 'Empty form can not be submitted.';
+  if (!$insert) {
+    $message = 'This medicine has already been stored. Please check inventory or the Trash...';
+  } else {
+    $message = 'Empty form can not be submitted.';
+  }
 }
-header("Location:congratulation.php?goto_page=medicines.php&message=$message");
-exit;
+
+  header("Location:congratulation.php?goto_page=medicines.php&message=$message");
+  exit;
 }
 
 try {
@@ -243,12 +276,51 @@ if(isset($_GET['message'])) {
         }
     });
     
-    $("#all_medicines").DataTable({
-      "responsive": true, "lengthChange": false, "autoWidth": false,
-      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-    }).buttons().container().appendTo('#all_medicines_wrapper .col-md-6:eq(0)');
+    var dataTableOptions = {
+      "responsive": true, "lengthChange": false, "autoWidth": false
+      // "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    };
 
-    $("#medicine_brand").blur(function() {
+    var exportColumns = [0, 1, 2, 3];
+
+    dataTableOptions.buttons = [
+      {
+        extend: 'copyHtml5',
+        exportOptions: {
+          columns: exportColumns
+        }
+      },
+      {
+        extend: 'csvHtml5',
+        exportOptions: {
+          columns: exportColumns
+        }
+      },
+      {
+        extend: 'excelHtml5',
+        exportOptions: {
+          columns: exportColumns
+        }
+      },
+      {
+        extend: 'pdfHtml5',
+        download: 'open',
+        exportOptions: {
+          columns: exportColumns
+        }
+      },
+      {
+        extend: 'print',
+        exportOptions: {
+          columns: exportColumns
+        }
+      },
+      "colvis"
+    ];
+    
+    $("#all_medicines").DataTable(dataTableOptions).buttons().container().appendTo('#all_medicines_wrapper .col-md-6:eq(0)');
+
+    $("#medicine_brand").on("keyup blur", function(event) {
       var medicineBrand = $(this).val().trim();
       var medicineName = $("#medicine_name").val().trim();
       $(this).val(medicineBrand);
@@ -280,7 +352,7 @@ if(isset($_GET['message'])) {
 
     });
 
-    $("#medicine_name").blur(function() {
+    $("#medicine_name").keyup(function() {
       var medicineName = $(this).val().trim();
       var medicineBrand = $("#medicine_brand").val().trim();
       $(this).val(medicineName);
