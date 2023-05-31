@@ -153,7 +153,7 @@ include './config/sidebar.php';?>
                     <td><?php echo (!empty($row['remarks'])) ? $row['remarks'] : "<i>No Remarks</i>" ;?></td>
                     
                     <td class="text-center">
-                      <a href="update_equipment_inventory.php?equipment_id=<?php echo $row['equipment_id'];?>&equipment_detail_id=<?php echo $row['id'];?>&b_id=<?php echo $b_id;?>" 
+                      <a href="update_equipment_inventory.php?equipment_id=<?php echo $row['equipment_id'];?>&equipment_detail_id=<?php echo $row['id'];?>&qty=<?php echo $row['quantity']; ?>&b_id=<?php echo $b_id;?>" 
                       class = "btn btn-primary btn-sm btn-flat">
                       <i class="fa fa-edit"></i>
                       </a>

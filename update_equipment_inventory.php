@@ -36,54 +36,96 @@ if (isset($_POST['submit'])) {
       SET `equipment_id` = '$equipment_id',
       `status` = '$status',
       `state` = '$state',
+      `quantity` = '$quantity',
       `remarks` = '$remarks'".$q_unavailable."
       WHERE `id` = '$id';
   ";
 
-  $q_borrowed = "";
-  if ($borrower_id != '' && $current_borrower_id != '') {
-    $q_borrowed = "UPDATE `borrowed`
-        SET `equipment_details_id` = '$equipment_id',
-        `borrower_id` = '$borrower_id'
-        WHERE `borrower_id` = '$current_borrower_id';";
-  } else if ($borrower_id != '') {
-    $q_borrowed = "INSERT INTO `borrowed` (`equipment_details_id`, `borrower_id`) VALUES ('$id', '$borrower_id');";
-  } 
+  try {
 
-  $file = 'output.txt'; // Specify the path to the text file
+    $con->beginTransaction();
 
-  // Write the string to the file
-  file_put_contents($file, '');
-  file_put_contents($file, $query."\n".$q_borrowed);
+    $q_borrowed = "";
+    if ($state == "Borrowed") {
+      if ($current_borrower_id != '') {
+        $q_borrowed = "UPDATE `borrowed`
+          SET `equipment_details_id` = '$id',
+          `borrower_id` = '$borrower_id'
+          WHERE `borrower_id` = '$current_borrower_id';";
+      } else {
+        $q_borrowed = "INSERT INTO `borrowed` (`equipment_details_id`, `borrower_id`) VALUES ('$id', '$borrower_id');";
+      }
+    } else {
+      if ($current_borrower_id != '') {
+        $q_borrowed = "DELETE FROM `borrowed` WHERE `borrower_id` = '$current_borrower_id';";
+      }
+    }
+      
+    if ($q_borrowed != '') {
+      $stmt_borrowed = $con->prepare($q_borrowed);
+      $stmt_borrowed->execute();
+    }
+    
+    $stmt_equipment_details = $con->prepare($query);
+    $stmt_equipment_details->execute();
 
-  header("Location: output.txt");
+    $con->commit();
+    $message = "Equipment Unit Successfully Updated.";
+
+  } catch (PDOException $ex) {
+    $con->rollback();
+    echo $ex->getTraceAsString();
+    echo $ex->getMessage();
+    exit;
+  }
+
+  header("Location: equipment_inventory.php?message=$message");
   exit;
 
-  // try {
-    
-  //   $con->beginTransaction();
-  //   $stmt_equipment_details = $con->prepare($query);
-  //   $stmt_equipment_details->execute();
+} else if (isset($_POST['returned'])) {
 
-  //   if ($borrower_id != '') {
-  //     $q_borrowed = "UPDATE `borrowed`
-  //         SET `equipment_details_id` = '$equipment_id',
-  //         `borrower_id` = '$borrower_id'
-  //         WHERE `equipment_details_id` = '$id';";
-      
-  //     $stmt_borrowed = $con->prepare($q_borrowed);
-  //     $stmt_borrowed->execute();
-  //   }
+  $id = $_POST['hidden_id'];
+  $current_borrower_id = $_POST['current_borrower_id'];
 
-  //   $con->commit();
-  //   $message = "Equipment Unit Successfully Updated.";
+  $remarks = $_POST['remarks'];
+  $current_qty = $_POST['current_qty'];
 
-  // } catch (PDOException $ex) {
-  //   $con->rollback();
-  //   echo $ex->getTraceAsString();
-  //   echo $ex->getMessage();
-  //   exit;
-  // }
+  $borrower_id = $_POST['borrower'];
+  
+  $query = "UPDATE `equipment_details`
+      SET `status` = 'Available',
+      `state` = 'Active',
+      `quantity` = '$current_qty',
+      `remarks` = '$remarks',
+      `unavailable_since` = NULL,
+      `unavailable_until` = NULL
+      WHERE `id` = '$id';
+  ";
+
+  try {
+
+    $con->beginTransaction();
+
+    $q_borrowed = "UPDATE `borrowed` SET `is_returned` = '1' WHERE `borrower_id` = '$current_borrower_id';";
+    $stmt_borrowed = $con->prepare($q_borrowed);
+    $stmt_borrowed->execute();
+
+    $stmt_equipment_details = $con->prepare($query);
+    $stmt_equipment_details->execute();    
+
+    $con->commit();
+    $message = "Equipment Unit Successfully Returned.";
+
+  } catch (PDOException $ex) {
+    $con->rollback();
+    echo $ex->getTraceAsString();
+    echo $ex->getMessage();
+    exit;
+  }
+
+  header("Location: equipment_inventory.php?message=$message");
+  exit;
+
 }
 
 $equipment_id = $_GET['equipment_id'];
@@ -170,7 +212,8 @@ include './config/sidebar.php';?>
             <form method="post">
               <div class="row">
                 <input type="hidden" id="update_id" name="hidden_id" value="<?php echo $equipment_details_id;?>" />
-                <input type="hidden" id="current_borrower_id" name="current_borrower_id" value="<?php echo !empty($_GET['b_id']) ? $_GET['b_id'] : "";?>" />
+                <input type="hidden" id="current_qty" name="current_qty" value="<?php echo !empty($_GET['qty']) ? $_GET['qty'] : "";?>" />
+                <input type="hidden" id="current_borrower_id" name="current_borrower_id" value="<?php echo !empty($_GET['b_id']) ? $_GET['b_id'] : "";?>" />                
 
                 <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 select-select2">
                   <label>Select Equipment</label>
@@ -208,11 +251,6 @@ include './config/sidebar.php';?>
                 </div>
 
                 <div class="clearfix unavailable">&nbsp;</div>
-
-                <?php 
-
-                
-                ?>
 
                 <div class="col-lg-4 col-md-6 col-sm-6 col-xs-10 unavailable">
                   <div class="form-group">
@@ -266,10 +304,24 @@ include './config/sidebar.php';?>
             <div class="clearfix">&nbsp;</div>
 
             <div class="row">
+                <?php
+                  if (!empty($_GET['b_id'])) {
+                ?>
+                <div class="col-md-8">&nbsp;</div>
+                <div class="col-md-2">
+                    <button type="submit" id="returned" name="returned" 
+                    class="btn btn-success btn-sm btn-flat btn-block">Returned</button>
+                </div>
+                <?php
+                  } else {
+                ?>
                 <div class="col-md-10">&nbsp;</div>
+                <?php
+                  }
+                ?>
                 <div class="col-md-2">
                     <button type="submit" id="submit" name="submit" 
-                    class="btn btn-primary btn-sm btn-flat btn-block">Save</button>
+                    class="btn btn-primary btn-sm btn-flat btn-block">Update</button>
                 </div>
             </div>
         </form>
