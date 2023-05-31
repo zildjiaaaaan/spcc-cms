@@ -1,0 +1,4 @@
+PLUGIN CHANGES
+
+tableHeader:{bold:!0,fontSize:11,color:"white",fillColor:"#2d4154",alignment:"center"
+table.widths="*"
