@@ -39,6 +39,7 @@
           $r['unavailable_since'] = $r['borrowed_date'];
           $r['unavailable_until'] = $r['returned_date'];
           $status = "Returned";
+          $b_id = '';
         }
 
         $link = ($del == '') ? '<a class="cell-link" href="update_equipment_inventory.php?equipment_id='.$equipment_id.'&equipment_detail_id='.$equipment_detail_id.'&b_id='.$b_id.'" target="_blank">' : '';

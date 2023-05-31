@@ -109,38 +109,27 @@ if (isset($_POST['submit'])) {
       WHERE `borrower_id` = '$current_borrower_id'
   ;";
 
-  $file = 'output.txt'; // Specify the path to the text file
+  try {
 
-  // Clear the contents of the file
-  file_put_contents($file, '');
+    $con->beginTransaction();
+    
+    $stmt_borrowed = $con->prepare($q_borrowed);
+    $stmt_borrowed->execute();
 
-  // Write the string to the file
-  file_put_contents($file, $query."\n".$q_borrowed);
+    $stmt_equipment_details = $con->prepare($query);
+    $stmt_equipment_details->execute();    
 
-  header("Location: output.txt");
+    $con->commit();
+    $message = "Equipment Unit Successfully Returned.";
 
-  // try {
+  } catch (PDOException $ex) {
+    $con->rollback();
+    echo $ex->getTraceAsString();
+    echo $ex->getMessage();
+    exit;
+  }
 
-  //   $con->beginTransaction();
-
-  //   $q_borrowed = "UPDATE `borrowed` SET `is_returned` = '1' WHERE `borrower_id` = '$current_borrower_id';";
-  //   $stmt_borrowed = $con->prepare($q_borrowed);
-  //   $stmt_borrowed->execute();
-
-  //   $stmt_equipment_details = $con->prepare($query);
-  //   $stmt_equipment_details->execute();    
-
-  //   $con->commit();
-  //   $message = "Equipment Unit Successfully Returned.";
-
-  // } catch (PDOException $ex) {
-  //   $con->rollback();
-  //   echo $ex->getTraceAsString();
-  //   echo $ex->getMessage();
-  //   exit;
-  // }
-
-  // header("Location: equipment_inventory.php?message=$message");
+  header("Location: equipment_inventory.php?message=$message");
   exit;
 
 }
@@ -337,7 +326,7 @@ include './config/sidebar.php';?>
                 <div class="col-md-8">&nbsp;</div>
                 <div class="col-md-2">
                     <button type="submit" id="returned" name="returned" 
-                    class="btn btn-success btn-sm btn-flat btn-block">Returned</button>
+                    class="btn btn-success btn-sm btn-flat btn-block">Return</button>
                 </div>
                 <?php
                   } else {
