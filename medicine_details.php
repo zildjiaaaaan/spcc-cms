@@ -245,8 +245,6 @@ include './config/sidebar.php';?>
                         ?>
                       </p>
                     </td>
-
-                   
                   </tr>
                 <?php
                 }
@@ -295,8 +293,6 @@ if(isset($_GET['message'])) {
       width: 'resolve',
       placeholder: "Select Medicine"
     });
-
-    $(".exp_date").hide();
     
     const url = new URL(window.location.href);
     const search = url.searchParams.get("search");

@@ -86,6 +86,7 @@ include './config/sidebar.php';?>
                   <col width="5%">
                   <col width="40%">
                   <col width="5%">
+                  <col width="0%">
                 </colgroup>
                 <thead class="bg-primary">
                   <tr>
@@ -96,47 +97,46 @@ include './config/sidebar.php';?>
                     <th>Qty</th>
                     <th>Remarks</th>
                     <th>Action</th>
+                    <th>Tags</th>
                   </tr>
                 </thead>
 
                 <tbody>
                   <?php 
-                  $serial = 0;
-                  while($row =$stmtDetails->fetch(PDO::FETCH_ASSOC)){
-                    $serial++;
+                    $serial = 0;
+                    while($row =$stmtDetails->fetch(PDO::FETCH_ASSOC)){
+                      $serial++;
 
-                    // convert date format to YYYY/MM/DD
-                    if ($row['unavailable_since'] != null) {
-                      $row['unavailable_since'] = date('Y/m/d', strtotime($row['unavailable_since']));
-                    }
-                    if ($row['unavailable_until'] != null) {
-                      $row['unavailable_until'] = date('Y/m/d', strtotime($row['unavailable_until']));
-                    }
-                    
-                    $rowBorrowed = array();
-                    $b_id = "";
-
-                    if ($row['state'] == "Borrowed") {
-                      $query = "SELECT `borrowed`.`id` AS `main_id`, `borrowed`.`borrower_id` AS `b_id`, `borrowers`.*
-                                FROM `borrowed`
-                                JOIN `borrowers` ON `borrowed`.`borrower_id` = `borrowers`.`id`
-                                WHERE `borrowed`.`equipment_details_id` = '".$row['id']."';
-                      ";
-                      try {
-                        $stmtBorrowed = $con->prepare($query);
-                        $stmtBorrowed->execute();
-                        $rowBorrowed = $stmtBorrowed->fetch(PDO::FETCH_ASSOC);
-
-                        $b_id = $rowBorrowed['b_id'];
-                        
-                      } catch(PDOException $ex) {
-                        echo $ex->getMessage();
-                        echo $ex->getTraceAsString();
-                        exit;
+                      // convert date format to YYYY/MM/DD
+                      if ($row['unavailable_since'] != null) {
+                        $row['unavailable_since'] = date('Y/m/d', strtotime($row['unavailable_since']));
                       }
-                    }
+                      if ($row['unavailable_until'] != null) {
+                        $row['unavailable_until'] = date('Y/m/d', strtotime($row['unavailable_until']));
+                      }
+                      
+                      $rowBorrowed = array();
+                      $b_id = "";
 
-                    
+                      if ($row['state'] == "Borrowed") {
+                        $query = "SELECT `borrowed`.`id` AS `main_id`, `borrowed`.`borrower_id` AS `b_id`, `borrowers`.*
+                                  FROM `borrowed`
+                                  JOIN `borrowers` ON `borrowed`.`borrower_id` = `borrowers`.`id`
+                                  WHERE `borrowed`.`equipment_details_id` = '".$row['id']."';
+                        ";
+                        try {
+                          $stmtBorrowed = $con->prepare($query);
+                          $stmtBorrowed->execute();
+                          $rowBorrowed = $stmtBorrowed->fetch(PDO::FETCH_ASSOC);
+
+                          $b_id = $rowBorrowed['b_id'];
+                          
+                        } catch(PDOException $ex) {
+                          echo $ex->getMessage();
+                          echo $ex->getTraceAsString();
+                          exit;
+                        }
+                      }                  
 
                   ?>
                   <tr>
@@ -145,18 +145,12 @@ include './config/sidebar.php';?>
                     <td>
                       <a class="cell-link" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="<?php echo $row['unavailable_since']." - ".$row['unavailable_until'];?>">
                       <?php echo $row['status']; ?>
-                      <p class="search_tag"><?php
-                          echo ($row['status'] == "Available") ? "isAvailable" : "";
-                      ?></p>
                       </a></td>
                     <td>
                       <a class="cell-link" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="<?php echo (!empty($rowBorrowed)) ? "Borrowed by: ".$rowBorrowed['borrower_id']." - ".strtoupper($rowBorrowed['lname']) : "";?>"><?php echo $row['state'];?></a>
-                      <p class="search_tag"><?php
-                          echo (!empty($rowBorrowed)) ? "Borrowed by: ".$rowBorrowed['borrower_id']." - ".strtoupper($rowBorrowed['lname']) : "";
-                      ?></p>
                     </td>
                     <td><?php echo $row['quantity'];?></td>
-                    <td><?php echo $row['remarks'];?></td>
+                    <td><?php echo (!empty($row['remarks'])) ? $row['remarks'] : "<i>No Remarks</i>" ;?></td>
                     
                     <td class="text-center">
                       <a href="update_equipment_inventory.php?equipment_id=<?php echo $row['equipment_id'];?>&equipment_detail_id=<?php echo $row['id'];?>&b_id=<?php echo $b_id;?>" 
@@ -166,6 +160,17 @@ include './config/sidebar.php';?>
                       <a href="del_equipment.php?delId=<?php echo $row['id'];?>" class="btn btn-danger btn-sm btn-flat">
                         <i class="fa fa-trash"></i>
                       </a>
+                    </td>
+                    <td>
+                      <?php
+                          echo (!empty($rowBorrowed)) ? "Borrowed by: ".$rowBorrowed['borrower_id']." - ".strtoupper($rowBorrowed['lname']) : "";
+                          echo " ";
+                          echo ($row['status'] == "Available") ? "isAvailable" : "";
+                          echo " ";
+                          echo $row['unavailable_since']." - ".$row['unavailable_until'];
+                          echo " ";
+                          echo "Date Acquired: ".$row['date_acquired'];
+                      ?>
                     </td>
                    
                   </tr>
@@ -212,8 +217,6 @@ if(isset($_GET['message'])) {
 
   $(document).ready(function() {
 
-    $(".search_tag").hide();
-
     $("#customSwitch1").on("change", function(){
         if($(this).prop("checked") == true){
             $("body").removeClass("dark-mode");
@@ -240,12 +243,53 @@ if(isset($_GET['message'])) {
     var tag = url.searchParams.get("tag");
 
     const dataTableOptions = {
-      order: [[0, 'asc']],
-      responsive: true,
-      lengthChange: false,
-      autoWidth: false,
-      buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"]
+      'order': [[0, 'asc']],
+      'responsive': true,
+      'lengthChange': false,
+      'autoWidth': false,
+      'columnDefs': [{
+        'targets': 7,
+        'visible': false
+      }]
+      // buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"]
     };
+
+    var exportColumns = [0, 1, 2, 3, 4, 5];
+
+    dataTableOptions.buttons = [
+      {
+        extend: 'copyHtml5',
+        exportOptions: {
+          columns: exportColumns
+        }
+      },
+      {
+        extend: 'csvHtml5',
+        exportOptions: {
+          columns: exportColumns
+        }
+      },
+      {
+        extend: 'excelHtml5',
+        exportOptions: {
+          columns: exportColumns
+        }
+      },
+      {
+        extend: 'pdfHtml5',
+        download: 'open',
+        exportOptions: {
+          columns: exportColumns
+        }
+      },
+      {
+        extend: 'print',
+        exportOptions: {
+          columns: exportColumns
+        }
+      },
+      "colvis"
+    ];
 
     if (search === "Borrowed" || search === "Defective") {
       dataTableOptions.search = {

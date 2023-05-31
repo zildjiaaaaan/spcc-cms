@@ -61,7 +61,7 @@ if(isset($_POST['save_medicine'])) {
 
 } else {
   if (!$insert) {
-    $message = 'This medicine has already been stored. Please check inventory or the Trash...';
+    $message = 'This item already exists. Check the list below or the Trash.';
   } else {
     $message = 'Empty form can not be submitted.';
   }
