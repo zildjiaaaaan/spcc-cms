@@ -180,10 +180,14 @@ include './config/sidebar.php';?>
                 $exif = exif_read_data($filename, 'EXIF', true);
                 
                 $timestamp = strtotime($exif['EXIF']['DateTimeOriginal']);
-                $formattedDate = date("F d, Y", $timestamp);
-                $formattedTime = date("h:ia", $timestamp);
+                $dateTaken = "No date found.";
+                if (isset($exif['EXIF']['DateTimeOriginal'])) {
+                  $formattedDate = date("F d, Y", $timestamp);
+                  $formattedTime = date("h:ia", $timestamp);
+                  
+                  $dateTaken = "$formattedDate at $formattedTime";
+                }
                 
-                $dateTaken = "$formattedDate at $formattedTime";
                 $title = strtoupper($row['medicine_name'])." — ".$row['medicine_brand']." (".$row['packing'].") - ".$row['quantity']." pcs.";
               ?>
 
