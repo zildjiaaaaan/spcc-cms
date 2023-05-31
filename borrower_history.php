@@ -75,7 +75,7 @@ include './config/sidebar.php';?>
                     <col width="10%">
                     <col width="10%">
                     <col width="40%">
-                    <col width="10%">
+                    <col width="12%">
                   </colgroup>
                   <thead>
                     <tr class="bg-gradient-primary text-light">

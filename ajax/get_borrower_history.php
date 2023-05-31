@@ -33,6 +33,7 @@
         $b_id = $r['borrower_id'];
         $equipment_detail_id = $r['equipment_details_id'];
         $equipment_id = $r['equipment_id'];
+        $td_bg = "bg-danger";
         
         $status = "Borrowed";
         if ($r['is_returned'] == 1) {
@@ -40,6 +41,7 @@
           $r['unavailable_until'] = $r['returned_date'];
           $status = "Returned";
           $b_id = '';
+          $td_bg = "bg-success";
         }
 
         $link = ($del == '') ? '<a class="cell-link" href="update_equipment_inventory.php?equipment_id='.$equipment_id.'&equipment_detail_id='.$equipment_detail_id.'&b_id='.$b_id.'" target="_blank">' : '';
@@ -51,7 +53,7 @@
         $data = $data.'<td class="px-2 py-1 align-middle text-right">'.$r['unavailable_until'].'</td>';
         $data = $data.'<td class="px-2 py-1 align-middle text-right">'.$r['contact_no'].'</td>';
         $data = $data.'<td class="px-2 py-1 align-middle text-left">'.$r['remarks'].'</td>';
-        $data = $data.'<td class="px-2 py-1 align-middle text-left">'.$status.'</td>';
+        $data = $data.'<td class="px-2 py-1 align-middle text-left '.$td_bg.'">'.$status.'</td>';
 
         $data = $data.'</tr>';
       }

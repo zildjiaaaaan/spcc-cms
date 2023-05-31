@@ -47,8 +47,7 @@ if(!(isset($_SESSION['user_id']))) {
           </li>
 
           <li class="nav-item">
-            <!-- borrow.php -->
-            <a href="#" class="nav-link" 
+            <a href="borrow.php" class="nav-link" 
             id="mi_borrow">
               <i class="fas fa-toolbox nav-icon"></i>
               <p>Borrow Equipment</p>
