@@ -11,6 +11,7 @@ if(isset($_POST['save_medicine'])) {
 
   $insert = true;
 
+  // Check if the item already exists
   try {
 
     $query = "SELECT COUNT(*) AS `duplicate` FROM `medicines` WHERE `medicine_name` = '$medicineName' AND `medicine_brand` = '$medicineBrand';";
@@ -33,9 +34,7 @@ if(isset($_POST['save_medicine'])) {
 
   }
 
-
-
-
+  // Insert the item
   if($medicineName != '' && $medicineBrand != '' && $insert) {
 
     $query = "INSERT INTO `medicines`(`medicine_name`, `medicine_brand`)
@@ -352,7 +351,7 @@ if(isset($_GET['message'])) {
 
     });
 
-    $("#medicine_name").keyup(function() {
+    $("#medicine_name").on("keyup blur", function(event) {
       var medicineName = $(this).val().trim();
       var medicineBrand = $("#medicine_brand").val().trim();
       $(this).val(medicineName);

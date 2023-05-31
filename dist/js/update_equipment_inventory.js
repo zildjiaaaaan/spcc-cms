@@ -67,20 +67,32 @@ $(function () {
 
         if (status === 'Unavailable' && state === 'Borrowed') {
             $(".unavailable").show();
+            $("#unavailableSince").prop("required", true);
+            $("#borrower").prop("required", true);
         } else if (status === 'Unavailable') {
             $(".unavailable").show();
             $(".borrower").hide();
+            $("#unavailableSince").prop("required", true);
+            $("#borrower").prop("required", false);
         } else {
             $(".unavailable").hide();
+            $("#unavailableSince").prop("required", false);
+            $("#borrower").prop("required", false);
         }
 
         if (state === 'Missing') {
             $("#unavailableUntil").prop("disabled", true);
             $("#unavailableUntil").val('');
             $("#unavailableUntil").css("cursor", "not-allowed");
+            $("#unavailableUntil").prop("required", false);
+            $("#borrower").prop("required", false);  
         } else {
+            if (state !== 'Borrowed') {
+                $("#borrower").prop("required", false);
+            }
             $("#unavailableUntil").prop("disabled", false);
             $("#unavailableUntil").css("cursor", "pointer");
+            $("#unavailableUntil").prop("required", true);
         }
     });
 

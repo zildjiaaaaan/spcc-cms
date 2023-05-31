@@ -4,6 +4,87 @@ include './common_service/common_functions.php';
 
 $message = '';
 
+if (isset($_POST['submit'])) {
+
+  $id = $_POST['hidden_id'];
+  $current_borrower_id = $_POST['current_borrower_id'];
+
+  $equipment_id = $_POST['equipment'];
+  $status = $_POST['status'];
+  $state = $_POST['state'];
+  $remarks = $_POST['remarks'];
+  $quantity = $_POST['quantity'];
+
+  $unavailable_since = "NULL";
+  $unavailable_until = "NULL";
+  $borrower_id = $_POST['borrower'];
+
+  if ($status == "Unavailable") {
+    $unavailable_sinceArr = explode("/", $_POST['unavailable_since']);
+    $unavailable_since = $unavailable_sinceArr[2].'-'.$unavailable_sinceArr[0].'-'.$unavailable_sinceArr[1];
+    $unavailable_since = "'" . $unavailable_since . "'";
+    if ($state != "Missing") {
+      $unavailable_untilArr = explode("/", $_POST['unavailable_until']);
+      $unavailable_until = $unavailable_untilArr[2].'-'.$unavailable_untilArr[0].'-'.$unavailable_untilArr[1];
+      $unavailable_until = "'" . $unavailable_until . "'";
+    }
+  }
+
+  $q_unavailable = ", `unavailable_since` = $unavailable_since, `unavailable_until` = $unavailable_until";
+
+  $query = "UPDATE `equipment_details`
+      SET `equipment_id` = '$equipment_id',
+      `status` = '$status',
+      `state` = '$state',
+      `remarks` = '$remarks'".$q_unavailable."
+      WHERE `id` = '$id';
+  ";
+
+  $q_borrowed = "";
+  if ($borrower_id != '' && $current_borrower_id != '') {
+    $q_borrowed = "UPDATE `borrowed`
+        SET `equipment_details_id` = '$equipment_id',
+        `borrower_id` = '$borrower_id'
+        WHERE `borrower_id` = '$current_borrower_id';";
+  } else if ($borrower_id != '') {
+    $q_borrowed = "INSERT INTO `borrowed` (`equipment_details_id`, `borrower_id`) VALUES ('$id', '$borrower_id');";
+  } 
+
+  $file = 'output.txt'; // Specify the path to the text file
+
+  // Write the string to the file
+  file_put_contents($file, '');
+  file_put_contents($file, $query."\n".$q_borrowed);
+
+  header("Location: output.txt");
+  exit;
+
+  // try {
+    
+  //   $con->beginTransaction();
+  //   $stmt_equipment_details = $con->prepare($query);
+  //   $stmt_equipment_details->execute();
+
+  //   if ($borrower_id != '') {
+  //     $q_borrowed = "UPDATE `borrowed`
+  //         SET `equipment_details_id` = '$equipment_id',
+  //         `borrower_id` = '$borrower_id'
+  //         WHERE `equipment_details_id` = '$id';";
+      
+  //     $stmt_borrowed = $con->prepare($q_borrowed);
+  //     $stmt_borrowed->execute();
+  //   }
+
+  //   $con->commit();
+  //   $message = "Equipment Unit Successfully Updated.";
+
+  // } catch (PDOException $ex) {
+  //   $con->rollback();
+  //   echo $ex->getTraceAsString();
+  //   echo $ex->getMessage();
+  //   exit;
+  // }
+}
 
 $equipment_id = $_GET['equipment_id'];
 $id = $_GET['equipment_detail_id'];
@@ -89,17 +170,18 @@ include './config/sidebar.php';?>
             <form method="post">
               <div class="row">
                 <input type="hidden" id="update_id" name="hidden_id" value="<?php echo $equipment_details_id;?>" />
+                <input type="hidden" id="current_borrower_id" name="current_borrower_id" value="<?php echo !empty($_GET['b_id']) ? $_GET['b_id'] : "";?>" />
 
                 <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 select-select2">
                   <label>Select Equipment</label>
-                  <select id="equipment" name="equipment" class="form-control form-control-sm rounded-0 select2">
+                  <select id="equipment" name="equipment" class="form-control form-control-sm rounded-0 select2" required>
                     <?php echo $equipments;?>
                   </select>
                 </div>
 
                 <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
                   <label>Status</label>
-                  <select id="status" name="status" class="form-control form-control-sm rounded-0">
+                  <select id="status" name="status" class="form-control form-control-sm rounded-0" required>
                     <option value="">Select Status</option>
                     <option <?php echo ($row['status'] == "Available") ? "selected='selected'" : ""; ?> value="Available">Available</option>
                     <option <?php echo ($row['status'] == "Unavailable") ? "selected='selected'" : ""; ?> value="Unavailable">Unavailable</option>
@@ -108,7 +190,7 @@ include './config/sidebar.php';?>
 
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <label>State</label>
-                  <select id="state" name="state" class="form-control form-control-sm rounded-0">
+                  <select id="state" name="state" class="form-control form-control-sm rounded-0" required>
                     <?php echo getState($row['status'], $row['state']);?>
                   </select>
                 </div>
@@ -122,7 +204,7 @@ include './config/sidebar.php';?>
                 
                 <div class="col-lg-3 col-md-2 col-sm-6 col-xs-12">
                   <label>Quantity Available</label>
-                  <input type="number" value="<?php echo $row['quantity']; ?>" id="quantity" name="quantity" class="form-control form-control-sm rounded-0" min="1"/>
+                  <input type="number" value="<?php echo $row['quantity']; ?>" id="quantity" name="quantity" class="form-control form-control-sm rounded-0" min="1" required>
                 </div>
 
                 <div class="clearfix unavailable">&nbsp;</div>
@@ -137,7 +219,8 @@ include './config/sidebar.php';?>
                     <label>Unavailable Since</label>
                     <div class="input-group date" id="unavailable_since" 
                         data-target-input="nearest">
-                        <input type="text" value="<?php echo (!is_null($unavailable_since)) ? $unavailable_since : "" ; ?>" id="unavailableSince" class="form-control form-control-sm rounded-0 datetimepicker-input" data-target="#unavailable_since" name="unavailable_since" data-toggle="datetimepicker" autocomplete="off"/>
+                        <input type="text" value="<?php echo (!is_null($unavailable_since)) ? $unavailable_since : "" ; ?>" id="unavailableSince" class="form-control form-control-sm rounded-0 datetimepicker-input" data-target="#unavailable_since" name="unavailable_since" data-toggle="datetimepicker" autocomplete="off" 
+                        <?php echo ($row['status'] == "Unavailable") ? "required" : ""; ?>/>
                         <div class="input-group-append" 
                         data-target="#unavailable_since" 
                         data-toggle="datetimepicker">
@@ -152,7 +235,16 @@ include './config/sidebar.php';?>
                     <label>Unavailable Until</label>
                     <div class="input-group date" id="unavailable_until" 
                         data-target-input="nearest">
-                        <input type="text" value="<?php echo (!is_null($unavailable_until)) ? $unavailable_until : "" ; ?>" id="unavailableUntil" class="form-control form-control-sm rounded-0 datetimepicker-input" data-target="#unavailable_until" name="unavailable_until" data-toggle="datetimepicker" autocomplete="off" <?php echo ($row['state'] == "Missing") ? "disabled" : ""; ?>/>
+                        <input type="text" value="<?php echo (!is_null($unavailable_until)) ? $unavailable_until : "" ; ?>" id="unavailableUntil" class="form-control form-control-sm rounded-0 datetimepicker-input" data-target="#unavailable_until" name="unavailable_until" data-toggle="datetimepicker" autocomplete="off" 
+                        <?php
+                          if ($row['status'] == "Unavailable") {
+                            if ($row['state'] == "Missing") {
+                              echo "disabled";
+                            } else {
+                              echo "required";
+                            }
+                          } 
+                        ?>/>
                         <div class="input-group-append" 
                         data-target="#unavailable_until" 
                         data-toggle="datetimepicker">
@@ -164,7 +256,7 @@ include './config/sidebar.php';?>
 
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 unavailable borrower select-select2">
                   <label>Borrower</label><br>
-                  <select id="borrower" name="borrower" class="form-control form-control-sm rounded-0 select2">
+                  <select id="borrower" name="borrower" class="form-control form-control-sm rounded-0 select2" <?php echo ($row['state'] == "Borrowed") ? "required" : ""; ?>>
                     <?php echo $borrowers;?>
                   </select>
                 </div>
@@ -176,7 +268,7 @@ include './config/sidebar.php';?>
             <div class="row">
                 <div class="col-md-10">&nbsp;</div>
                 <div class="col-md-2">
-                    <button type="button" id="submit" name="submit" 
+                    <button type="submit" id="submit" name="submit" 
                     class="btn btn-primary btn-sm btn-flat btn-block">Save</button>
                 </div>
             </div>

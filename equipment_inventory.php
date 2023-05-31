@@ -216,26 +216,6 @@ if(isset($_GET['message'])) {
   }
 
   $(document).ready(function() {
-
-    $("#customSwitch1").on("change", function(){
-        if($(this).prop("checked") == true){
-            $("body").removeClass("dark-mode");
-            $(".cell-link").css("color", "black");
-            $(".cell-link").hover(function(){
-              $(this).css("color", "#007bff");
-            }, function(){
-              $(this).css("color", "black");
-            });
-        } else {
-            $("body").addClass("dark-mode");
-            $(".cell-link").css("color", "white");
-            $(".cell-link").hover(function(){
-              $(this).css("color", "#007bff");
-              }, function(){
-              $(this).css("color", "white");
-            });
-        }
-    });
     
     // Search filters
     const url = new URL(window.location.href);

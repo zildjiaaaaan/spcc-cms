@@ -1,0 +1,11 @@
+UPDATE `equipment_details`
+      SET `equipment_id` = '11',
+      `status` = 'Unavailable',
+      `state` = 'Borrowed',
+      `remarks` = 'test', `unavailable_since` = '2023-05-28', `unavailable_until` = '2023-05-29'
+      WHERE `id` = '6';
+  
+UPDATE `borrowed`
+        SET `equipment_details_id` = '11',
+        `borrower_id` = '8'
+        WHERE `borrower_id` = '15';
