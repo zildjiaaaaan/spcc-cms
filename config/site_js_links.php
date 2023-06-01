@@ -43,10 +43,10 @@ function hideLoader() {
 }
 
 function updateLiveTime() {
-  var now = new Date();
-  var options = { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true };
-  var time = now.toLocaleString('en-US', options);
-  $('#live-time').text("Today is " + time);
+    var now = new Date();
+    var options = { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true };
+    var time = now.toLocaleString('en-US', options);
+    $('#live-time').text("Today is " + time);
 }
 
 // Update the live time every second
@@ -87,26 +87,29 @@ $(function () {
     var selectClicked = false;
 
     $('.select-select2').on('click', function() {
-      selectClicked = true;
+        selectClicked = true;
     });
 
     // Event listener for clicks outside the <select> element
     $(document).on('click', function(event) {
-      var target = $(event.target);
+        var target = $(event.target);
 
-      // Check if the click occurred outside the <select> element just after clicking inside it
-      if (!target.is('.select-select2') && !target.parents().is('.select-select2') && selectClicked) {
+        // Check if the click occurred outside the <select> element just after clicking inside it
+        if (!target.is('.select-select2') && !target.parents().is('.select-select2') && selectClicked) {
         // Force blur on Select2 element
         setTimeout(function() {
-          $('.select2-container-active').removeClass('select2-container-active');
-          $(':focus').blur();
-          handleBlurEvent();
-          // console.log("Is Select2 element blurred?", !$(':focus').is('.select2-container-active'));
+            $('.select2-container-active').removeClass('select2-container-active');
+            $(':focus').blur();
+            //handleBlurEvent();
+            handleBlurEvent(function(isRecorded) {
+                //console.log(isRecorded);
+            });
+            // console.log("Is Select2 element blurred?", !$(':focus').is('.select2-container-active'));
         }, 1);
 
         // Reset selectClicked flag
         selectClicked = false;
-      }
+        }
     });
 });
 

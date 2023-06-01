@@ -129,8 +129,20 @@ Borrow Equipment
 [textarea] remarks (disabled)
 [textarea] new remarks
 
-5 - 3 = 
-5 - 2 = 
-5 - 1 = 
+x - x = UPDATE (*status, *state, *quantity, *unavailable_since, *unavailable_until, remarks)
+x - less than x = UPDATE, INSERT
 
-#	equipment	quantity	return date	borrower	x btn		current remarks	new remarks
+
+id	equipment	quantity	return date	borrower	x btn		current remarks		new remarks
+
+
+equipmentDetailsId
+borrowerId
+qty
+unavailable_until
+current remarks
+new remarks
+
+5 - 2 = 3 -- UPDATE, INSERT (if new) UPDATE (if existing)
+3 - 1 = 2 -- UPDATE, INSERT (if new) UPDATE (if existing)
+2 - 2 = 0 -- UPDATE

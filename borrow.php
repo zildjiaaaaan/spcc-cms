@@ -114,8 +114,6 @@ include './config/sidebar.php';?>
 
     <div class="col-md-12"><hr /></div>
     <div class="clearfix">&nbsp;</div>
-
-    <div class="clearfix">&nbsp;</div>
     <div class="row table-responsive">
       <table id="equipment_list" class="table table-striped table-bordered">
         <colgroup>
@@ -144,8 +142,10 @@ include './config/sidebar.php';?>
         </tbody>
       </table>
     </div>
-
     <div class="clearfix">&nbsp;</div>
+    <div class="clearfix">&nbsp;</div>
+    <p><i>Note: Equipment in <span class="text-warning">this background</span> means it has already been borrowed with identical details. Instead of creating a new record, the quantity will be increased.</i></p>
+
     <div class="row">
       <div class="col-md-10">&nbsp;</div>
       <div class="col-md-2">
