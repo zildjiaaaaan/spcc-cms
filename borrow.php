@@ -73,7 +73,7 @@ include './config/sidebar.php';?>
                   <div class="form-group">
                     <label>Return Date</label>
                     <div class="input-group date" id="unavailable_until" data-target-input="nearest">
-                        <input type="text" value="<?php echo date("m/d/Y"); ?>" id="unavailableUntil" class="form-control form-control-sm rounded-0 datetimepicker-input" data-target="#unavailable_until" name="unavailable_until" data-toggle="datetimepicker" autocomplete="off"/>
+                        <input type="text" id="unavailableUntil" class="form-control form-control-sm rounded-0 datetimepicker-input" data-target="#unavailable_until" name="unavailable_until" data-toggle="datetimepicker" autocomplete="off"/>
                         <div class="input-group-append" 
                         data-target="#unavailable_until" 
                         data-toggle="datetimepicker">
@@ -99,7 +99,7 @@ include './config/sidebar.php';?>
 
                 <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
                   <label>Add New Remarks</label>
-                  <textarea id="new_remarks" name="new_remarks" class="form-control form-control-sm rounded-0 remarks" placeholder='e.g. "Currently in repair shop located at 11th Ave."'></textarea>
+                  <textarea id="new_remarks" name="new_remarks" class="form-control form-control-sm rounded-0 remarks" placeholder='e.g. "Currently borrowed to use for a healthcare event"'></textarea>
                 </div>
 
                 <div class="col-lg-1 col-md-12 col-sm-12 col-xs-12">
@@ -135,7 +135,7 @@ include './config/sidebar.php';?>
             <th>Return Date</th>
             <th>Borrower</th>
             <th>New Remarks</th>
-            <th>Remove</th>
+            <th>Action</th>
           </tr>
         </thead>
 

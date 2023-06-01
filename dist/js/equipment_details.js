@@ -161,7 +161,7 @@ $(function() {
                         equipment.qty += parseInt(quantity);
                         hasNoId = false;
                         addCell = false;
-                        console.log(addCell);
+                        console.log("Added a cell: "+addCell);
                         return; // Break out of the loop early
                     }
                 });
@@ -228,7 +228,8 @@ $(function() {
             $("#equipment").val('').trigger('change');
 
             if (status === 'Unavailable') {
-                $("#unavailable_since, #unavailable_until").val('');
+                $('#unavailable_since').datetimepicker('date', new Date());
+                $('#unavailable_until').datetimepicker('date', null);
                 if (state === 'Borrowed') {
                     $("#borrower").val('').trigger('change');
                 }

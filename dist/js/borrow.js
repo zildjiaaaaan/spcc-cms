@@ -27,7 +27,8 @@ $(function() {
     //Set linked datetimepicker format
     $('#unavailable_until').datetimepicker({
         format: 'L',
-        minDate: new Date()
+        minDate: new Date(),
+        defaultDate: new Date()
     });
 
 
@@ -53,35 +54,39 @@ $(function() {
                     var d_remarks = data.remarks;
 
                     if (equipmentDetailsArr.length > 0) {
-                        for (let i = 0; i < equipmentDetailsArr.length; i++) {
-                            if (equipmentDetailsArr[i].equipmentDetailsId === equipmentDetailsId) {
-                            d_quantity -= equipmentDetailsArr[i].qty;
+                        var filteredEquipmentDetails = equipmentDetailsArr.filter(function(details) {
+                            return details.equipmentDetailsId === equipmentDetailsId;
+                        });
+                
+                        if (filteredEquipmentDetails.length > 0) {
+                            d_quantity -= filteredEquipmentDetails.reduce(function(total, details) {
+                                return total + details.qty;
+                            }, 0);
+                
                             if (d_quantity < 0) {
-                                d_quantity = 0;
-                            }
-                                break;
+                                data = 0;
                             }
                         }
                     }
-
-                    $("#quantity").val(d_quantity);
-                    $("#quantity").attr({
-                        "max" : d_quantity,
-                        "min" : 0
-                    });
-
-                    $("#quantity").on("input", function() {
+              
+                      $("#quantity").val(d_quantity);
+                      $("#quantity").attr({
+                        "max": d_quantity,
+                        "min": 0
+                      });
+              
+                      $("#quantity").on("input", function() {
                         var value = $(this).val();
                         var min = parseInt($(this).attr("min"));
                         var max = parseInt($(this).attr("max"));
-
+              
                         if (value < min) {
                             $(this).val(min);
                         } else if (value > max) {
                             $(this).val(max);
                         }
-                    });
-
+                      });
+                      
                     $("#current_remarks").attr('placeholder', d_remarks);
                 },
                 error: function (jqXhr, textStatus, errorMessage) {
@@ -116,7 +121,7 @@ $(function() {
             quantity = '';
         }
 
-        var current_remarks = $("#current_remarks").val().trim();
+        var current_remarks = $("#current_remarks").attr("placeholder");
 
         // if remarks has "_" then replace it with "-"
         var remarks = $("#new_remarks").val().trim();      
@@ -132,40 +137,44 @@ $(function() {
         // Determiner for clearing form
         var clearForm = true;
         
-        if (borrowerId !== '' && equipmentName !== '' && quantity !== '' && f_unavailableUntil !== '') {
+        if (borrowerId !== '' && equipmentDetailsId !== '' && quantity !== '' && f_unavailableUntil !== '') {
 
             if (equipmentDetailsArr.length > 0) {
                 equipmentDetailsArr.forEach((equipment) => {
-                    if (equipment.equipmentDetailsId === equipmentDetailsId) {
-                        const qtyId = `${equipmentId}`;
+                    if (
+                    equipment.equipmentDetailsId === equipmentDetailsId &&
+                    equipment.borrowerId === borrowerId &&
+                    equipment.unavailableUntil === f_unavailableUntil &&
+                    equipment.remarks === remarks
+                    ) {
+                        const qtyId = `${equipmentDetailsId}_${borrowerId}_${f_unavailableUntil}_${remarks}`;
                         addQuantity(parseInt(quantity), qtyId);
                         equipment.qty += parseInt(quantity);
                         hasNoId = false;
                         addCell = false;
-                        console.log(addCell);
                         return; // Break out of the loop early
                     }
                 });
             }
 
             if (addCell) {
-                const qtyId = `${equipmentId}_${status}_${state}_${remarksForId}_${f_unavailableSince}_${f_unavailableUntil}_${borrowerId}`;
+                const qtyId = `${equipmentDetailsId}_${borrowerId}_${f_unavailableUntil}_${remarks}`;
                 const inputs = [
-                    `<input type="hidden" name="equipmentIds[]" value="${equipmentId}" />`,
-                    `<input type="hidden" name="quantities[]" id="inp-${qtyId}" value="${quantity}" />`,
-                    `<input type="hidden" name="remarks[]" value="${remarks}" />`,
+                    `<input type="hidden" name="equipmentDetailsIds[]" value="${equipmentDetailsId}" />`,
                     `<input type="hidden" name="borrowerIds[]" value="${borrowerId}" />`,
-                    `<input type="hidden" name="unavailableSinces[]" value="${f_unavailableSince}" />`,
-                    `<input type="hidden" name="unavailableUntils[]" value="${f_unavailableUntil}" />`
+                    `<input type="hidden" name="unavailableUntils[]" value="${f_unavailableUntil}" />`,
+                    `<input type="hidden" name="quantities[]" id="inp-${qtyId}" value="${quantity}" />`,
+                    `<input type="hidden" name="current_remarks[]" value="${current_remarks}" />`,
+                    `<input type="hidden" name="remarks[]" value="${remarks}" />`
                 ].join('');
                 
                 const tr = `
                     <tr>
                     <td class="px-2 py-1 align-middle">${serial}</td>
                     <td class="px-2 py-1 align-middle">${equipmentName}</td>
-                    <td class="px-2 py-1 align-middle">${status}</td>
-                    <td class="px-2 py-1 align-middle">${state}</td>
                     <td class="px-2 py-1 align-middle" id="${qtyId}">${quantity}</td>
+                    <td class="px-2 py-1 align-middle">${f_unavailableUntil}</td>
+                    <td class="px-2 py-1 align-middle">${borrowerName}</td>
                     <td class="px-2 py-1 align-middle">${remarks}${inputs}</td>
                     <td class="px-2 py-1 align-middle text-center">
                         <button type="button" class="btn btn-outline-danger btn-sm rounded-0" onclick="deleteCurrentRow(this);">
@@ -185,8 +194,8 @@ $(function() {
                         equipmentDetailsId,
                         qty: parseInt(quantity),
                         remarks,
+                        current_remarks,
                         borrowerId,
-                        unavailableSince: f_unavailableSince,
                         unavailableUntil: f_unavailableUntil
                     });
                 }
@@ -201,17 +210,11 @@ $(function() {
 
         // reset the form
         if (clearForm) {
-            $("#equipment, #status, #state, #remarks, #quantity").val('');
-            $("#equipment").select2("val", "");
-
-            if (status === 'Unavailable') {
-                $("#unavailable_since, #unavailable_until").val('');
-                if (state === 'Borrowed') {
-                    $("#borrower").val('');
-                }
-                $(".unavailable").hide();
-            }
-        }    
+            $("#equipment, #borrower").val('').trigger('change');
+            $("#new_remarks, #quantity").val('');
+            $("#current_remarks").attr('placeholder', "Some remarks");
+            $('#unavailable_until').datetimepicker('date', new Date());
+        }
     });
 });
 
@@ -253,8 +256,6 @@ function handleBlurEvent() {
             type: 'GET',
             data: {
                 'equipmentId': equipmentId,
-                'status': status,
-                'state': state,
                 'remarks': remarks,
                 'borrowerId': borrowerId,
                 'f_unavailableSince': f_unavailableSince,
@@ -285,21 +286,19 @@ function deleteCurrentRow(obj) {
     var rowIndex = obj.parentNode.parentNode.rowIndex;
     var row = document.getElementById("equipment_list").rows[rowIndex];
     var del_remarks = row.cells[5].textContent;
-    var id = row.cells[4].id;
+    var id = row.cells[2].id;
 
     document.getElementById("equipment_list").deleteRow(rowIndex);
 
     var del_arr = id.split("_");
     var del_id = del_arr[0];
-    var del_uSince = del_arr[4];
-    var del_uUntil = del_arr[5];
-    var del_borId = del_arr[6];
+    var del_uUntil = del_arr[2];
+    var del_borId = del_arr[1];
 
     var delIndex = equipmentDetailsArr.findIndex((equipment) => {
         return (
-        equipment.equipmentId === del_id &&
+        equipment.equipmentDetailsId === del_id &&
         equipment.remarks === del_remarks &&
-        equipment.unavailableSince === del_uSince &&
         equipment.unavailableUntil === del_uUntil &&
         equipment.borrowerId === del_borId
         );
