@@ -4,16 +4,16 @@ include './config/connection.php';
 
 $message = '';
 
-	if(isset($_POST['login'])) {
-    $userName = $_POST['user_name'];
-    $password = $_POST['password'];
+if(isset($_POST['login'])) {
+  $userName = $_POST['user_name'];
+  $password = $_POST['password'];
 
-    $encryptedPassword = md5($password);
+  $encryptedPassword = md5($password);
 
-    $query = "select `id`, `display_name`, `user_name`, 
-`profile_picture` from `users` 
-where `user_name` = '$userName' and 
-`password` = '$encryptedPassword';";
+  $query = "select `id`, `display_name`, `user_name`, 
+    `profile_picture` from `users` 
+    where `user_name` = '$userName' and 
+    `password` = '$encryptedPassword';";
 
 try {
   $stmtLogin = $con->prepare($query);

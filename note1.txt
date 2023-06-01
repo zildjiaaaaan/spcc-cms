@@ -120,3 +120,17 @@ Borrow Equipment
 
 *Double-check deletions anomaly
 
+---------
+
+[select] borrower
+[select] equipment (active only)
+[number] quantity (active only)
+[date] return date
+[textarea] remarks (disabled)
+[textarea] new remarks
+
+5 - 3 = 
+5 - 2 = 
+5 - 1 = 
+
+#	equipment	quantity	return date	borrower	x btn		current remarks	new remarks

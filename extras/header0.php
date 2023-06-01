@@ -1,26 +1,53 @@
-<!-- Navbar -->
+
+
 <nav class="main-header navbar navbar-expand navbar-dark navbar-light fixed-top">
   <!-- Left navbar links -->
   <ul class="navbar-nav">
     <li class="nav-item">
       <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
     </li>
+    <li class="nav-item d-none d-sm-inline-block">
+      <a href="index3.html" class="nav-link">Home</a>
+    </li>
+    <li class="nav-item d-none d-sm-inline-block">
+      <a href="#" class="nav-link">Contact</a>
+    </li>
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Help
+      </a>
+      <div class="dropdown-menu" aria-labelledby="navbarDropdown2">
+        <a class="dropdown-item" href="#">FAQ</a>
+        <a class="dropdown-item" href="#">Support</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#">Contact</a>
+      </div>
+    </li>
   </ul>
-  <a href="dashboard.php" class="navbar-brand">
-    <span class="brand-text font-weight-light">SPCC Clinic</span>
-  </a>
+
+  <!-- SEARCH FORM -->
+  <form class="form-inline ml-3">
+    <div class="input-group input-group-sm">
+      <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+      <div class="input-group-append">
+        <button class="btn btn-navbar" type="submit">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+    </div>
+  </form>
+
   <!-- Right navbar links -->
   <ul class="navbar-nav ml-auto">
-    <!-- <li class="nav-item">
-      <div class="login-user text-light font-weight-bolder right">Hello, <?= $_SESSION['display_name'] ?>!</div>
-    </li> -->
+
     <li class="nav-item">
       <div class="custom-control custom-switch" style="padding-bottom: 10px;">
         <input type="checkbox" class="custom-control-input" id="customSwitch1" <?php echo ($_SESSION['dark_mode'] != "1") ? "checked" : ""; ?>>
         <label class="custom-control-label" for="customSwitch1">&nbsp;</label>
       </div>
     </li>
-
+    
+    <!-- Messages Dropdown Menu -->
     <li class="nav-item dropdown" style="margin: 8px 15px 0 0;">
       <a class="nav-link" data-toggle="dropdown" href="#">
         <i class="far fa-bell"></i>
@@ -30,13 +57,13 @@
         <a href="#" class="dropdown-item">
           <!-- Message Start -->
           <div class="media">
-            <img src="user_images\1684405733Darth-Vader-Dark-Minimal-iPhone-Wallpaper.png" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+            <img src="dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
             <div class="media-body">
               <h3 class="dropdown-item-title">
-                John Doe
+                Brad Diesel
                 <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
               </h3>
-              <p class="text-sm">There's an activity 1</p>
+              <p class="text-sm">Call me whenever you can...</p>
               <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
             </div>
           </div>
@@ -46,13 +73,13 @@
         <a href="#" class="dropdown-item">
           <!-- Message Start -->
           <div class="media">
-            <img src="user_images\1684405733Darth-Vader-Dark-Minimal-iPhone-Wallpaper.png" alt="User Avatar" class="img-size-50 img-circle mr-3">
+            <img src="dist/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
             <div class="media-body">
               <h3 class="dropdown-item-title">
-                Jane Pierce
+                John Pierce
                 <span class="float-right text-sm text-muted"><i class="fas fa-star"></i></span>
               </h3>
-              <p class="text-sm">Some activity here 2</p>
+              <p class="text-sm">I got your message bro</p>
               <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
             </div>
           </div>
@@ -62,22 +89,21 @@
         <a href="#" class="dropdown-item">
           <!-- Message Start -->
           <div class="media">
-            <img src="user_images\1684405733Darth-Vader-Dark-Minimal-iPhone-Wallpaper.png" alt="User Avatar" class="img-size-50 img-circle mr-3">
+            <img src="dist/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
             <div class="media-body">
               <h3 class="dropdown-item-title">
-                Peter Parker
+                Nora Silvester
                 <span class="float-right text-sm text-warning"><i class="fas fa-star"></i></span>
               </h3>
-              <p class="text-sm">Another activity here 3</p>
+              <p class="text-sm">The subject goes here</p>
               <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
             </div>
           </div>
           <!-- Message End -->
         </a>
         <div class="dropdown-divider"></div>
-        <a href="#" class="dropdown-item dropdown-footer">See All Activities</a>
+        <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
       </div>
     </li>
   </ul>
 </nav>
-<!-- /.navbar -->

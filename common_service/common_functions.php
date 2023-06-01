@@ -233,6 +233,48 @@ function getUniqueEquipments($con, $equipmentId = 0) {
 	
 }
 
+function getActiveEquipments($con, $equipmentId = 0) {
+
+	// $query = "select `id`, `equipment`, `brand` from `equipments` where `is_del` = '0' order by `equipment` asc;";
+	$query = "SELECT `ED`.*, `E`.`equipment`, `E`.`brand`, `E`.`date_acquired`
+	FROM `equipments` AS `E`, `equipment_details` AS `ED`
+	WHERE `ED`.`equipment_id` = `E`.`id`
+		AND `status` = 'Available'
+		AND `state` = 'Active'
+		AND `E`.`is_del` = '0'
+		AND `ED`.`is_del` = '0'
+		AND `quantity` > '0'
+	;";
+
+	$stmt = $con->prepare($query);
+	try {
+		$stmt->execute();
+
+	} catch(PDOException $ex) {
+		echo $ex->getTraceAsString();
+		echo $ex->getMessage();
+		exit;
+	}
+
+	$data = '<option value=""></option>';
+
+	$i = 1;
+	while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+		$option = $row['equipment'].' — '.strtoupper($row['brand'])." (".$i.")";
+
+		if($equipmentId == $row['id']) {
+			$data = $data.'<option selected="selected" value="'.$row['id'].'">'.$option.'</option>';
+
+		} else {
+		$data = $data.'<option value="'.$row['id'].'">'.$option.'</option>';
+		}
+		$i++;
+	}
+
+	return $data;
+	
+}
+
 
 function getDateTextBox($label, $dateId) {
 

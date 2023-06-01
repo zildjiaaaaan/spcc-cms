@@ -13,13 +13,13 @@
 	if (isset($_GET['equipmentDetailsId'])) {
 		$equipmentDetailsId = $_GET['equipmentDetailsId'];
 
-		$query = "SELECT `e`.`total_qty` - COALESCE(SUM(`ed`.`quantity`), 0) AS `quantity`
-				FROM `equipments` AS `e`
-				LEFT JOIN `equipment_details` AS `ed` ON `e`.`id` = `ed`.`equipment_id`
-				WHERE `e`.`id` = '$equipmentDetailsId';";
+		$query = "SELECT `quantity`, `remarks`
+			FROM `equipment_details`
+			WHERE `id` = '$equipmentDetailsId';";
 	}
 
   	$quantity = 0;
+	$data = [];
 
   	try {
   		$stmt = $con->prepare($query);
@@ -28,13 +28,19 @@
   		$r = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($r['quantity'] > 0) {
             $quantity = $r['quantity'];
+			if (isset($r['remarks'])) {
+				$remarks = $r['remarks'];
+				$data = [
+					'quantity' => $quantity,
+					'remarks' => $remarks
+				];
+			}
         }
-        
 
   	} catch(PDOException $ex) {
   		echo $ex->getTraceAsString();
   		exit;
   	}
 
-  	echo $quantity;
+	echo (!empty($data)) ? json_encode($data) : $quantity ;  	
 ?>

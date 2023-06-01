@@ -4,7 +4,7 @@ include './common_service/common_functions.php';
 
 $message = '';
 
-$equipments = getUniqueEquipments($con);
+$equipments = getActiveEquipments($con);
 $borrowers = getUniqueBorrowers($con);
 
 ?>
@@ -72,10 +72,10 @@ include './config/sidebar.php';?>
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-10">
                   <div class="form-group">
                     <label>Return Date</label>
-                    <div class="input-group date" id="unavailable_since" data-target-input="nearest">
-                        <input type="text" value="<?php echo date("m/d/Y"); ?>" id="unavailableSince" class="form-control form-control-sm rounded-0 datetimepicker-input" data-target="#unavailable_since" name="unavailable_since" data-toggle="datetimepicker" autocomplete="off"/>
+                    <div class="input-group date" id="unavailable_until" data-target-input="nearest">
+                        <input type="text" value="<?php echo date("m/d/Y"); ?>" id="unavailableUntil" class="form-control form-control-sm rounded-0 datetimepicker-input" data-target="#unavailable_until" name="unavailable_until" data-toggle="datetimepicker" autocomplete="off"/>
                         <div class="input-group-append" 
-                        data-target="#unavailable_since" 
+                        data-target="#unavailable_until" 
                         data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                       </div>
@@ -85,7 +85,7 @@ include './config/sidebar.php';?>
 
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <label>Quantity</label>
-                  <input type="number" id="quantity" name="quantity" class="form-control form-control-sm rounded-0" min="1" placeholder="Minimum of 1">
+                  <input type="number" id="quantity" name="quantity" class="form-control form-control-sm rounded-0" min="1" >
                 </div>
               
               </div>
@@ -93,8 +93,8 @@ include './config/sidebar.php';?>
               <div class="row d-flex justify-content-center">
                 
                 <div class="col-lg-5 col-md-12 col-sm-12 col-xs-12">
-                  <label>Current Remarks</label>
-                  <textarea id="current_remarks" name="current_remarks" class="form-control form-control-sm rounded-0 remarks" disabled>Some text</textarea>
+                  <label><i class="fa fa-info-circle"></i> Current Remarks</label>
+                  <textarea id="current_remarks" name="current_remarks" class="form-control form-control-sm rounded-0 remarks" placeholder="Some remarks" disabled style="cursor: not-allowed"></textarea>
                 </div>
 
                 <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
@@ -102,7 +102,7 @@ include './config/sidebar.php';?>
                   <textarea id="new_remarks" name="new_remarks" class="form-control form-control-sm rounded-0 remarks" placeholder='e.g. "Currently in repair shop located at 11th Ave."'></textarea>
                 </div>
 
-                <div class="col-lg-1 col-md-2 col-sm-2 col-xs-2">
+                <div class="col-lg-1 col-md-12 col-sm-12 col-xs-12">
                   <label>&nbsp;</label>
                   <button type="button" id="add_to_list" class="btn btn-primary btn-sm btn-flat btn-block">
                     <i class="fa fa-plus"></i>
@@ -135,7 +135,7 @@ include './config/sidebar.php';?>
             <th>Return Date</th>
             <th>Borrower</th>
             <th>New Remarks</th>
-            <th>Action</th>
+            <th>Remove</th>
           </tr>
         </thead>
 

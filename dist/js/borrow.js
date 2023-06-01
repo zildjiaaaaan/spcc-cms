@@ -25,102 +25,103 @@ $(function() {
     });
 
     //Set linked datetimepicker format
-    $('#unavailable_since').datetimepicker({
+    $('#unavailable_until').datetimepicker({
         format: 'L',
         minDate: new Date()
     });
 
-    // if #status is Available, then #state can be active or non-borrowable
-    // if #status is Unavailable, then state can be used, missing, defective, borrowed
-    $("#status").change(function() {
-        var status = $("#status option:selected").text();
-        var html = '';
-
-        if (status === 'Available') {
-            html = '<option value="Active">Active</option>';
-            html += '<option value="Non-Borrowable">Non-Borrowable</option>';
-        } else if (status === 'Unavailable') {
-            html = '<option value="Used">Used</option>';
-            html += '<option value="Missing">Missing</option>';
-            html += '<option value="Defective">Defective</option>';
-            // html += '<option value="In Repair">In Repair</option>';
-            html += '<option value="Borrowed">Borrowed</option>';
-            // html += '<option value="Transferred">Transferred</option>';
-        }
-
-        $("#state").html(html);
-    });
-
-    // if the #status is Unavailable, then show the elements that has the class of unavailable except .borrower
-    // var status = '';
-    // var state = '';
-    // $("#status, #state").change(function() {
-    //     status = $("#status option:selected").text();
-    //     state = $("#state option:selected").text();
-
-    //     if (status === 'Unavailable' && state === 'Borrowed') {
-    //         $(".unavailable").show();
-    //     } else if (status === 'Unavailable') {
-    //         $(".unavailable").show();
-    //         $(".borrower").hide();
-    //     } else {
-    //         $(".unavailable").hide();
-    //     }
-
-    //     if (state === 'Missing') {
-    //         $("#unavailableUntil").prop("disabled", true);
-    //         $("#unavailableUntil").val('');
-    //         $("#unavailableUntil").css("cursor", "not-allowed");
-    //     } else {
-    //         $("#unavailableUntil").prop("disabled", false);
-    //         $("#unavailableUntil").css("cursor", "pointer");
-    //     }
-    // });
 
     // Handle blur event
-    $("form :input").blur(handleBlurEvent);
+    // $("form :input").blur(handleBlurEvent);
+
+    $("#equipment").change(function() {
+        var equipmentDetailsId = $(this).val();
+
+        if (equipmentDetailsId != '') {
+            $.ajax({
+                url: "ajax/get_quantity.php",
+                type: 'GET', 
+                data: {
+                    'equipmentDetailsId': equipmentDetailsId
+                },
+                cache:false,
+                async:false,
+                success: function (data) {
+
+                    var data = JSON.parse(data);
+                    var d_quantity = data.quantity;
+                    var d_remarks = data.remarks;
+
+                    if (equipmentDetailsArr.length > 0) {
+                        for (let i = 0; i < equipmentDetailsArr.length; i++) {
+                            if (equipmentDetailsArr[i].equipmentDetailsId === equipmentDetailsId) {
+                            d_quantity -= equipmentDetailsArr[i].qty;
+                            if (d_quantity < 0) {
+                                d_quantity = 0;
+                            }
+                                break;
+                            }
+                        }
+                    }
+
+                    $("#quantity").val(d_quantity);
+                    $("#quantity").attr({
+                        "max" : d_quantity,
+                        "min" : 0
+                    });
+
+                    $("#quantity").on("input", function() {
+                        var value = $(this).val();
+                        var min = parseInt($(this).attr("min"));
+                        var max = parseInt($(this).attr("max"));
+
+                        if (value < min) {
+                            $(this).val(min);
+                        } else if (value > max) {
+                            $(this).val(max);
+                        }
+                    });
+
+                    $("#current_remarks").attr('placeholder', d_remarks);
+                },
+                error: function (jqXhr, textStatus, errorMessage) {
+                    showCustomMessage(errorMessage);
+                }
+            });
+        }
+    });
 
     $('#equipment_list').find('td').addClass("px-2 py-1 align-middle")
     $('#equipment_list').find('th').addClass("p-1 align-middle")
 
     // Adding to list
-    $("#add").click(function() {
+    $("#add_to_list").click(function() {
 
-        var equipmentId = $("#equipment").val();
+        var borrowerId = $("#borrower").val();
+        var borrowerName = $("#borrower option:selected").text();
+
+        var equipmentDetailsId = $("#equipment").val();
         var equipmentName = $("#equipment option:selected").text();
+        if (equipmentName != '') {
+            equipmentName = equipmentName.split(" (")[0];
+        }
 
-        // if remarks has "_" then replace it with "-"
-        var remarks = $("#remarks").val().trim();      
-        remarks = remarks.replace(/_/g, "-");
-        var remarksForId = remarks.replace(/ /g, "-");
-
+        var f_unavailableUntil = '';
+        if ($("#unavailableUntil").val() != '') {
+            f_unavailableUntil = formatDate($("#unavailableUntil").val());
+        }
+        
         var quantity = $("#quantity").val().trim();
         if (quantity == '0') {
             quantity = '';
         }
 
-        var borrowerId = '*';
-        var f_unavailableSince = '';
-        var f_unavailableUntil = '';
+        var current_remarks = $("#current_remarks").val().trim();
 
-        if (state === 'Borrowed') {
-            if ($("#borrower").val() && $("#unavailableSince").val() && $("#unavailableUntil").val()) {
-                borrowerId = $("#borrower").val();
-                f_unavailableSince = formatDate($("#unavailableSince").val());
-                f_unavailableUntil = formatDate($("#unavailableUntil").val());
-            }
-        } else if (state === 'Missing' && $("#unavailableSince").val()) {
-            f_unavailableSince = formatDate($("#unavailableSince").val());
-            borrowerId = '';
-        } else if (status === 'Unavailable' && $("#unavailableSince").val() && $("#unavailableUntil").val()) {
-            f_unavailableSince = formatDate($("#unavailableSince").val());
-            f_unavailableUntil = formatDate($("#unavailableUntil").val());
-            borrowerId = '';
-        } else {
-            if (status === 'Available') {
-                borrowerId = '';
-            }
-        }
+        // if remarks has "_" then replace it with "-"
+        var remarks = $("#new_remarks").val().trim();      
+        remarks = remarks.replace(/_/g, "-");
+        var remarksForId = remarks.replace(/ /g, "-");
 
         // Determiner for adding in array
         var hasNoId = true;
@@ -131,20 +132,12 @@ $(function() {
         // Determiner for clearing form
         var clearForm = true;
         
-        if (equipmentName !== '' && status !== '' && state !== '' && quantity !== '' && borrowerId !== '*') {
+        if (borrowerId !== '' && equipmentName !== '' && quantity !== '' && f_unavailableUntil !== '') {
 
             if (equipmentDetailsArr.length > 0) {
                 equipmentDetailsArr.forEach((equipment) => {
-                    if (
-                    equipment.equipmentId === equipmentId &&
-                    equipment.status === status &&
-                    equipment.state === state &&
-                    equipment.remarks === remarks &&
-                    equipment.unavailableSince === f_unavailableSince &&
-                    equipment.unavailableUntil === f_unavailableUntil &&
-                    equipment.borrowerId === borrowerId
-                    ) {
-                        const qtyId = `${equipmentId}_${status}_${state}_${remarksForId}_${f_unavailableSince}_${f_unavailableUntil}_${borrowerId}`;
+                    if (equipment.equipmentDetailsId === equipmentDetailsId) {
+                        const qtyId = `${equipmentId}`;
                         addQuantity(parseInt(quantity), qtyId);
                         equipment.qty += parseInt(quantity);
                         hasNoId = false;
@@ -159,8 +152,6 @@ $(function() {
                 const qtyId = `${equipmentId}_${status}_${state}_${remarksForId}_${f_unavailableSince}_${f_unavailableUntil}_${borrowerId}`;
                 const inputs = [
                     `<input type="hidden" name="equipmentIds[]" value="${equipmentId}" />`,
-                    `<input type="hidden" name="statuses[]" value="${status}" />`,
-                    `<input type="hidden" name="states[]" value="${state}" />`,
                     `<input type="hidden" name="quantities[]" id="inp-${qtyId}" value="${quantity}" />`,
                     `<input type="hidden" name="remarks[]" value="${remarks}" />`,
                     `<input type="hidden" name="borrowerIds[]" value="${borrowerId}" />`,
@@ -191,14 +182,12 @@ $(function() {
                 
                 if (hasNoId) {
                     equipmentDetailsArr.push({
-                    equipmentId,
-                    status,
-                    state,
-                    qty: parseInt(quantity),
-                    remarks,
-                    borrowerId,
-                    unavailableSince: f_unavailableSince,
-                    unavailableUntil: f_unavailableUntil
+                        equipmentDetailsId,
+                        qty: parseInt(quantity),
+                        remarks,
+                        borrowerId,
+                        unavailableSince: f_unavailableSince,
+                        unavailableUntil: f_unavailableUntil
                     });
                 }
             } else {
@@ -302,8 +291,6 @@ function deleteCurrentRow(obj) {
 
     var del_arr = id.split("_");
     var del_id = del_arr[0];
-    var del_status = del_arr[1];
-    var del_state = del_arr[2];
     var del_uSince = del_arr[4];
     var del_uUntil = del_arr[5];
     var del_borId = del_arr[6];
@@ -311,8 +298,6 @@ function deleteCurrentRow(obj) {
     var delIndex = equipmentDetailsArr.findIndex((equipment) => {
         return (
         equipment.equipmentId === del_id &&
-        equipment.status === del_status &&
-        equipment.state === del_state &&
         equipment.remarks === del_remarks &&
         equipment.unavailableSince === del_uSince &&
         equipment.unavailableUntil === del_uUntil &&

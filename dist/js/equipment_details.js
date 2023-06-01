@@ -203,14 +203,14 @@ $(function() {
                 
                 if (hasNoId) {
                     equipmentDetailsArr.push({
-                    equipmentId,
-                    status,
-                    state,
-                    qty: parseInt(quantity),
-                    remarks,
-                    borrowerId,
-                    unavailableSince: f_unavailableSince,
-                    unavailableUntil: f_unavailableUntil
+                        equipmentId,
+                        status,
+                        state,
+                        qty: parseInt(quantity),
+                        remarks,
+                        borrowerId,
+                        unavailableSince: f_unavailableSince,
+                        unavailableUntil: f_unavailableUntil
                     });
                 }
             } else {
@@ -224,13 +224,13 @@ $(function() {
 
         // reset the form
         if (clearForm) {
-            $("#equipment, #status, #state, #remarks, #quantity").val('');
-            $("#equipment").select2("val", "");
+            $("#status, #state, #remarks, #quantity").val('');
+            $("#equipment").val('').trigger('change');
 
             if (status === 'Unavailable') {
                 $("#unavailable_since, #unavailable_until").val('');
                 if (state === 'Borrowed') {
-                    $("#borrower").val('');
+                    $("#borrower").val('').trigger('change');
                 }
                 $(".unavailable").hide();
             }
