@@ -133,7 +133,7 @@ $(function() {
         // if remarks has "_" then replace it with "-"
         var remarks = $("#new_remarks").val().trim();      
         remarks = remarks.replace(/_/g, "-");
-        var remarksForId = remarks.replace(/ /g, "-");
+        var remarksForId = remarks.replace(/[^\w-]/g, "-");
 
         // Determiner for adding in array
         var hasNoId = true;

@@ -64,6 +64,7 @@ if (isset($_POST['submit'])) {
     $q_new_borrower = '';
     $newBorrower = true;
     $newEquipment = false;
+    $no_q_borrowed = false;
 
     if ($diff > 0) {
       $q_update_active = "UPDATE `equipment_details`
@@ -89,13 +90,31 @@ if (isset($_POST['submit'])) {
       }
 
     } else {
-      $q_update_active = "UPDATE `equipment_details`
-        SET `status` = 'Unavailable', `state` = 'Borrowed',
-        `unavailable_since` = '$unavailableSince',
-        `unavailable_until` = '$unavailableUntil',
-        `remarks` = '$remark'
-        WHERE `id` = '$equipmentDetailsId'
-      ;";
+      if ($hasRecord == '') {
+        $q_update_active = "UPDATE `equipment_details`
+          SET `status` = 'Unavailable', `state` = 'Borrowed',
+          `unavailable_since` = '$unavailableSince',
+          `unavailable_until` = '$unavailableUntil',
+          `remarks` = '$remark'
+          WHERE `id` = '$equipmentDetailsId'
+        ;";
+
+        $no_q_borrowed = true;       
+
+      } else {
+        $q_update_active = "UPDATE `equipment_details`
+            SET `is_archived` = '1',
+              `quantity` = '0'
+            WHERE `id` = '$equipmentDetailsId'
+          ;";
+
+        $q_borrowed = "UPDATE `equipment_details`
+            JOIN `borrowed` ON `equipment_details`.`id` = `borrowed`.`equipment_details_id`
+            SET `quantity` = `quantity` + $quantity
+            WHERE `borrowed`.`borrower_id` = '$borrowerId'
+          ;";
+        $newBorrower = false;
+      }
     }
 
     // $text .= $q_update_active."\n".$q_borrowed."\n".$q_new_borrower."\n----------------\n";
@@ -106,7 +125,7 @@ if (isset($_POST['submit'])) {
       $stmt_update_active = $con->prepare($q_update_active);
       $stmt_update_active->execute();
 
-      if ($diff > 0) {
+      if (!$no_q_borrowed) {
         $stmt_borrowed = $con->prepare($q_borrowed);
         $stmt_borrowed->execute();
         $equipmentDetailsId = ($newEquipment) ? $con->lastInsertId() : $equipmentDetailsId;
