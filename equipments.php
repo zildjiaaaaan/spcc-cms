@@ -64,6 +64,12 @@ try {
  <?php include './config/data_tables_css.php';?>
  <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
  <title>Clinic Equipments - SPCC Caloocan Clinic</title>
+ <style>
+    .cell-link {
+      color: white;
+      /* text-decoration: none; */
+    }
+ </style>
 </head>
 <body class="hold-transition sidebar-mini dark-mode layout-fixed layout-navbar-fixed">
   <!-- Site wrapper -->
@@ -165,6 +171,7 @@ include './config/sidebar.php';?>
               <col width="15%">
               <col width="10%">
               <col width="10%">
+              <col width="0%">
             </colgroup>
 
             <thead>
@@ -175,6 +182,7 @@ include './config/sidebar.php';?>
                 <th>Date Acquired</th>
                 <th>Total Quantity</th>
                 <th class="text-center">Action</th>
+                <th>Tags</th>
               </tr>
             </thead>
 
@@ -183,13 +191,14 @@ include './config/sidebar.php';?>
                 $serial = 0;
                 while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 $serial++;
+                $searchName = $row['equipment']." — ".$row['brand'];
               ?>
               <tr>
                 <td class="text-center"><?php echo $serial;?></td>
                 <td><?php echo $row['equipment'];?></td>
                 <td><?php echo $row['brand'];?></td>
                 <td><?php echo $row['date_acquired'];?></td>
-                <td><?php echo (!is_null($row['total_qty'])) ? $row['total_qty'] : "<i>Not Set</i>" ;?></td>
+                <td><?php echo (!is_null($row['total_qty'])) ? "<a href='equipment_inventory.php?search=Stock&tag=".$searchName."' target='_blank' class='cell-link'>".$row['total_qty']."</a>" : "<i>Not Set</i>" ;?></td>
                 <td class="text-center">
                   <a href="update_equipment.php?id=<?php echo $row['id'];?>" class="btn btn-primary btn-sm btn-flat">
                     <i class="fa fa-edit"></i>
@@ -198,6 +207,11 @@ include './config/sidebar.php';?>
                   <a href="del_equipment.php?id=<?php echo $row['id'];?>" class="btn btn-danger btn-sm btn-flat">
                     <i class="fa fa-trash"></i>
                   </a>
+                </td>
+                <td>
+                  <?php
+                    echo ($row['total_qty'] < 1 && !is_null($row['total_qty'])) ? "is_torestock:true": "is_torestock:false";
+                  ?>
                 </td>
               </tr>
               <?php } ?>
@@ -253,8 +267,49 @@ if(isset($_GET['message'])) {
       responsive: true,
       lengthChange: false,
       autoWidth: false,
-      buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"]
+      'columnDefs': [{
+        'targets': 6,
+        'visible': false
+      }]
+      // buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"]
     };
+
+    var exportColumns = [0, 1, 2, 3, 4];
+
+    dataTableOptions.buttons = [
+      {
+        extend: 'copyHtml5',
+        exportOptions: {
+          columns: exportColumns
+        }
+      },
+      {
+        extend: 'csvHtml5',
+        exportOptions: {
+          columns: exportColumns
+        }
+      },
+      {
+        extend: 'excelHtml5',
+        exportOptions: {
+          columns: exportColumns
+        }
+      },
+      {
+        extend: 'pdfHtml5',
+        download: 'open',
+        exportOptions: {
+          columns: exportColumns
+        }
+      },
+      {
+        extend: 'print',
+        exportOptions: {
+          columns: exportColumns
+        }
+      },
+      "colvis"
+    ];
 
     if (search === "is_recent") {
       search = (tag != '' || tag != null) ? tag : '';

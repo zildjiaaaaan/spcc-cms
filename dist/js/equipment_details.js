@@ -104,7 +104,7 @@ $(function() {
         // if remarks has "_" then replace it with "-"
         var remarks = $("#remarks").val().trim();      
         remarks = remarks.replace(/_/g, "-");
-        var remarksForId = remarks.replace(/ /g, "-");
+        var remarksForId = remarks.replace(/[^\w-]/g, "-");
 
         var quantity = $("#quantity").val().trim();
         if (quantity == '0') {

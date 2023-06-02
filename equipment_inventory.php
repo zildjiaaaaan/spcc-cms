@@ -273,7 +273,8 @@ if(isset($_GET['message'])) {
       "colvis"
     ];
 
-    if (search === "Borrowed" || search === "Defective") {
+    if (search === "Borrowed" || search === "Defective" || search === "Stock") {
+      search = (tag != '') ? tag : search;
       dataTableOptions.search = {
         search: search
       };

@@ -190,10 +190,26 @@ include './config/sidebar.php';?>
                   $count = 0;
                   while($row =$stmt->fetch(PDO::FETCH_ASSOC)){
                     $count++;
+                    $patient_id = $row['id'];
+
+                    $q_medCount = "SELECT COUNT(*) AS `med_count` FROM `patient_medication_history`
+                      WHERE `patient_visit_id` IN (
+                        SELECT `id` FROM `patient_visits` WHERE `patient_id` = '$patient_id'
+                      )                  
+                    ;";
+                    $stmt_medCount = $con->prepare($q_medCount);
+                    $stmt_medCount->execute();
+                    $r = $stmt_medCount->fetch(PDO::FETCH_ASSOC);
+                    if ($r['med_count'] > 1) {
+                      $medCount = "This patient have ".$r['med_count']." medication histories.";
+                    } else {
+                      $medCount = "This patient has ".$r['med_count']." medication history.";
+                    }
+
                   ?>
                   <tr>
                     <td><?php echo $count; ?></td>
-                    <td><?php echo $row['patient_name'];?></td>
+                    <td><a id="myPopover" data-toggle="popover" data-content="<?php echo $medCount; ?>" data-placement="top" style="cursor: pointer;"><?php echo $row['patient_name'];?></a></td>
                     <td><?php echo $row['cnic'];?></td>
                     <td><?php echo $row['address'];?></td>
                     <td><?php echo $row['date_of_birth'];?></td>
@@ -488,11 +504,16 @@ include './config/sidebar.php';?>
       
     
    $(function () {
+
     $("#all_patients").DataTable({
       "responsive": true, "lengthChange": false, "autoWidth": false,
       //"buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
       "buttons": ["colvis"]
     }).buttons().container().appendTo('#all_patients_wrapper .col-md-6:eq(0)');
+
+    $(document).ready(function() {
+      $('#myPopover').popover();
+    });
     
   });
 
