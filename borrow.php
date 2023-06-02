@@ -103,8 +103,7 @@ if (isset($_POST['submit'])) {
 
       } else {
         $q_update_active = "UPDATE `equipment_details`
-            SET `is_archived` = '1',
-              `quantity` = '0'
+            SET `quantity` = '0'
             WHERE `id` = '$equipmentDetailsId'
           ;";
 

@@ -10,7 +10,9 @@ $query = "SELECT `equipment_details`.*, `equipment`, `brand`, `date_acquired`
           WHERE `equipments`.`id` = `equipment_details`.`equipment_id`
             AND `equipments`.`is_del` = '0'
             AND `equipment_details`.`is_del` = '0'
-          ORDER BY `equipment_details`.`id` ASC;";
+            AND `quantity` > '0'
+          ORDER BY `equipment_details`.`id` ASC
+          ;";
 
  try {
   

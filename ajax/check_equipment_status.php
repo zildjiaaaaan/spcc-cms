@@ -38,12 +38,26 @@ if (!isset($_GET['update_id']) && !isset($_GET['page'])) {
   $query = "SELECT count(*) AS `count`
             FROM `equipment_details`".$q_join."
             WHERE `equipment_id` = '$equipmentId'
+              AND `quantity` > '0'
               AND `status` = '$status'
               AND `state` = '$state'
               AND `remarks` = '$remarks'".$q_unavailable.";";
 
 } else if (isset($_GET['update_id'])) {
   $id = $_GET['update_id'];
+
+  $equipmentId = $_GET['equipmentId'];
+  $status = $_GET['status'];
+  $state = $_GET['state'];
+  $remarks = $_GET['remarks'];
+
+  $unavailableSince = $_GET['f_unavailableSince'];
+  $unavailableUntil = $_GET['f_unavailableUntil'];
+
+  $borrower = $_GET['borrowerId'];
+
+  $q_join = '';
+  $q_unavailable = '';
 
   if ($unavailableSince != '') {
 
@@ -62,6 +76,7 @@ if (!isset($_GET['update_id']) && !isset($_GET['page'])) {
   $query = "SELECT count(*) AS `count`
     FROM `equipment_details`".$q_join."
     WHERE `equipment_id` = '$equipmentId'
+      AND `quantity` > '0'
       AND `equipment_details`.`id` <> '$id'
       AND `status` = '$status'
       AND `state` = '$state'

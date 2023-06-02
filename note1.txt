@@ -146,3 +146,17 @@ new remarks
 5 - 2 = 3 -- UPDATE, INSERT (if new) UPDATE (if existing)
 3 - 1 = 2 -- UPDATE, INSERT (if new) UPDATE (if existing)
 2 - 2 = 0 -- UPDATE
+
+
+----------
+
+date
+time
+name
+age
+grade and section
+adv
+vital sign
+chief complain
+intervention
+sign

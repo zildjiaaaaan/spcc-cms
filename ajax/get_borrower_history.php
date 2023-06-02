@@ -11,13 +11,14 @@
 
     */
     $query = "SELECT `borrowed`.*, `quantity`, `unavailable_since`, `unavailable_until`,
-                `remarks`, `equipment`, `brand`, `equipments`.`id` as `equipment_id`,
-                `contact_no`, `equipments`.`is_del` as `e_is_del`, `equipment_details`.`is_del` as `ed_is_del`
-            FROM `borrowed`, `equipment_details`, `equipments`, `borrowers`
-            WHERE `borrowed`.`borrower_id` = '$borrowerId'
-                AND `borrowed`.`borrower_id` = `borrowers`.`id`
-                AND `equipment_details_id` = `equipment_details`.`id`
-                AND `equipment_id` = `equipments`.`id`;";
+        `remarks`, `equipment`, `brand`, `equipments`.`id` as `equipment_id`,
+        `contact_no`, `equipments`.`is_del` as `e_is_del`, `equipment_details`.`is_del` as `ed_is_del`
+      FROM `borrowed`, `equipment_details`, `equipments`, `borrowers`
+      WHERE `borrowed`.`borrower_id` = '$borrowerId'
+        AND `borrowed`.`borrower_id` = `borrowers`.`id`
+        AND `equipment_details_id` = `equipment_details`.`id`
+        AND `equipment_id` = `equipments`.`id`
+    ;";
 
     try {
       $stmt = $con->prepare($query);
@@ -44,14 +45,14 @@
           $td_bg = "bg-success";
         }
 
-        $link = ($del == '') ? '<a class="cell-link" href="update_equipment_inventory.php?equipment_id='.$equipment_id.'&equipment_detail_id='.$equipment_detail_id.'&b_id='.$b_id.'" target="_blank">' : '';
+        $link = ($del == '' && $r['is_returned'] != 1) ? '<a class="cell-link" href="update_equipment_inventory.php?equipment_id='.$equipment_id.'&equipment_detail_id='.$equipment_detail_id.'&b_id='.$b_id.'" target="_blank">' : '';
         
         $data = $data.'<td class="px-2 py-1 align-middle text-center">'.$i.'</td>';
         $data = $data.'<td class="px-2 py-1 align-middle">'.$link.$r['equipment'].' — '.strtoupper($r['brand']).'<i> '.$del.'</i> </a></td>';
         $data = $data.'<td class="px-2 py-1 align-middle text-right">'.$r['quantity'].'</td>';
         $data = $data.'<td class="px-2 py-1 align-middle text-right">'.$r['unavailable_since'].'</td>';
         $data = $data.'<td class="px-2 py-1 align-middle text-right">'.$r['unavailable_until'].'</td>';
-        $data = $data.'<td class="px-2 py-1 align-middle text-right">'.$r['contact_no'].'</td>';
+        $data = $data.'<td class="px-2 py-1 align-middle text-right">'.$r["contact_no"].'</td>';
         $data = $data.'<td class="px-2 py-1 align-middle text-left">'.$r['remarks'].'</td>';
         $data = $data.'<td class="px-2 py-1 align-middle text-left '.$td_bg.'">'.$status.'</td>';
 
