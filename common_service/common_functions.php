@@ -263,10 +263,10 @@ function getActiveEquipments($con, $equipmentId = 0) {
 		$option = $row['equipment'].' — '.strtoupper($row['brand'])." (".$i.")";
 
 		if($equipmentId == $row['id']) {
-			$data = $data.'<option selected="selected" value="'.$row['id'].'">'.$option.'</option>';
+			$data = $data.'<option selected="selected" value="'.$row['id'].' '.$row['equipment_id'].'">'.$option.'</option>';
 
 		} else {
-		$data = $data.'<option value="'.$row['id'].'">'.$option.'</option>';
+			$data = $data.'<option value="'.$row['id'].' '.$row['equipment_id'].'">'.$option.'</option>';
 		}
 		$i++;
 	}

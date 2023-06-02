@@ -4,6 +4,118 @@ include './common_service/common_functions.php';
 
 $message = '';
 
+if (isset($_POST['submit'])) {
+  $equipmentDetailsIds = $_POST['equipmentDetailsIds'];
+  $equipmentIds = $_POST['equipmentIds'];
+  $borrowerIds = $_POST['borrowerIds'];
+  $unavailableUntils = $_POST['unavailableUntils'];
+  $maxes = $_POST['maxes'];
+  $quantities = $_POST['quantities'];
+  $current_remarks = $_POST['current_remarks'];
+  $remarks = $_POST['remarks'];
+  $hasRecords = $_POST['hasRecords'];
+
+  $size = sizeof($equipmentDetailsIds);
+
+  for ($i=0; $i < $size; $i++) { 
+    
+    $equipmentDetailsId = $equipmentDetailsIds[$i];
+    $equipmentId = $equipmentIds[$i];
+    $borrowerId = $borrowerIds[$i];
+    $unavailableSince = date('Y-m-d');
+    $unavailableUntil = $unavailableUntils[$i];
+    $max = $maxes[$i];
+    $quantity = $quantities[$i];
+    $current_remark = $current_remarks[$i];
+    $remark = $remarks[$i];
+    if (empty($remark)) {
+      $remark = $current_remark;
+    }
+    $hasRecord = $hasRecords[$i];
+
+    $diff = $max - $quantity;
+
+    $q_update_active = '';
+    $q_insert_borrowed = '';
+    $q_new_borrower = '';
+    $newBorrower = true;
+
+    try {
+      if ($diff > 0) {
+        $q_update_active = "UPDATE `equipment_details`
+          SET `quantity` = '$diff'
+          WHERE `id` = '$equipmentDetailsId'
+        ;";
+  
+        if ($hasRecord == '') {
+          $q_insert_borrowed = "INSERT INTO `equipment_details`
+            (`equipment_id`, `status`, `state`, `unavailable_since`,
+            `unavailable_until`,`quantity`, `remarks`, `is_del`)
+            VALUES ('$equipmentId', 'Unavailable', 'Borrowed', '$unavailableSince',
+            '$unavailableUntil', '$diff', '$remarks', '0')
+          ;";
+        } else {
+          $q_insert_borrowed = "UPDATE `equipment_details`
+            SET `quantity` = quantity - $quantity
+            WHERE `id` = '$equipmentDetailsId'
+          ;";
+          $newBorrower = false;
+        }
+
+      } else {
+        $q_update_active = "UPDATE `equipment_details`
+          SET `status` = 'Unavailable', `state` = 'Borrowed',
+            `unavailable_since` = '$unavailableSince',
+            `unavailable_until` = '$unavailableUntil',
+          WHERE `id` = '$equipmentDetailsId'
+        ;";
+      }
+
+      if ($newBorrower) {
+        $q_new_borrower = "INSERT INTO `borrowed` (
+          `borrower_id`, `equipment_details_id`, `is_returned`,
+          `borrowed_date`, `returned_date`
+          ) VALUES ('$borrowerId', '$equipmentDetailsId', '0', '', '')
+        ;";
+      }
+
+    } catch (PDOException $ex) {
+      $con->rollback();
+      echo $ex->getTraceAsString();
+      echo $ex->getMessage();
+      exit;
+    }
+    
+  }
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+}
+
 $equipments = getActiveEquipments($con);
 $borrowers = getUniqueBorrowers($con);
 
@@ -144,7 +256,7 @@ include './config/sidebar.php';?>
     </div>
     <div class="clearfix">&nbsp;</div>
     <div class="clearfix">&nbsp;</div>
-    <p><i>Note: Equipment in <span class="text-warning">this background</span> means it has already been borrowed with identical details. Instead of creating a new record, the quantity will be increased.</i></p>
+    <p><i>Note: Equipment with <span class="text-warning">this background</span> means it has already been borrowed with identical details. Instead of creating a new record, the quantity will be increased. You can check it in <a href="borrower_history.php" target="_blank">Borrower History</a>.</i></p>
 
     <div class="row">
       <div class="col-md-10">&nbsp;</div>

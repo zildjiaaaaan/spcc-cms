@@ -32,7 +32,7 @@ $(function() {
     });
 
     $("#equipment").change(function() {
-        var equipmentDetailsId = $(this).val();
+        var equipmentDetailsId = $(this).val().split(" ")[0];
 
         if (equipmentDetailsId != '') {
             $.ajax({
@@ -60,7 +60,7 @@ $(function() {
                             }, 0);
                 
                             if (d_quantity < 0) {
-                                data = 0;
+                                d_quantity = 0;
                             }
                         }
                     }
@@ -111,7 +111,8 @@ $(function() {
         var borrowerId = $("#borrower").val();
         var borrowerName = $("#borrower option:selected").text();
 
-        var equipmentDetailsId = $("#equipment").val();
+        var equipmentDetailsId = $("#equipment").val().split(" ")[0];
+        var equipmentId = $("#equipment").val().split(" ")[1];
         var equipmentName = $("#equipment option:selected").text();
         if (equipmentName != '') {
             equipmentName = equipmentName.split(" (")[0];
@@ -121,6 +122,8 @@ $(function() {
         if ($("#unavailableUntil").val() != '') {
             f_unavailableUntil = formatDate($("#unavailableUntil").val());
         }
+
+        var max = parseInt($("#quantity").attr("max"));
         
         var quantity = $("#quantity").val().trim();
         if (quantity == '0') {
@@ -164,14 +167,18 @@ $(function() {
             }
 
             if (addCell) {
+                var hasRecord = (isWarning) ? '1' : '';
                 const qtyId = `${equipmentDetailsId}_${borrowerId}_${f_unavailableUntil}_${remarksForId}`;
                 const inputs = [
                     `<input type="hidden" name="equipmentDetailsIds[]" value="${equipmentDetailsId}" />`,
+                    `<input type="hidden" name="equipmentIds[]" value="${equipmentId}" />`,
                     `<input type="hidden" name="borrowerIds[]" value="${borrowerId}" />`,
                     `<input type="hidden" name="unavailableUntils[]" value="${f_unavailableUntil}" />`,
+                    `<input type="hidden" name="maxes[]" value="${max}" />`,
                     `<input type="hidden" name="quantities[]" id="inp-${qtyId}" value="${quantity}" />`,
                     `<input type="hidden" name="current_remarks[]" value="${current_remarks}" />`,
-                    `<input type="hidden" name="remarks[]" value="${remarks}" />`
+                    `<input type="hidden" name="remarks[]" value="${remarks}" />`,
+                    `<input type="hidden" name="hasRecords[]" value="${hasRecord}" />`,
                 ].join('');
 
                 var tr_style = (isWarning) ? 'class="bg-warning"' : '';
@@ -234,7 +241,7 @@ function handleBlurEvent(callback) {
     var isRecorded = false;
   
     var borrowerId = $("#borrower").val();
-    var equipmentDetailsId = $("#equipment").val();
+    var equipmentDetailsId = $("#equipment").val().split(" ")[0];
     var f_unavailableUntil = '';
     
     if ($("#unavailableUntil").val() != '') {
