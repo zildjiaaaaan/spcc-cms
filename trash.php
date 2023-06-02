@@ -206,10 +206,14 @@ include './config/sidebar.php';?>
                       $medCount = "This patient has ".$r['med_count']." medication history.";
                     }
 
+                    $popover = "patient_history.php?search=is_deleted&tag=".$patient_id;
+
                   ?>
                   <tr>
                     <td><?php echo $count; ?></td>
-                    <td><a id="myPopover" data-toggle="popover" data-content="<?php echo $medCount; ?>" data-placement="top" style="cursor: pointer;"><?php echo $row['patient_name'];?></a></td>
+                    <td><a id="myPopover" data-toggle="popover" data-content="<a href='<?php echo $popover ?>' target='_blank'><?php echo $medCount; ?></a>" data-placement="top" style="cursor: pointer;">
+                      <?php echo $row['patient_name'];?>
+                    </a></td>
                     <td><?php echo $row['cnic'];?></td>
                     <td><?php echo $row['address'];?></td>
                     <td><?php echo $row['date_of_birth'];?></td>
@@ -511,9 +515,11 @@ include './config/sidebar.php';?>
       "buttons": ["colvis"]
     }).buttons().container().appendTo('#all_patients_wrapper .col-md-6:eq(0)');
 
-    $(document).ready(function() {
-      $('#myPopover').popover();
-    });
+    //$('#myPopover').popover();
+
+    // popover demo
+    $("[data-toggle=popover]")
+    .popover({html:true})
     
   });
 

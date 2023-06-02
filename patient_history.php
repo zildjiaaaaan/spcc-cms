@@ -131,7 +131,7 @@ include './config/footer.php';
     var search = url.searchParams.get("search");
     var tag = url.searchParams.get("tag");
 
-    if (search === "is_recent") {
+    if (search === "is_recent" || search === "is_deleted") {
       search = (tag !== '' && tag !== null) ? tag : '';
       $("#patient").val(search);
 

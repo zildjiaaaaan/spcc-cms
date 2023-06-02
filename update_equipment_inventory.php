@@ -8,6 +8,7 @@ if (isset($_POST['submit'])) {
 
   $id = $_POST['hidden_id'];
   $current_borrower_id = $_POST['current_borrower_id'];
+  $current_quantity = $_POST['current_quantity'];
 
   $equipment_id = $_POST['equipment'];
   $status = $_POST['status'];
@@ -30,9 +31,14 @@ if (isset($_POST['submit'])) {
     }
   }
 
+  $query = "UPDATE `equipments`
+    SET `total_qty` = `total_qty` - $current_quantity
+    WHERE `id` = '$equipment_id'  
+  ;";
+
   $q_unavailable = ", `unavailable_since` = $unavailable_since, `unavailable_until` = $unavailable_until";
 
-  $query = "UPDATE `equipment_details`
+  $query .= "UPDATE `equipment_details`
       SET `equipment_id` = '$equipment_id',
       `status` = '$status',
       `state` = '$state',
@@ -40,6 +46,11 @@ if (isset($_POST['submit'])) {
       `remarks` = '$remarks'".$q_unavailable."
       WHERE `id` = '$id';
   ";
+
+  $query .= "UPDATE `equipments`
+    SET `total_qty` = `total_qty` + $quantity
+    WHERE `id` = '$equipment_id'  
+  ;";
 
   try {
 
@@ -218,6 +229,7 @@ include './config/sidebar.php';?>
             <form method="post">
               <div class="row">
                 <input type="hidden" id="update_id" name="hidden_id" value="<?php echo $equipment_details_id;?>" />
+                <input type="hidden" id="current_quantity" name="current_quantity" value="<?php echo $row['quantity'];?>" />
                 <input type="hidden" id="current_borrower_id" name="current_borrower_id" value="<?php echo !empty($_GET['b_id']) ? $_GET['b_id'] : "";?>" />
                 <?php
                   if ($row['state'] == "Borrowed") {
