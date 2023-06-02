@@ -69,7 +69,7 @@ if (!isset($_GET['update_id']) && !isset($_GET['page'])) {
 
 } else if (isset($_GET['page'])) {
 
-  //$borrowerId = $_GET['borrowerId'];
+  $borrowerId = $_GET['borrowerId'];
   $unavailableSince = date('Y-m-d');
   $unavailableUntil = $_GET['f_unavailableUntil'];
   $remarks = $_GET['remarks'];
@@ -83,6 +83,7 @@ if (!isset($_GET['update_id']) && !isset($_GET['page'])) {
         AND `unavailable_since` = '$unavailableSince'
         AND `unavailable_until` = '$unavailableUntil'
         AND `remarks` = '$remarks'
+        AND `borrower_id` = '$borrowerId'
         AND `is_returned` = '0'
     ;";
   }

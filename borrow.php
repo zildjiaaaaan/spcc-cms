@@ -5,17 +5,37 @@ include './common_service/common_functions.php';
 $message = '';
 
 if (isset($_POST['submit'])) {
+
   $equipmentDetailsIds = $_POST['equipmentDetailsIds'];
   $equipmentIds = $_POST['equipmentIds'];
   $borrowerIds = $_POST['borrowerIds'];
   $unavailableUntils = $_POST['unavailableUntils'];
-  $maxes = $_POST['maxes'];
   $quantities = $_POST['quantities'];
   $current_remarks = $_POST['current_remarks'];
   $remarks = $_POST['remarks'];
   $hasRecords = $_POST['hasRecords'];
 
   $size = sizeof($equipmentDetailsIds);
+
+  // var_dump($equipmentDetailsIds);
+  // echo "<br />";
+  // var_dump($equipmentIds);
+  // echo "<br />";
+  // var_dump($borrowerIds);
+  // echo "<br />";
+  // var_dump($unavailableUntils);
+  // echo "<br />";
+  // var_dump($quantities);
+  // echo "<br />";
+  // var_dump($current_remarks);
+  // echo "<br />";
+  // var_dump($remarks);
+  // echo "<br />";
+  // var_dump($hasRecords);
+  // echo "<br />";
+
+  $text = '';
+  $isSuccess = false;
 
   for ($i=0; $i < $size; $i++) { 
     
@@ -24,7 +44,6 @@ if (isset($_POST['submit'])) {
     $borrowerId = $borrowerIds[$i];
     $unavailableSince = date('Y-m-d');
     $unavailableUntil = $unavailableUntils[$i];
-    $max = $maxes[$i];
     $quantity = $quantities[$i];
     $current_remark = $current_remarks[$i];
     $remark = $remarks[$i];
@@ -33,42 +52,64 @@ if (isset($_POST['submit'])) {
     }
     $hasRecord = $hasRecords[$i];
 
-    $diff = $max - $quantity;
+    $q_select_qty = "SELECT `quantity` AS `max` FROM `equipment_details` WHERE `id` = '$equipmentDetailsId';";
+    $stmt_select_qty = $con->prepare($q_select_qty);
+    $stmt_select_qty->execute();
+    $r = $stmt_select_qty->fetch(PDO::FETCH_ASSOC);
+
+    $diff = $r['max'] - $quantity;
 
     $q_update_active = '';
-    $q_insert_borrowed = '';
+    $q_borrowed = '';
     $q_new_borrower = '';
     $newBorrower = true;
+    $newEquipment = false;
+
+    if ($diff > 0) {
+      $q_update_active = "UPDATE `equipment_details`
+        SET `quantity` = '$diff'
+        WHERE `id` = '$equipmentDetailsId'
+      ;";
+
+      if ($hasRecord == '') {
+        $q_borrowed = "INSERT INTO `equipment_details`
+          (`equipment_id`, `status`, `state`, `unavailable_since`,
+          `unavailable_until`, `quantity`, `remarks`, `is_del`)
+          VALUES ('$equipmentId', 'Unavailable', 'Borrowed', '$unavailableSince',
+          '$unavailableUntil', '$quantity', '$remark', '0')
+        ;";
+        $newEquipment = true;
+      } else {
+        $q_borrowed = "UPDATE `equipment_details`
+          JOIN `borrowed` ON `equipment_details`.`id` = `borrowed`.`equipment_details_id`
+          SET `quantity` = `quantity` + $quantity
+          WHERE `borrowed`.`borrower_id` = '$borrowerId'
+        ;";
+        $newBorrower = false;
+      }
+
+    } else {
+      $q_update_active = "UPDATE `equipment_details`
+        SET `status` = 'Unavailable', `state` = 'Borrowed',
+        `unavailable_since` = '$unavailableSince',
+        `unavailable_until` = '$unavailableUntil',
+        `remarks` = '$remark'
+        WHERE `id` = '$equipmentDetailsId'
+      ;";
+    }
+
+    // $text .= $q_update_active."\n".$q_borrowed."\n".$q_new_borrower."\n----------------\n";
 
     try {
-      if ($diff > 0) {
-        $q_update_active = "UPDATE `equipment_details`
-          SET `quantity` = '$diff'
-          WHERE `id` = '$equipmentDetailsId'
-        ;";
-  
-        if ($hasRecord == '') {
-          $q_insert_borrowed = "INSERT INTO `equipment_details`
-            (`equipment_id`, `status`, `state`, `unavailable_since`,
-            `unavailable_until`,`quantity`, `remarks`, `is_del`)
-            VALUES ('$equipmentId', 'Unavailable', 'Borrowed', '$unavailableSince',
-            '$unavailableUntil', '$diff', '$remarks', '0')
-          ;";
-        } else {
-          $q_insert_borrowed = "UPDATE `equipment_details`
-            SET `quantity` = quantity - $quantity
-            WHERE `id` = '$equipmentDetailsId'
-          ;";
-          $newBorrower = false;
-        }
+      $con->beginTransaction();
 
-      } else {
-        $q_update_active = "UPDATE `equipment_details`
-          SET `status` = 'Unavailable', `state` = 'Borrowed',
-            `unavailable_since` = '$unavailableSince',
-            `unavailable_until` = '$unavailableUntil',
-          WHERE `id` = '$equipmentDetailsId'
-        ;";
+      $stmt_update_active = $con->prepare($q_update_active);
+      $stmt_update_active->execute();
+
+      if ($diff > 0) {
+        $stmt_borrowed = $con->prepare($q_borrowed);
+        $stmt_borrowed->execute();
+        $equipmentDetailsId = ($newEquipment) ? $con->lastInsertId() : $equipmentDetailsId;
       }
 
       if ($newBorrower) {
@@ -77,7 +118,13 @@ if (isset($_POST['submit'])) {
           `borrowed_date`, `returned_date`
           ) VALUES ('$borrowerId', '$equipmentDetailsId', '0', '', '')
         ;";
+
+        $stmt_new_borrower = $con->prepare($q_new_borrower);
+        $stmt_new_borrower->execute();
       }
+
+      $con->commit();
+      $isSuccess = true;
 
     } catch (PDOException $ex) {
       $con->rollback();
@@ -85,35 +132,22 @@ if (isset($_POST['submit'])) {
       echo $ex->getMessage();
       exit;
     }
-    
   }
 
-    
+  if ($isSuccess) {
+    if ($size > 1) {
+      $message = "Equipment Units have been successfully borrowed.";
+    } else {
+      $message = "Equipment Unit has been successfully borrowed.";
+    }
+  } else {
+    $message = "Failed to borrow equipment. Please try again.";
+  }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
+  // $file = 'output.txt';
+  // file_put_contents($file, $text);
+  header("Location: borrow.php?message=$message");
+  exit;
 }
 
 $equipments = getActiveEquipments($con);
@@ -261,7 +295,7 @@ include './config/sidebar.php';?>
     <div class="row">
       <div class="col-md-10">&nbsp;</div>
       <div class="col-md-2">
-        <button type="button" id="submit" name="submit" 
+        <button type="submit" id="submit" name="submit" 
         class="btn btn-primary btn-sm btn-flat btn-block">Save</button>
       </div>
     </div>

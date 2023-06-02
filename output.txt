@@ -1,14 +1,40 @@
-UPDATE `equipment_details`
-      SET `status` = 'Available',
-      `state` = 'Active',
-      `remarks` = 'this is a test',
-      `unavailable_since` = NULL,
-      `unavailable_until` = NULL
-      WHERE `id` = '6';
-  
-UPDATE `borrowed`
-      SET `is_returned` = '1',
-      `borrowed_date` = '2023-05-29',
-      `returned_date` = '2023-05-31'
-      WHERE `borrower_id` = '4'
-  ;
+naubos UPDATE `equipment_details`
+        SET `status` = 'Unavailable', `state` = 'Borrowed',
+        `unavailable_since` = '2023-06-02',
+        `unavailable_until` = '2023-06-05'
+        WHERE `id` = '1'
+      ;
+
+bagong borrower INSERT INTO `borrowed` (
+        `borrower_id`, `equipment_details_id`, `is_returned`,
+        `borrowed_date`, `returned_date`
+        ) VALUES ('15', '1', '0', '', '')
+      ;
+----------------
+bawasan UPDATE `equipment_details`
+        SET `quantity` = '2'
+        WHERE `id` = '6'
+      ;
+gawa bago INSERT INTO `equipment_details`
+          (`equipment_id`, `status`, `state`, `unavailable_since`,
+          `unavailable_until`,`quantity`, `remarks`, `is_del`)
+          VALUES ('13', 'Unavailable', 'Borrowed', '2023-06-02',
+          '2023-06-06', '2', 'bawasan gawa bago', '0')
+        ;
+bagong borrower INSERT INTO `borrowed` (
+        `borrower_id`, `equipment_details_id`, `is_returned`,
+        `borrowed_date`, `returned_date`
+        ) VALUES ('7', '6', '0', '', '')
+      ;
+----------------
+bawasan UPDATE `equipment_details`
+        SET `quantity` = '8'
+        WHERE `id` = '11'
+      ;
+dagdagan UPDATE `equipment_details`
+          JOIN `borrowed` ON `equipment_details`.`id` = `borrowed`.`equipment_details_id`
+          SET `quantity` = `quantity` + 2
+          WHERE `borrowed`.`borrower_id` = '12'
+        ;
+
+----------------

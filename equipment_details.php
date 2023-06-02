@@ -35,6 +35,7 @@ if(isset($_POST['submit'])) {
   $size = sizeof($equipmentIds);
 
   //iterate insert query $size times to insert all the equipment details
+  $isSuccess = false;
   for ($i=0; $i < $size; $i++) { 
 
     $equipmentId = $equipmentIds[$i];
@@ -81,7 +82,7 @@ if(isset($_POST['submit'])) {
       }
 
       $con->commit();
-      $message = "Equipment Details Successfully Added.";
+      $isSuccess = true;
 
     } catch (PDOException $ex) {
       $con->rollback();
@@ -90,6 +91,8 @@ if(isset($_POST['submit'])) {
       exit;
     }
   }
+
+  $message = ($isSuccess) ? "Equipment Details Successfully Added." : "Failed to Add Equipment Details.";
 
   header("Location: equipment_details.php?message=$message");
   exit;

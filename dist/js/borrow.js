@@ -122,8 +122,6 @@ $(function() {
         if ($("#unavailableUntil").val() != '') {
             f_unavailableUntil = formatDate($("#unavailableUntil").val());
         }
-
-        var max = parseInt($("#quantity").attr("max"));
         
         var quantity = $("#quantity").val().trim();
         if (quantity == '0') {
@@ -174,7 +172,6 @@ $(function() {
                     `<input type="hidden" name="equipmentIds[]" value="${equipmentId}" />`,
                     `<input type="hidden" name="borrowerIds[]" value="${borrowerId}" />`,
                     `<input type="hidden" name="unavailableUntils[]" value="${f_unavailableUntil}" />`,
-                    `<input type="hidden" name="maxes[]" value="${max}" />`,
                     `<input type="hidden" name="quantities[]" id="inp-${qtyId}" value="${quantity}" />`,
                     `<input type="hidden" name="current_remarks[]" value="${current_remarks}" />`,
                     `<input type="hidden" name="remarks[]" value="${remarks}" />`,
@@ -207,11 +204,13 @@ $(function() {
                 if (hasNoId) {
                     equipmentDetailsArr.push({
                         equipmentDetailsId,
-                        qty: parseInt(quantity),
-                        remarks,
-                        current_remarks,
+                        equipmentId,
                         borrowerId,
-                        unavailableUntil: f_unavailableUntil
+                        unavailableUntil: f_unavailableUntil,
+                        qty: parseInt(quantity),
+                        current_remarks,
+                        remarks,
+                        hasRecord                    
                     });
                 }
                 
@@ -260,6 +259,7 @@ function handleBlurEvent(callback) {
             url: "ajax/check_equipment_status.php",
             type: 'GET',
             data: {
+            'borrowerId': borrowerId,
             'f_unavailableUntil': f_unavailableUntil,
             'remarks': remarks,
             'page': "borrow.php"
