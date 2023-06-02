@@ -27,6 +27,8 @@ if(isset($_POST['submit'])) {
   
   $visitDate = $visitDateArr[2].'-'.$visitDateArr[0].'-'.$visitDateArr[1];
 
+  $attendant = $_SESSION['user_id'];
+
   if($nextVisitDate != '') {
     $nextVisitDateArr = explode("/", $nextVisitDate);
     $nextVisitDate = $nextVisitDateArr[2].'-'.$nextVisitDateArr[0].'-'.$nextVisitDateArr[1];
@@ -39,10 +41,9 @@ if(isset($_POST['submit'])) {
       //first to store a row in patient visit
 
      $queryVisit = "INSERT INTO `patient_visits`(`visit_date`, 
-    `next_visit_date`, `bp`, `weight`, `disease`, `pres_remarks`, `patient_id`) 
-    VALUES('$visitDate', 
-    nullif('$nextVisitDate', ''), 
-    '$bp', '$weight', '$disease', '$remarks', $patientId);";
+    `next_visit_date`, `bp`, `weight`, `disease`, `pres_remarks`, `patient_id`, `user_id`) 
+    VALUES('$visitDate', nullif('$nextVisitDate', ''), 
+    '$bp', '$weight', '$disease', '$remarks', $patientId, '$attendant');";
     $stmtVisit = $con->prepare($queryVisit);
     $stmtVisit->execute();
 

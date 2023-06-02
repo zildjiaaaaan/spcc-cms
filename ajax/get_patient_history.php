@@ -4,21 +4,22 @@
   	$patientId = $_GET['patient_id'];
 
     $data = '';
-    /**
+    /*
     medicines (medicine_name)
     medicine_details (packing)
     patient_visits (visit_date, disease)
     patient_medication_history (quantity, dosage)
 
     */
-    $query = "SELECT `m`.`medicine_name`, `m`.`is_del`, `md`.`packing`, `pv`.`pres_remarks`,
+    $query = "SELECT `m`.`medicine_name`, `m`.`is_del`, `md`.`packing`, `pv`.`pres_remarks`, `u`.`display_name`,
     `pv`.`visit_date`, `pv`.`disease`, `pmh`.`quantity`, `pmh`.`dosage`, `pv`.`id`, `m`.`medicine_brand`
     from `medicines` as `m`, `medicine_details` as `md`, 
-    `patient_visits` as `pv`, `patient_medication_history` as `pmh` 
+    `patient_visits` as `pv`, `patient_medication_history` as `pmh`, `users` as `u`
     where `m`.`id` = `md`.`medicine_id` and 
     `pv`.`patient_id` = $patientId and 
     `pv`.`id` = `pmh`.`patient_visit_id` and 
-    `md`.`id` = `pmh`.`medicine_details_id` 
+    `md`.`id` = `pmh`.`medicine_details_id` and
+    `pv`.`user_id` = `u`.`id`
     order by `pv`.`id` asc, `pmh`.`id` asc;";
 
     try {
@@ -43,6 +44,7 @@
         $data = $data.'<td class="px-2 py-1 align-middle text-right">'.$r['quantity'].'</td>';
         $data = $data.'<td class="px-2 py-1 align-middle text-right">'.$r['dosage'].'</td>';
         $data = $data.'<td class="px-2 py-1 align-middle text-left">'.$r['pres_remarks'].'</td>';
+        $data = $data.'<td class="px-2 py-1 align-middle text-left">'.$r['display_name'].'</td>';
 
         $data = $data.'</tr>';
       }

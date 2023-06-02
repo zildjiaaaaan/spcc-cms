@@ -71,11 +71,12 @@ include './config/sidebar.php';?>
                     <col width="1%">
                     <col width="6%">
                     <col width="8%">
-                    <col width="20%">
+                    <col width="15%">
                     <col width="1%">
                     <col width="1%">
                     <col width="1%">
-                    <col width="35%">
+                    <col width="25%">
+                    <col width="10%">
                   </colgroup>
                   <thead>
                     <tr class="bg-gradient-primary text-light">
@@ -87,6 +88,7 @@ include './config/sidebar.php';?>
                       <th class="p-1 text-center">Qty</th>
                       <th class="p-1 text-center">Dosage</th>
                       <th class="p-1 text-center">Prescription Remarks</th>
+                      <th class="p-1 text-center">Attendant</th>
                     </tr>
                   </thead>
 
