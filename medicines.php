@@ -49,7 +49,7 @@ if(isset($_POST['save_medicine'])) {
 
       $con->commit();
 
-      $message = 'Medicine Added Successfully.';
+      $message = 'Medicine Brand Added Successfully.';
     }catch(PDOException $ex) {
     $con->rollback();
 
@@ -60,7 +60,7 @@ if(isset($_POST['save_medicine'])) {
 
 } else {
   if (!$insert) {
-    $message = 'This item already exists. Check the list below or the Trash.';
+    $message = 'This brand already exists. Check the list below or the Trash.';
   } else {
     $message = 'Empty form can not be submitted.';
   }
@@ -146,6 +146,7 @@ include './config/sidebar.php';?>
       </div>
       <!-- /.card -->
     </section>
+
     <section class="content">
       <!-- Default box -->
       <div class="card card-outline card-primary rounded-0 shadow">
@@ -213,17 +214,61 @@ include './config/sidebar.php';?>
                     <i class="fa fa-edit"></i>
                   </a>
                   <span>&nbsp;</span>
-                  <a href="del_medicine.php?id=<?php echo $row['id'];?>" class="btn btn-danger btn-sm btn-flat">
+                  <button type="button" class="btn btn-danger btn-sm btn-flat" data-toggle="modal" data-target="#exampleModal-<?php echo $row['id'];?>">
                     <i class="fa fa-trash"></i>
-                  </a>
+                  </button>
                 </td>
               </tr>
+
+              <div class="modal fade" id="exampleModal-<?php echo $row['id'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Warning!</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <?php
+                        echo '<h5>Are you sure you want to delete this medicine brand "'.strtoupper($row["medicine_name"]).' — '.$row["medicine_brand"].'"?</h5>';
+                        $id = $row['id'];
+                        $q_checkMedDetails = "SELECT * FROM `medicine_details`
+                            WHERE `medicine_id` = '$id' AND `is_del` = '0'
+                        ;";
+
+                        $stmt_checkMedDetails = $con->prepare($q_checkMedDetails);
+                        $stmt_checkMedDetails->execute();
+                        $rowCount = $stmt_checkMedDetails->rowCount();
+                        $message = '';
+
+                        if ($rowCount > 0) {
+                          $message .= "The following Medicine Item/s will be deleted too: <br>";
+                          $i = 1;                          
+                          while ($r = $stmt_checkMedDetails->fetch(PDO::FETCH_ASSOC)) { 
+                            $message .= $i.".) ";
+                            $message .= "".$r['packing']."&nbsp;&nbsp;&nbsp; — &nbsp;&nbsp;&nbsp;Exp. Date: ".$r['exp_date'];
+                            $message .= "&nbsp;&nbsp;&nbsp; — &nbsp;&nbsp;&nbsp;Qty: ".$r['quantity']."<br>";
+                          }
+                        }
+                        echo "<p style='margin-top:20px;'>".$message."</p>";                      
+                      ?>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                      <a href="del_medicine.php?id=<?php echo $row['id'];?>" class="btn btn-danger">Delete</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <?php } ?>
             </tbody>
           </table>
           </div>
         </div>
 
+        <!-- Modal -->
 <!-- /.card-footer-->
 </div>
 <!-- /.card -->

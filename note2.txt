@@ -32,22 +32,22 @@ Recovery (Notes):
 ----------
 
 If a Medicine deleted,
-- will not appear in Dashboard 'Total Medicine Stocks', 'Total Medicine Brands'
-- will not appear in New Medication 'Select Medicine'
-- will not appear in Medicine
-- will not appear in Add Medicine Details 'Select Medicine'
-- will not appear in Update Medicine Details 'Select Medicine'
-- rows with said Medicine will not appear in Medicine Details **GIVE WARNING**
-- will appear in Dashboard 'Deleted Items'
-- will appear in Trash 'Medicine Item'
-- will appear in Patient History as "(item deleted)"
+• - will not appear in Dashboard 'Total Medicine Stocks', 'Total Medicine Brands'
+• - will not appear in New Medication 'Select Medicine'
+• - will not appear in Medicine
+• - will not appear in Add Medicine Details 'Select Medicine'
+• - will not appear in Update Medicine Details 'Select Medicine'
+• - rows with said Medicine will not appear in Medicine Details **GIVE WARNING**
+• - will appear in Dashboard 'Deleted Items'
+• - will appear in Trash 'Medicine Item'
+• - will appear in Patient History as "(item deleted)"
 
 Input Validation (Duplicate):
-- ADD: check Inventory or Trash
-- UPDATE: check Inventory or Trash
+• - ADD: check Inventory or Trash
+• - UPDATE: check Inventory or Trash
 
 Recovery (Notes):
-- will not recover Medicine Details with said Medicine
+• - will not recover Medicine Details with said Medicine
 
 ----------
 

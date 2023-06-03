@@ -4,7 +4,18 @@ include './config/connection.php';
 
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
-    $query = "UPDATE `medicines` set `is_del` = '1' where `id`= $id";   
+
+    $q_checkMedDetails = "SELECT `id` FROM `medicine_details`
+        WHERE `medicine_id` = '$id' AND `is_del` = '0'
+    ;";
+    
+    $query = "UPDATE `medicines` set `is_del` = '1' where `id`= $id";
+
+    $stmt_checkMedDetails = $con->prepare($q_checkMedDetails);
+    $stmt_checkMedDetails->execute();
+    $r = $stmt_checkMedDetails->fetch(PDO::FETCH_ASSOC);
+
+   
 
     try {
 
@@ -12,10 +23,18 @@ if (isset($_GET['id'])) {
     
         $stmtMedicine = $con->prepare($query);
         $stmtMedicine->execute();
+
+        foreach ($r as $row) {
+            $id = $row['id'];
+            $medDetailsId = $r['id'];
+            $q_delMedDetails = "UPDATE `medicine_details` SET `is_del` = '1' WHERE `id`= '$id';";
+            $stmt_delMedDetails = $con->prepare($q_delMedDetails);
+            $stmt_delMedDetails->execute();
+        }
     
         $con->commit();
     
-        $message = 'Medicine deleted successfully.';
+        $message = 'Medicine Brand Deleted Successfully.';
     
     } catch(PDOException $ex) {
         $con->rollback();

@@ -38,4 +38,5 @@ function showCustomMessage(message) {
         title: 'Message',
         content: message
     });
+    
 }

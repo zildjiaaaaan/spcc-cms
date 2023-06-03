@@ -62,7 +62,7 @@ if (isset($_GET['recover'])) {
       exit;  
     }
   } else if ($_GET['recover'] == "equipments") {
-    $rec = "Equipments";
+    $rec = "Equipment Types";
     $menuSelected = "#mi_trash_equipments";
 
     try {
@@ -308,7 +308,7 @@ include './config/sidebar.php';?>
               </table>
 <!------------------------------------------------------------------ EQUIPMENTS ---------------------------------------------------------------->
               <?php
-                } else if ($rec == "Equipments") {          
+                } else if ($rec == "Equipment Types") {          
               ?>
               <table id="all_equipments" class="table table-striped dataTable table-bordered dtr-inline" role="grid" aria-describedby="all_equipments_info">
                 <colgroup>
