@@ -106,14 +106,14 @@ if(!(isset($_SESSION['user_id']))) {
                 <a href="medicines.php" class="nav-link" 
                 id="mi_medicines">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Add Medicine</p>
+                  <p>Add Medicine Brand</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="medicine_details.php" class="nav-link" 
                 id="mi_medicine_details">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Medicine Details</p>
+                  <p>Medicine Inventory</p>
                 </a>
               </li>
                             
@@ -133,14 +133,14 @@ if(!(isset($_SESSION['user_id']))) {
                 <a href="equipments.php" class="nav-link" 
                 id="mi_equipments">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Add Equipment</p>
+                  <p>Add Equipment Type</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="equipment_details.php" class="nav-link" 
                 id="mi_equipment_details">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Equipment Details</p>
+                  <p>Add Equipment Unit</p>
                 </a>
               </li>
               <li class="nav-item">
@@ -267,10 +267,12 @@ if(!(isset($_SESSION['user_id']))) {
 
           <li class="nav-item" id="mnu_users">
             <a href="users.php" class="nav-link">
-              <i class="nav-icon fa fa-users"></i>
-              <p>
-                Users
-              </p>
+              <i class="nav-icon fa <?php echo (isset($_SESSION['admin'])) ? 'fa-users': 'fa-user-cog'; ?>"></i>
+              <?php if (isset($_SESSION['admin'])) { ?>
+                <p>Attendants</p>
+              <?php } else { ?>
+                <p>Profile</p>
+              <?php } ?>
             </a>
           </li>
   

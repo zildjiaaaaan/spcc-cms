@@ -109,7 +109,7 @@ $borrowers = getUniqueBorrowers($con);
  <?php include './config/site_css_links.php' ?>
 
  <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
- <title>Equipment Details - SPCC Caloocan Clinic</title>
+ <title>Equipment Units - SPCC Caloocan Clinic</title>
 
 </head>
 <body class="hold-transition sidebar-mini dark-mode layout-fixed layout-navbar-fixed">
@@ -126,7 +126,7 @@ include './config/sidebar.php';?>
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-6">
-              <h1>Equipment Details</h1>
+              <h1>Clinic Equipment Units</h1>
             </div>
           </div>
         </div><!-- /.container-fluid -->
@@ -138,7 +138,7 @@ include './config/sidebar.php';?>
         <!-- Default box -->
         <div class="card card-outline card-primary rounded-0 shadow">
           <div class="card-header">
-            <h3 class="card-title">Add Equipment Details</h3>
+            <h3 class="card-title">Add Equipment Unit</h3>
 
             <div class="card-tools">
               <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
@@ -151,7 +151,7 @@ include './config/sidebar.php';?>
             <form method="post">
               <div class="row">
                 <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 select-select2">
-                  <label>Select Equipment</label>
+                  <label>Equipment Types</label>
                   <select id="equipment" name="equipment" class="form-control form-control-sm rounded-0 select2">
                     <?php echo $equipments;?>
                   </select>
@@ -181,7 +181,7 @@ include './config/sidebar.php';?>
                 </div>
                 
                 <div class="col-lg-3 col-md-2 col-sm-6 col-xs-12">
-                  <label>Quantity Available</label>
+                  <label>Quantity</label>
                   <input type="number" id="quantity" name="quantity" class="form-control form-control-sm rounded-0" min="1" placeholder="Minimum of 1">
                 </div>
 
@@ -253,7 +253,7 @@ include './config/sidebar.php';?>
         <thead class="bg-primary">
           <tr>
             <th>#</th>
-            <th>Equipment</th>
+            <th>Equipment Type</th>
             <th>Status</th>
             <th>State</th>
             <th>Qty</th>

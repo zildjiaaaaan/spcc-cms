@@ -150,13 +150,34 @@ new remarks
 
 ----------
 
-date
-time
-name
-age
+date •
+time 
+name •
+age 
 grade and section
 adv
 vital sign
-chief complain
-intervention
-sign
+chief complain •
+intervention •
+signature •
+
+• add search tag to equipment brand
+   - is_torestock:true 
+
+• change id in input element in equipment_details.php
+
+• total quantity in equipment brands clickable to equipment inventory filtered
+
+• show all patients in patients history. just marked who's deleted
+
+• show number of medication history (count patient history) in patient trash
+
+update everything with patients record. is_archived added
+
+• bug in borrower history in returned items
+solution: remove link if returned
+
+• decrease total_qty when updating individual equipment units
+when adding
+when updating
+when deleting

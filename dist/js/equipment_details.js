@@ -4,7 +4,7 @@ $(function() {
 
     $("#equipment").select2({
         width: 'resolve',
-        placeholder: "Select Equipment"
+        placeholder: "Select Equipment Type"
     });
 
     $("#borrower").select2({

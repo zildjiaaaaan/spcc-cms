@@ -55,7 +55,7 @@ include './config/sidebar.php';?>
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-6">
-              <h1>Equipment Inventory</h1>
+              <h1>Equipment Units Inventory</h1>
             </div>
           </div>
         </div><!-- /.container-fluid -->
@@ -65,7 +65,7 @@ include './config/sidebar.php';?>
       <!-- Default box -->
       <div class="card card-outline card-primary rounded-0 shadow">
         <div class="card-header">
-          <h3 class="card-title">Equipment Inventory</h3>
+          <h3 class="card-title">All Equipment Units</h3>
 
           <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
@@ -77,9 +77,7 @@ include './config/sidebar.php';?>
 
         <div class="card-body">
             <div class="row table-responsive">
-              <table id="equipment_inventory" 
-              class="table table-striped dataTable table-bordered dtr-inline" 
-               role="grid" aria-describedby="equipment_inventory_info">
+              <table id="equipment_inventory" class="table table-striped dataTable table-bordered dtr-inline" role="grid" aria-describedby="equipment_inventory_info">
                 <colgroup>
                   <col width="2%">
                   <col width="20%">

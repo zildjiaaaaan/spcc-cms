@@ -88,7 +88,7 @@ try {
  <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
  
  <?php include './config/data_tables_css.php';?>
- <title>Medicines - SPCC Caloocan Clinic</title>
+ <title>Medicine Brands - SPCC Caloocan Clinic</title>
 </head>
 <body class="hold-transition sidebar-mini dark-mode layout-fixed layout-navbar-fixed">
   <!-- Site wrapper -->
@@ -103,7 +103,7 @@ include './config/sidebar.php';?>
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-6">
-              <h1>Medicines</h1>
+              <h1>Medicine Brands</h1>
             </div>
           </div>
         </div><!-- /.container-fluid -->
@@ -113,7 +113,7 @@ include './config/sidebar.php';?>
         <!-- Default box -->
         <div class="card card-outline card-primary rounded-0 shadow">
           <div class="card-header">
-            <h3 class="card-title">Add Medicine</h3>
+            <h3 class="card-title">Add Medicine Brand</h3>
             <div class="card-tools">
               <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                 <i class="fas fa-minus"></i>
@@ -150,7 +150,7 @@ include './config/sidebar.php';?>
       <!-- Default box -->
       <div class="card card-outline card-primary rounded-0 shadow">
         <div class="card-header">
-          <h3 class="card-title">All Medicines</h3>
+          <h3 class="card-title">Available Medicine Brands</h3>
 
           <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">

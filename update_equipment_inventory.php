@@ -178,7 +178,7 @@ try {
  <?php include './config/site_css_links.php' ?>
 
  <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
- <title>Update Equipment Details - SPCC Caloocan Clinic</title>
+ <title>Update Equipment Unit - SPCC Caloocan Clinic</title>
  <style>
   #unavailableUntil {
     cursor: <?php echo ($row['state'] == "Missing") ? "not-allowed" : "default"; ?>;
@@ -204,7 +204,7 @@ include './config/sidebar.php';?>
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-6">
-              <h1>Equipment Details</h1>
+              <h1>Equipment Units Inventory</h1>
             </div>
           </div>
         </div><!-- /.container-fluid -->
@@ -216,7 +216,7 @@ include './config/sidebar.php';?>
         <!-- Default box -->
         <div class="card card-outline card-primary rounded-0 shadow">
           <div class="card-header">
-            <h3 class="card-title">Update Equipment Details</h3>
+            <h3 class="card-title">Update Equipment Unit</h3>
 
             <div class="card-tools">
               <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
@@ -244,7 +244,7 @@ include './config/sidebar.php';?>
                 <?php } ?>
 
                 <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 select-select2">
-                  <label>Select Equipment</label>
+                  <label>Equipment Types</label>
                   <select id="equipment" name="equipment" class="form-control form-control-sm rounded-0 select2" required>
                     <?php echo $equipments;?>
                   </select>

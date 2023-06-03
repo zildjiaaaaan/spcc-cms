@@ -62,7 +62,7 @@ try {
 <head>
  <?php include './config/site_css_links.php';?>
  <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
- <title>Update Equipment - SPCC Caloocan Clinic</title>
+ <title>Update Equipment Type - SPCC Caloocan Clinic</title>
 
  <link rel="stylesheet" href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
  <link rel="stylesheet" href="plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
@@ -82,7 +82,7 @@ include './config/sidebar.php';?>
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Equipments</h1>
+            <h1>Clinic Equipment Types</h1>
           </div>
         </div>
       </div><!-- /.container-fluid -->
@@ -94,7 +94,7 @@ include './config/sidebar.php';?>
       <!-- Default box -->
       <div class="card card-outline card-primary rounded-0 shadow">
         <div class="card-header">
-          <h3 class="card-title">Update Equipment</h3>
+          <h3 class="card-title">Update Equipment Type</h3>
 
           <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
@@ -167,6 +167,14 @@ include './config/sidebar.php';?>
 <script src="plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
 
 <script>
+  showMenuSelected("#mnu_equipments", "#mi_equipments");
+
+  var message = '<?php echo $message;?>';
+
+  if(message !== '') {
+    showCustomMessage(message);
+  }
+  
 $(document).ready(function() {
 
   $("#customSwitch1").on("change", function(){

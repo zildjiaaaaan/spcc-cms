@@ -10,10 +10,10 @@ if(isset($_POST['login'])) {
 
   $encryptedPassword = md5($password);
 
-  $query = "select `id`, `display_name`, `user_name`, 
-    `profile_picture` from `users` 
-    where `user_name` = '$userName' and 
-    `password` = '$encryptedPassword';";
+  $query = "SELECT `id`, `display_name`, `user_name`, `profile_picture` FROM `users` 
+    WHERE `user_name` = '$userName'
+    AND `password` = '$encryptedPassword'
+    AND `access_lvl` = 'Staff';";
 
 try {
   $stmtLogin = $con->prepare($query);

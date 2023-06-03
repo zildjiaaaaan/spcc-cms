@@ -72,7 +72,7 @@ try {
  <?php include './config/site_css_links.php';?>
  <?php include './config/data_tables_css.php';?>
  <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
- <title>Update Medicine Details - SPCC Caloocan Clinic</title>
+ <title>Update Medicine Unit - SPCC Caloocan Clinic</title>
 
 </head>
 <body class="hold-transition sidebar-mini dark-mode layout-fixed layout-navbar-fixed">
@@ -89,7 +89,7 @@ include './config/sidebar.php';?>
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-6">
-              <h1>Medicine Details</h1>
+              <h1>Medicine Units Inventory</h1>
             </div>
           </div>
         </div><!-- /.container-fluid -->
@@ -101,7 +101,7 @@ include './config/sidebar.php';?>
         <!-- Default box -->
         <div class="card card-outline card-primary rounded-0 shadow">
           <div class="card-header">
-            <h3 class="card-title">Update Medicine Details</h3>
+            <h3 class="card-title">Update Medicine Unit</h3>
 
             <div class="card-tools">
               <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
@@ -118,26 +118,23 @@ include './config/sidebar.php';?>
 
               <div class="row">
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 select-select2">
-                  <label>Select Medicine</label>
+                  <label>Medicine Brand</label>
                   <select id="medicine" name="medicine" class="form-control form-control-sm rounded-0 select2" required="required">
                     <?php echo $medicines;?>
                   </select>
                 </div>
 
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                  <label>Unit</label>
+                  <label>Unit Type</label>
                   <input id="packing" name="packing" class="form-control form-control-sm rounded-0" required="required" value="<?php echo $packing; ?>"/>
                 </div>
 
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-10">
                   <div class="form-group">
                     <label>Expiration Date</label>
-                    <?php
-                        
-                    ?>
                     <div class="input-group date" id="expiry" 
                         data-target-input="nearest">
-                        <input type="text" id="exp_date" value="<?php echo $exp_date;?>" class="form-control form-control-sm rounded-0 datetimepicker-input" data-target="#expiry" name="expiry" required="required" data-toggle="datetimepicker"/>
+                        <input type="text" placeholder="Enter Expiration Date" id="exp_date" value="<?php echo $exp_date;?>" class="form-control form-control-sm rounded-0 datetimepicker-input" data-target="#expiry" name="expiry" required="required" data-toggle="datetimepicker"/>
                         <div class="input-group-append" 
                         data-target="#expiry" 
                         data-toggle="datetimepicker">
@@ -219,15 +216,17 @@ include './config/sidebar.php';?>
       var medicineId = $("#medicine").val();
       var expiry = $("#exp_date").val().trim();
       var medicineUnit = $("#packing").val().trim();
-
-      var parts = expiry.split("/");
-      var formattedDate = parts[2] + "-" + parts[0].padStart(2, "0") + "-" + parts[1].padStart(2, "0");
+      var formattedDate = '';
+      if (expiry !== '') {
+        var parts = expiry.split("/");
+        formattedDate = parts[2] + "-" + parts[0].padStart(2, "0") + "-" + parts[1].padStart(2, "0");
+      }
 
       $("#medicine").val(medicineId);
       // $("#expiry").val(formattedDate);
       $("#packing").val(medicineUnit);
       
-      if(medicineUnit !== '') {
+      if(medicineUnit !== '' && formattedDate !== '' && medicineId !== '') {
         $.ajax({
           url: "ajax/check_medicine_unit.php",
           type: 'GET', 

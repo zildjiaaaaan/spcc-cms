@@ -19,11 +19,12 @@ include './config/connection.php';
   // where YEAR(`visit_date`) = YEAR('$date');";
 
   $queryYear = "SELECT `patients`.*
-                FROM `patient_visits`
-                JOIN `patients` ON `patient_visits`.`patient_id` = `patients`.`id`
-                WHERE YEAR(`visit_date`) = YEAR('$date')
-                ORDER BY visit_date DESC
-                LIMIT 1;";
+      FROM `patient_visits`
+      JOIN `patients` ON `patient_visits`.`patient_id` = `patients`.`id`
+      WHERE YEAR(`visit_date`) = YEAR('$date')
+      ORDER BY visit_date DESC
+      LIMIT 1
+  ;";
 
   $queryMonth = "SELECT count(*) as `month` 
   from `patient_visits` 
@@ -106,12 +107,7 @@ include './config/sidebar.php';
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 id="live-time">
-              <?php
-                // date_default_timezone_set("Asia/Singapore");
-                // echo "Today is ".date("M d, Y")." — ".date("h:ia");
-              ?>
-            </h1>
+            <h1 id="live-time"></h1>
           </div>
         </div>
       </div><!-- /.container-fluid -->
@@ -460,7 +456,7 @@ include './config/sidebar.php';
         <div class="row">
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-navy" id="box_totalattendants">
+            <div class="small-box bg-navy" <?php echo (isset($_SESSION['admin'])) ? 'id="box_totalattendants"' : ''; ?>>
               <div class="inner">
                 <h3><?php echo $rUser['attendant'];?></h3>
 

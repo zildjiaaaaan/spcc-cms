@@ -19,53 +19,55 @@ try {
 }
 
 if (isset($_POST['save_user'])) {
- $displayName = trim($_POST['display_name']);
- $userName = trim($_POST['username']);
- $password = $_POST['password'];
-$hiddenId = $_POST['hidden_id'];
+  $displayName = trim($_POST['display_name']);
+  $userName = trim($_POST['username']);
+  $password = $_POST['password'];
+  $hiddenId = $_POST['hidden_id'];
 
- $profilePicture = basename($_FILES["profile_picture"]["name"]);
- $targetFile =  time(). $profilePicture;
- $status = move_uploaded_file($_FILES["profile_picture"]["tmp_name"],
-  'user_images/'.$targetFile);
+  $profilePicture = basename($_FILES["profile_picture"]["name"]);
+  $targetFile =  time(). $profilePicture;
+  $status = move_uploaded_file($_FILES["profile_picture"]["tmp_name"],
+    'user_images/'.$targetFile);
 
 
- $encryptedPassword = md5($password);
- if($displayName !='' && $userName !='' && $password !='' && $status !='') {
+  $encryptedPassword = md5($password);
+  if($displayName !='' && $userName !='' && $password !='' && $status !='') {
 
-  $updateUserQuery = "UPDATE `users` set `display_name` = '$displayName' ,`user_name` = '$userName', `password` = 
-  '$encryptedPassword' , `profile_picture` = '$targetFile'
-  where `id` = $hiddenId";
+    $updateUserQuery = "UPDATE `users` set `display_name` = '$displayName' ,`user_name` = '$userName', `password` = 
+    '$encryptedPassword' , `profile_picture` = '$targetFile'
+    where `id` = $hiddenId";
 
-}elseif ($displayName !=='' && $userName !=='' && $password !==''){
+  } elseif ($displayName !=='' && $userName !=='' && $password !==''){
 
-  $updateUserQuery = "UPDATE `users` set `display_name` = '$displayName' ,`user_name` = '$userName' , `password` = 
-  '$encryptedPassword' 
-  where `id` = $hiddenId";
+    $updateUserQuery = "UPDATE `users` set `display_name` = '$displayName' ,`user_name` = '$userName' , `password` = 
+    '$encryptedPassword' 
+    where `id` = $hiddenId";
 
-}elseif ($displayName !=='' && $userName !=='' && $status !==''){
+  } elseif ($displayName !=='' && $userName !=='' && $status !=='') {
 
-  $updateUserQuery = "UPDATE `users` set `display_name` = '$displayName' , `user_name` = '$userName' , `profile_picture` = '$targetFile ' 
-   where `id` = $hiddenId";
-}
-else {
-  showCustomMessage("please fill");
-}
+    $updateUserQuery = "UPDATE `users` set `display_name` = '$displayName' , `user_name` = '$userName' , `profile_picture` = '$targetFile ' 
+    where `id` = $hiddenId";
+  } else {
+    // showCustomMessage("please fill");
+    $message = 'Please fill all fields.';
+  }
 
-try {
-	$con->beginTransaction();
-  $stmtUpdateUser = $con->prepare($updateUserQuery);
-  $stmtUpdateUser->execute();
-  $message = "user update successfully";
-  $con->commit();
+  try {
+    $con->beginTransaction();
+    $stmtUpdateUser = $con->prepare($updateUserQuery);
+    $stmtUpdateUser->execute();
+    $message = "User Info Updated Successfully";
+    $con->commit();
 
-} catch(PDOException $ex) {
-	$con->rollback();
-  echo $ex->getTraceAsString();
-  echo $ex->getMessage();
+  } catch(PDOException $ex) {
+    $con->rollback();
+    echo $ex->getTraceAsString();
+    echo $ex->getMessage();
+    exit;
+  }
+
+  header("Location:congratulation.php?goto_page=users.php&message=$message");
   exit;
-}
-header("Location:congratulation.php?goto_page=users.php&message=$message");
 }
 
 
@@ -76,7 +78,7 @@ header("Location:congratulation.php?goto_page=users.php&message=$message");
 <head>
  <?php include './config/site_css_links.php';?>
 
- <title>Update User  Details - Clinic's Patient Management System in PHP</title>
+ <title>Update Users - SPCC Caloocan Clinic</title>
 
 </head>
 <body class="hold-transition sidebar-mini dark-mode layout-fixed layout-navbar-fixed">
@@ -139,23 +141,35 @@ include './config/sidebar.php';?>
                 </div>
                 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-10">
                   <label>Profile picture</label>
-                  <input type="file" id="profile_picture" name="profile_picture" 
-                  class="form-control form-control-sm rounded-0" />
-
+                  <input type="file" id="profile_picture" name="profile_picture" class="form-control form-control-sm rounded-0" />
                 </div>
 
+                <?php
+                  if (isset($_SESSION['admin'])) {
+                ?>
+                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <label>Access</label>
+                  <select id="access_lvl" name="access_lvl" class="form-control form-control-sm rounded-0" required>
+                    <option value="">Select Role</option>
+                    <option value="Admin">Admin</option>
+                    <option value="Staff">Staff</option>
+                  </select>
+                </div>
+                <?php } ?>
+
+              </div>
+              <div class="clearfix">&nbsp;</div>
+              <div class="row">
+                <div class="col-lg-11 col-md-10 col-sm-10">&nbsp;</div>
+                <div class="col-lg-1 col-md-2 col-sm-2 col-xs-2">
+                  <button type="submit" id="save_user" 
+                  name="save_user" class="btn btn-primary btn-sm btn-flat btn-block">Update</button>
+                </div>
               </div>
               
             </div>
 
-            <div class="clearfix">&nbsp;</div>
-            <div class="row">
-              <div class="col-lg-11 col-md-10 col-sm-10">&nbsp;</div>
-              <div class="col-lg-1 col-md-2 col-sm-2 col-xs-2">
-                <button type="submit" id="save_user" 
-                name="save_user" class="btn btn-primary btn-sm btn-flat btn-block">Update</button>
-              </div>
-            </div>
+            
           </form>
         </div>
         

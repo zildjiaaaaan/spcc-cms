@@ -68,7 +68,7 @@ $query = "SELECT `m`.`medicine_name`, `m`.`medicine_brand`, `md`.`id`, `md`.`pac
  <?php include './config/site_css_links.php';?>
  <?php include './config/data_tables_css.php';?>
  <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
- <title>Medicine Details - SPCC Caloocan Clinic</title>
+ <title>Medicine Inventory - SPCC Caloocan Clinic</title>
 
 </head>
 <body class="hold-transition sidebar-mini dark-mode layout-fixed layout-navbar-fixed">
@@ -85,7 +85,7 @@ include './config/sidebar.php';?>
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-6">
-              <h1>Medicine Details</h1>
+              <h1>Medicine Units Inventory</h1>
             </div>
           </div>
         </div><!-- /.container-fluid -->
@@ -97,7 +97,7 @@ include './config/sidebar.php';?>
         <!-- Default box -->
         <div class="card card-outline card-primary rounded-0 shadow">
           <div class="card-header">
-            <h3 class="card-title">Add Medicine Details</h3>
+            <h3 class="card-title">Add Medicine Unit</h3>
 
             <div class="card-tools">
               <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
@@ -110,7 +110,7 @@ include './config/sidebar.php';?>
             <form method="post">
               <div class="row">
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 select-select2">
-                  <label>Select Medicine</label>
+                  <label>Medicine Brand</label>
                   <select id="medicine" name="medicine" class="form-control form-control-sm rounded-0 select2" required="required">
                     <?php echo $medicines;?>
                   </select>
@@ -124,7 +124,7 @@ include './config/sidebar.php';?>
                 </div> -->
 
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                  <label>Unit</label>
+                  <label>Unit Type</label>
                   <input id="packing" name="packing" class="form-control form-control-sm rounded-0"  required="required" placeholder="e.g. Tablet, Capsule, Syrup, etc."/>
                 </div>
 
@@ -133,7 +133,7 @@ include './config/sidebar.php';?>
                     <label>Expiration Date</label>
                     <div class="input-group date" id="expiry" 
                         data-target-input="nearest">
-                        <input type="text" class="form-control form-control-sm rounded-0 datetimepicker-input" data-target="#expiry" name="expiry" required="required" data-toggle="datetimepicker" autocomplete="off"/>
+                        <input type="text" placeholder="Enter Expiration date" class="form-control form-control-sm rounded-0 datetimepicker-input" data-target="#expiry" name="expiry" required="required" data-toggle="datetimepicker" autocomplete="off"/>
                         <div class="input-group-append" 
                         data-target="#expiry" 
                         data-toggle="datetimepicker">
@@ -145,7 +145,7 @@ include './config/sidebar.php';?>
 
                 <div class="col-lg-2 col-md-6 col-sm-6 col-xs-12">
                   <label>Quantity</label>
-                  <input type="number" min="1" id="quantity" name="quantity" class="form-control form-control-sm rounded-0"  required="required"/>
+                  <input type="number" placeholder="Enter Quantity" min="1" id="quantity" name="quantity" class="form-control form-control-sm rounded-0"  required="required"/>
                 </div>
 
                 <div class="col-lg-1 col-md-12 col-sm-12 col-xs-12">
@@ -170,7 +170,7 @@ include './config/sidebar.php';?>
       <!-- Default box -->
       <div class="card card-outline card-primary rounded-0 shadow">
         <div class="card-header">
-          <h3 class="card-title">Medicine Details</h3>
+          <h3 class="card-title">Availalble Medicine Units</h3>
 
           <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">

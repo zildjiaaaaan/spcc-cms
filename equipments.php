@@ -9,12 +9,14 @@ if(isset($_POST['save_equipment'])) {
   $equipmentName = ucwords(strtolower($equipmentName));
   $equipmentBrand = ucwords(strtolower($equipmentBrand));
 
+  $equipmentBrand = ($equipmentBrand == '') ? "Generic Brand" : "$equipmentBrand";
+
   $acquiredDateArr = explode("/", $_POST['date_acquired']);
   $acquiredDate = $acquiredDateArr[2].'-'.$acquiredDateArr[0].'-'.$acquiredDateArr[1];
 
   $total_qty = "NULL";
 
-  if($equipmentName != '' && $equipmentBrand != '' && $acquiredDate != '') {
+  if ($equipmentName != '' && $equipmentBrand != '' && $acquiredDate != '') {
    $query = "INSERT INTO `equipments`(`equipment`, `brand`, `date_acquired`, `total_qty`)
    VALUES('$equipmentName', '$equipmentBrand', '$acquiredDate', $total_qty);";
    
@@ -36,9 +38,9 @@ if(isset($_POST['save_equipment'])) {
    exit;
  }
 
-} else {
- $message = 'Empty form can not be submitted.';
-}
+  } else {
+  $message = 'Empty form can not be submitted.';
+  }
 header("Location:congratulation.php?goto_page=equipments.php&message=$message");
 exit;
 }
@@ -63,7 +65,7 @@ try {
  <?php include './config/site_css_links.php';?> 
  <?php include './config/data_tables_css.php';?>
  <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
- <title>Clinic Equipments - SPCC Caloocan Clinic</title>
+ <title>Equipment Types - SPCC Caloocan Clinic</title>
  <style>
     .cell-link {
       color: white;
@@ -84,7 +86,7 @@ include './config/sidebar.php';?>
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-6">
-              <h1>Clinic Equipments</h1>
+              <h1>Clinic Equipment Types</h1>
             </div>
           </div>
         </div><!-- /.container-fluid -->
@@ -94,7 +96,7 @@ include './config/sidebar.php';?>
         <!-- Default box -->
         <div class="card card-outline card-primary rounded-0 shadow">
           <div class="card-header">
-            <h3 class="card-title">Add Equipment</h3>
+            <h3 class="card-title">Add Equipment Type</h3>
             <div class="card-tools">
               <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                 <i class="fas fa-minus"></i>
@@ -112,7 +114,7 @@ include './config/sidebar.php';?>
 
               <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
                   <label>Brand</label>
-                  <input id="equipment_brand" name="equipment_brand" class="form-control form-control-sm rounded-0" placeholder="Leave it blank for generic brand" required="required" />
+                  <input id="equipment_brand" name="equipment_brand" class="form-control form-control-sm rounded-0" placeholder="Leave it blank for generic brand" />
               </div>
 
               <div class="col-lg-3 col-md-6 col-sm-6 col-xs-10">
@@ -151,7 +153,7 @@ include './config/sidebar.php';?>
       <!-- Default box -->
       <div class="card card-outline card-primary rounded-0 shadow">
         <div class="card-header">
-          <h3 class="card-title">All Equipments</h3>
+          <h3 class="card-title">Available Equipment Types</h3>
 
           <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
@@ -196,7 +198,7 @@ include './config/sidebar.php';?>
               <tr>
                 <td class="text-center"><?php echo $serial;?></td>
                 <td><?php echo $row['equipment'];?></td>
-                <td><?php echo $row['brand'];?></td>
+                <td><?php echo (!empty($row['brand'])) ? $row['brand'] : "Generic Brand";?></td>
                 <td><?php echo $row['date_acquired'];?></td>
                 <td><?php echo (!is_null($row['total_qty'])) ? "<a href='equipment_inventory.php?search=Stock&tag=".$searchName."' target='_blank' class='cell-link'>".$row['total_qty']."</a>" : "<i>Not Set</i>" ;?></td>
                 <td class="text-center">

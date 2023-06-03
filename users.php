@@ -1,12 +1,22 @@
 <?php 
 include './config/connection.php';
 
+if (!isset($_SESSION['admin'])) {
+  if (isset($_SESSION['user_id'])) {
+    header("location:update_user.php?user_id=".$_SESSION['user_id']);
+  } else {
+    header("location:.php");
+  }
+  exit;
+}
+
 $message = '';
 
 if(isset($_POST['save_user'])) {
   $displayName = $_POST['display_name'];
   $userName = $_POST['user_name'];
   $password = $_POST['password'];
+  $access_lvl = $_POST['access_lvl'];
 
   $encryptedPassword = md5($password);
 
@@ -37,8 +47,8 @@ $targetFile =  time().$baseName;
       $con->beginTransaction();
 
           $query = "INSERT INTO `users`(`display_name`,
-`user_name`, `password`, `profile_picture`) 
-VALUES('$displayName', '$userName', '$encryptedPassword', '$targetFile');";
+`user_name`, `password`, `profile_picture`, `access_lvl`) 
+VALUES('$displayName', '$userName', '$encryptedPassword', '$targetFile', '$access_lvl');";
 
     $stmtUser = $con->prepare($query);
     $stmtUser->execute();
@@ -158,14 +168,23 @@ include './config/sidebar.php';?>
                 class="form-control form-control-sm rounded-0" />
               </div>
 
-              <div class="col-lg-4 col-md-4 col-sm-4 col-xs-10">
+              <div class="col-lg-4 col-md-4 col-sm-12 col-xs-10">
                 <label>Picture</label>
                 <input type="file" id="profile_picture" 
                 name="profile_picture" required="required"
                 class="form-control form-control-sm rounded-0" />
               </div>
 
-              <div class="col-lg-1 col-md-2 col-sm-2 col-xs-2">
+              <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                <label>Access</label>
+                <select id="access_lvl" name="access_lvl" class="form-control form-control-sm rounded-0">
+                  <option value="">Select Role</option>
+                  <option value="Admin">Admin</option>
+                  <option value="Staff">Staff</option>
+                </select>
+              </div>
+
+              <div class="col-lg-1 col-md-4 col-sm-6 col-xs-2">
                 <label>&nbsp;</label>
                 <button type="submit" id="save_medicine" 
                 name="save_user" class="btn btn-primary btn-sm btn-flat btn-block">Save</button>

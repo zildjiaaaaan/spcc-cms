@@ -55,7 +55,7 @@ try {
 <html lang="en">
 <head>
  <?php include './config/site_css_links.php';?>
- <title>Update Medicine - SPCC Caloocan Clinic</title>
+ <title>Update Medicine Brand - SPCC Caloocan Clinic</title>
 
  <link rel="stylesheet" href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
  <link rel="stylesheet" href="plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
@@ -75,7 +75,7 @@ include './config/sidebar.php';?>
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Medicines</h1>
+            <h1>Medicine Brands</h1>
           </div>
         </div>
       </div><!-- /.container-fluid -->
@@ -87,7 +87,7 @@ include './config/sidebar.php';?>
       <!-- Default box -->
       <div class="card card-outline card-primary rounded-0 shadow">
         <div class="card-header">
-          <h3 class="card-title">Update Medicine</h3>
+          <h3 class="card-title">Update Medicine Brand</h3>
 
           <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
@@ -142,6 +142,15 @@ include './config/sidebar.php';?>
 
 <?php include './config/site_js_links.php'; ?>
 <script>
+
+showMenuSelected("#mnu_medicines", "#mi_medicines");
+
+var message = '<?php echo $message;?>';
+
+if(message !== '') {
+  showCustomMessage(message);
+}
+
 $(document).ready(function() {
 
   $("#customSwitch1").on("change", function(){
