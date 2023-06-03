@@ -25,7 +25,7 @@ if(isset($_POST['submit'])) {
 
     $con->commit();
 
-    $message = 'Medicine Details Saved Successfully.';
+    $message = 'Medicine Unit Saved Successfully.';
 
   } catch(PDOException $ex) {
 
@@ -85,7 +85,7 @@ include './config/sidebar.php';?>
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-6">
-              <h1>Medicine Units Inventory</h1>
+              <h1>Medicine Items Inventory</h1>
             </div>
           </div>
         </div><!-- /.container-fluid -->
@@ -133,7 +133,7 @@ include './config/sidebar.php';?>
                     <label>Expiration Date</label>
                     <div class="input-group date" id="expiry" 
                         data-target-input="nearest">
-                        <input type="text" placeholder="Enter Expiration date" class="form-control form-control-sm rounded-0 datetimepicker-input" data-target="#expiry" name="expiry" required="required" data-toggle="datetimepicker" autocomplete="off"/>
+                        <input type="text" placeholder="Enter Expiration date" id="exp_date" class="form-control form-control-sm rounded-0 datetimepicker-input" data-target="#expiry" name="expiry" required="required" data-toggle="datetimepicker" autocomplete="off"/>
                         <div class="input-group-append" 
                         data-target="#expiry" 
                         data-toggle="datetimepicker">
@@ -170,7 +170,7 @@ include './config/sidebar.php';?>
       <!-- Default box -->
       <div class="card card-outline card-primary rounded-0 shadow">
         <div class="card-header">
-          <h3 class="card-title">Availalble Medicine Units</h3>
+          <h3 class="card-title">Availalble Medicine Items</h3>
 
           <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
@@ -369,25 +369,33 @@ if(isset($_GET['message'])) {
   });
 
   function handleBlurEvent() {
+
     var medicineId = $("#medicine").val();
     var medicineUnit = $("#packing").val().trim();
+    var expiry = $("#exp_date").val().trim();
+    var formattedDate = '';
+    if (expiry !== '') {
+      var parts = expiry.split("/");
+      formattedDate = parts[2] + "-" + parts[0].padStart(2, "0") + "-" + parts[1].padStart(2, "0");
+    }
 
     $("#medicine").val(medicineId);
     $("#packing").val(medicineUnit);
 
-    if (medicineUnit !== '') {
+    if (medicineUnit !== '' && formattedDate !== '' && medicineId !== '') {
       $.ajax({
         url: "ajax/check_medicine_unit.php",
         type: 'GET',
         data: {
           'medicine_id': medicineId,
-          'medicine_unit': medicineUnit
+          'medicine_unit': medicineUnit,
+          'exp_date': formattedDate
         },
         cache: false,
         async: false,
         success: function(count, status, xhr) {
           if (count > 0) {
-            showCustomMessage("This medicine unit has already been stored. Please check inventory or the Trash.");
+            showCustomMessage("This medicine unit has already been stored. Please check inventory or the <a href='trash.php?recover=medicine_details' target='_blank'>Trash</a>.");
             $("#save_medicine").attr("disabled", "disabled");
           } else {
             $("#save_medicine").removeAttr("disabled");

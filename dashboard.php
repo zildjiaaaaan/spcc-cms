@@ -168,9 +168,13 @@ include './config/sidebar.php';
             <div class="small-box bg-white text-reset" id="box_recentpatient">
               <div class="inner">
                 <h3 class="responsive-h3"><?php 
-                  $names = explode(", ", $currentYearCount);
-                  //echo ucwords(strtolower($names[1]))." ".$names[0][0].".";
-                  echo $names[1][0].". ".ucwords(strtolower($names[0]));
+                  if ($currentYearCount != '') {
+                    $names = explode(", ", $currentYearCount);
+                    //echo ucwords(strtolower($names[1]))." ".$names[0][0].".";
+                    echo $names[1][0].". ".ucwords(strtolower($names[0]));
+                  } else {
+                    echo "None";
+                  }
                 ?></h3>
 
                 <p>Recent Patient</p>
@@ -200,6 +204,7 @@ include './config/sidebar.php';
                             WHERE `exp_date` >= '$currentDate'
                               AND `exp_date` <= '$nextMonthEndDate'
                               AND `medicines`.`is_del` = '0'
+                              AND `quantity` > 0
                               AND `medicine_details`.`is_del` = '0';";
 
             $queryQty = "SELECT COUNT(*) AS `quantity`
@@ -215,6 +220,7 @@ include './config/sidebar.php';
                         WHERE `exp_date` <= CURDATE()
                           AND `quantity` > '0'
                           AND `medicines`.`is_del` = '0'
+                          AND `quantity` > 0
                           AND `medicine_details`.`is_del` = '0';";
                         
               $stmtMed = $con->prepare($query);
@@ -487,7 +493,11 @@ include './config/sidebar.php';
             <div class="small-box bg-navy text-reset" id="box_recentborrower">
               <div class="inner">
                 <h3 class="responsive-h3"><?php
-                  echo $rBorrower['fname'][0].". ".$rBorrower['lname'];
+                  if (!empty($rBorrower['fname']) && !empty($rBorrower['lname'])) {
+                    echo $rBorrower['fname'][0].". ".$rBorrower['lname'];
+                  } else {
+                    echo "None";
+                  }
                 ?></h3>
                 <p>Recent Borrower</p>
               </div>

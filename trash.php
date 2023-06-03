@@ -29,7 +29,7 @@ if (isset($_GET['recover'])) {
       }
     
   } else if ($_GET['recover'] == "medicine") {
-    $rec = "Medicines";
+    $rec = "Medicine Brands";
     $menuSelected = "#mi_trash_med";
 
     try {
@@ -43,7 +43,7 @@ if (isset($_GET['recover'])) {
       exit;  
     }
   } else if ($_GET['recover'] == "medicine_details") {
-    $rec = "Medicine Details";
+    $rec = "Medicine Items";
     $menuSelected = "#mi_trash_meddetails";
 
     try {
@@ -232,7 +232,7 @@ include './config/sidebar.php';?>
               </table>
 <!------------------------------------------------------------------ MEDICINE ---------------------------------------------------------------->
                 <?php
-                  } else if ($rec == "Medicines") {
+                  } else if ($rec == "Medicine Brands") {
                 ?>
                 <table id="all_medicines" class="table table-striped dataTable table-bordered dtr-inline" role="grid" aria-describedby="all_medicines_info">
                 <colgroup>
@@ -244,7 +244,7 @@ include './config/sidebar.php';?>
                 <thead>
                   <tr>
                     <th class="text-center">#</th>
-                    <th>Medicine Item</th>
+                    <th>Medicine Brand</th>
                     <th class="text-center">Recover</th>
                   </tr>
                 </thead>
@@ -269,15 +269,15 @@ include './config/sidebar.php';?>
               </table>
 <!------------------------------------------------------------------ MEDICINE DETAILS ---------------------------------------------------------------->
               <?php
-                  } else if ($rec == "Medicine Details") {
+                  } else if ($rec == "Medicine Items") {
               ?>
               <table id="all_med_details" class="table table-striped dataTable table-bordered dtr-inline" role="grid" aria-describedby="all_med_details_info">
               
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>Medicine</th>
-                    <th>Unit</th>
+                    <th>Medicine Brand</th>
+                    <th>Unit Type</th>
                     <th>Expiration Date</th>
                     <th>Recover</th>
                   </tr>
@@ -291,11 +291,11 @@ include './config/sidebar.php';?>
                   ?>
                   <tr>
                     <td><?php echo $count; ?></td>
-                    <td><?php echo $row['medicine_name'];?></td>
+                    <td><?php echo strtoupper($row['medicine_name'])." — ".$row['medicine_brand'];?></td>
                     <td><?php echo $row['packing'];?></td>
                     <td><?php echo $row['exp_date'];?></td>
                     <td class="text-center">
-                      <a href="recover.php?meddetails_id=<?php echo $row['id'];?>" class = "btn btn-success btn-sm btn-flat">
+                      <a href="recover.php?meddetails_id=<?php echo $row['id'];?>&med_id=<?php echo $row['medicine_id']; ?>" class = "btn btn-success btn-sm btn-flat">
                       <i class="fa fa-recycle"></i>
                       </a>
                     </td>

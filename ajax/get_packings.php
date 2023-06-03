@@ -8,7 +8,8 @@
 			FROM `medicine_details`
 			WHERE `medicine_id` = $medicineId
 				AND `quantity` > '0'
-				AND `exp_date` > '$currentDate';";
+				AND `exp_date` > '$currentDate'
+				AND `is_del` = '0';";
 
   	$packings = '<option value="">Select Unit</option>';
 

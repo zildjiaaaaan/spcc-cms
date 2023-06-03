@@ -352,7 +352,12 @@ include './config/sidebar.php';?>
       $("#contact_person_no").val(emergencyContact);
       $("#cnic").val(studentID);
 
-      if ((patientName !== '' && !/^[a-zA-Z]+$/.test(patientName)) || (patientMName !== '' && !/^[a-zA-Z]+$/.test(patientMName)) || (patientSName !== '' && !/^[a-zA-Z]+$/.test(patientSName)) || (contactPerson !== '' && !/^[a-zA-Z]+$/.test(contactPerson))) {
+      $patientNameValid = (patientName !== '' && !/^[a-zA-Z\s]+$/.test(patientName));
+      $patientMNameValid = (patientMName !== '' && !/^[a-zA-Z\s]+$/.test(patientMName));
+      $patientSnameValid = (patientSName !== '' && !/^[a-zA-Z\s]+$/.test(patientSName));
+      $contactPersonValid = (contactPerson !== '' && !/^[a-zA-Z\s]+$/.test(contactPerson));
+
+      if ($patientNameValid || $patientMNameValid || $patientSnameValid || $contactPersonValid) {
         showCustomMessage("Invalid characters in Name fields.");
         $("#save_Patient").attr("disabled", "disabled");
         studentid_disabled = true;
@@ -369,11 +374,15 @@ include './config/sidebar.php';?>
       if (patientContact !== '' && /\D/.test(patientContact)) {
         showCustomMessage("Invalid characters in Phone Number field.");
         $("#save_Patient").attr("disabled", "disabled");
+        studentid_disabled = true;
+        name_disabled = true;
       }
       
       if (emergencyContact !== '' && /\D/.test(emergencyContact)) {
         showCustomMessage("Invalid characters in Contact Person Phone Number field.");
         $("#save_Patient").attr("disabled", "disabled");
+        studentid_disabled = true;
+        name_disabled = true;
       }
       
       if (!studentid_disabled) {

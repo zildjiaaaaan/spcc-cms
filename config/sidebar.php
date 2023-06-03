@@ -223,42 +223,42 @@ if(!(isset($_SESSION['user_id']))) {
                 <a href="trash.php?recover=patient" class="nav-link" 
                 id="mi_trash_patient">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Patient Info</p>
+                  <p>Patient Details</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="trash.php?recover=medicine" class="nav-link" 
                 id="mi_trash_med">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Medicine Item</p>
+                  <p>Medicine Brands</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="trash.php?recover=medicine_details" class="nav-link" 
                 id="mi_trash_meddetails">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Medicine Details</p>
+                  <p>Medicine Items</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="trash.php?recover=equipments" class="nav-link" 
                 id="mi_trash_equipments">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Equipment</p>
+                  <p>Equipment Types</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="trash.php?recover=equipment_inventory" class="nav-link" 
                 id="mi_trash_equipmentinventory">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Equipment Details</p>
+                  <p>Equipment Units</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="trash.php?recover=borrower" class="nav-link"
                 id="mi_trash_borrower">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Borrower Info</p>
+                  <p>Borrower Details</p>
                 </a>
               </li>
               

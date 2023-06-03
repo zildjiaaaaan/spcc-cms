@@ -1,33 +1,33 @@
 If a Patient deleted,
-- will not appear in Dashboard 'Today's Patient', 'Current Week', 'Current Month', 'Recent Patient'
-- will not appear in New Medication 'Select Patient'
-- will not appear in Patients
-- will not appear in Patient History
-- will appear in Dashboard 'Deleted Items'
-- will appear in Trash 'Patient Info'
+• - will not appear in Dashboard 'Today's Patient', 'Current Week', 'Current Month', 'Recent Patient'
+• - will not appear in New Medication 'Select Patient'
+• - will not appear in Patients
+• - will appear in Patient History marked as deleted
+• - will appear in Dashboard 'Deleted Items'
+• - will appear in Trash 'Patient Info'
 
 Input Validation (Duplicate):
-- ADD: check Inventory or Trash
-- UPDATE: check Inventory or Trash
+• - ADD: check Inventory or Trash
+• - UPDATE: check Inventory or Trash
 
 Recovery (Notes):
-- None
+• - None
 
 ----------
 
 If a Medicine Details deleted,
-- will not appear in Dashboard 'To Be Expired', 'Need to Restock', 'Expired Medicines'
-- will not appear in New Medication 'Select Unit'
-- will not appear in Medicine Details
-- will appear in Dashboard 'Deleted Items'
-- will appear in Trash 'Medicine Details'
+• - will not appear in Dashboard 'To Be Expired', 'Need to Restock', 'Expired Medicines'
+• - will not appear in New Medication 'Select Unit'
+• - will not appear in Medicine Details
+• - will appear in Dashboard 'Deleted Items'
+• - will appear in Trash 'Medicine Details'
 
 Input Validation (Duplicate):
-- ADD: check Inventory or Trash
-- UPDATE: check Inventory or Trash
+• - ADD: check Inventory or Trash
+• - UPDATE: check Inventory or Trash
 
 Recovery (Notes):
-- Must have Medicine exists
+• - Must have Medicine exists
 
 ----------
 

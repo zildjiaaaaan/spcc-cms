@@ -2,7 +2,7 @@
 include './config/connection.php';
 include './common_service/common_functions.php';
 
-$patients = getActivePatients($con);
+$patients = getAllPatients($con);
 
 ?>
 <!DOCTYPE html>

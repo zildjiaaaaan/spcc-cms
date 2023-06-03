@@ -181,7 +181,7 @@ from `patients` order by `patient_name` asc;";
 	return $data;
 }
 
-function getActivePatients($con) {
+function getAllPatients($con) {
 	$query = "select `id`, `patient_name`, `cnic`, `is_del`
 	from `patients` order by `patient_name` asc;";
 	
@@ -202,6 +202,33 @@ function getActivePatients($con) {
 			$data = $data.'<option value="'.$row['id'].'">'.$row['patient_name'].' ('.$row['cnic'].')'.'</option>';
 		} else {
 			$data = $data.'<option value="'.$row['id'].'">'.$row['patient_name'].' ('.$row['cnic'].')'.' <i>[DELETED]</i>'.'</option>';
+		}	
+	}
+
+	return $data;
+}
+
+function getActivePatients($con) {
+	$query = "select `id`, `patient_name`, `cnic`, `is_del`
+	from `patients` where `is_del` = '0' order by `patient_name` asc;";
+	
+	$stmt = $con->prepare($query);
+	try {
+		$stmt->execute();
+
+	} catch(PDOException $ex) {
+		echo $ex->getTraceAsString();
+		echo $ex->getMessage();
+		exit;
+	}
+
+	$data = '<option value=""></option>';
+
+	while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+		if ($row['is_del'] == 0) {
+			$data = $data.'<option value="'.$row['id'].'">'.$row['patient_name'].' ('.$row['cnic'].')'.'</option>';
+		} else {
+			$data = $data.'<option value="'.$row['id'].'">'.$row['patient_name'].' ('.$row['cnic'].')'.'</option>';
 		}	
 	}
 
