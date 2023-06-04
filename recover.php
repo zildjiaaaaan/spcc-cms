@@ -4,6 +4,7 @@ include './config/connection.php';
 
 $query = '';
 $location = '';
+$$q_update_qty = '';
 $recover = true;
 
 if (isset($_GET['patient_id'])) {
@@ -70,8 +71,10 @@ if ($recover) {
         $stmtRecover = $con->prepare($query);
         $stmtRecover->execute();
 
-        $stmt_update_qty = $con->prepare($q_update_qty);
-        $stmt_update_qty->execute();
+        if (!empty($q_update_qty)) {
+            $stmt_update_qty = $con->prepare($q_update_qty);
+            $stmt_update_qty->execute();
+        }
     
         $con->commit();
     

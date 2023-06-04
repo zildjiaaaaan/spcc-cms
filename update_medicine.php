@@ -116,12 +116,40 @@ include './config/sidebar.php';?>
 
           		<div class="col-lg-1 col-md-2 col-sm-2 col-xs-2">
                 <label>&nbsp;</label>
-          			<button type="submit" id="save_medicine" 
-          			name="save_medicine" class="btn btn-primary btn-sm btn-flat btn-block">Update</button>
+                <button type="button" class="btn btn-primary btn-sm btn-flat btn-block" data-toggle="modal" data-target="#exampleModal">
+                  Update
+                </button>
+          			<!-- <button type="submit" id="save_medicine" name="save_medicine" class="btn btn-primary btn-sm btn-flat btn-block">Update</button> -->
           		</div>
           	</div>
+
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Warning!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <i>Please be informed that this will affect the records of the ff:</i> <br>
+                    1. Patients who have this brand in their <a href="patient_history.php">medication</a>. <br>
+                    2. Records with this brand in <a href="medicine_details.php">Medicine Inventory</a>. <br><br>
+                    <h5>Do you want to proceed?</h5>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" id="save_medicine" name="save_medicine" class="btn btn-primary">Update</button>
+                    <!-- <a href="#" class="btn btn-danger">Delete</a> -->
+                  </div>
+                </div>
+              </div>
+            </div>
           </form>
         </div>
+
+        
     
         <!-- /.card-footer-->
       </div>

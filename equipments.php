@@ -219,9 +219,9 @@ include './config/sidebar.php';?>
                     $title = '';
                     if ($borrowed > 0) {
                       if ($borrowed > 1) {
-                        $title = 'Cannot be deleted. There are '.$borrowed.' items borrowed with this equipment type.';
+                        $title = 'Cannot be deleted! There are '.$borrowed.' items borrowed with this equipment type.';
                       } else {
-                        $title = 'Cannot be deleted. There is '.$borrowed.' item borrowed with this equipment type.';
+                        $title = 'Cannot be deleted! There is '.$borrowed.' item borrowed with this equipment type.';
                       }
                       echo 'class="d-inline-block" tabindex="0" data-toggle="tooltip" data-placement="left" title="'.$title.'"';
                     }                   

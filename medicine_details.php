@@ -195,8 +195,8 @@ include './config/sidebar.php';?>
                 <thead>
                   <tr>
                     <th class="text-center">#</th>
-                    <th>Medicine</th>
-                    <th>Unit</th>
+                    <th>MEDICINE NAME — Brand</th>
+                    <th>Unit Type</th>
                     <th>Quantity</th>
                     <th>Expiration Date</th>
                     <th>Action</th>

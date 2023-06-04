@@ -201,7 +201,7 @@ function getAllPatients($con) {
 		if ($row['is_del'] == 0) {
 			$data = $data.'<option value="'.$row['id'].'">'.$row['patient_name'].' ('.$row['cnic'].')'.'</option>';
 		} else {
-			$data = $data.'<option value="'.$row['id'].'">'.$row['patient_name'].' ('.$row['cnic'].')'.' <i>[DELETED]</i>'.'</option>';
+			$data = $data.'<option value="'.$row['id'].'">'.$row['patient_name'].' ('.$row['cnic'].')'.' <i>[DELETED]</i></option>';
 		}	
 	}
 
@@ -342,14 +342,41 @@ function getActiveBorrowers($con) {
 		exit;
 	}
 
-	
-
 	$data = '<option value=""></option>';
 
 	while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 		$fullname = $row['lname'].', '.$row['fname'].', '.$row['mname'];
 		$fullname = strtoupper($fullname);
 		$data = $data.'<option value="'.$row['id'].'">'.$fullname.' ('.$row['borrower_id'].')'.'</option>';
+	}
+
+	return $data;
+}
+
+function getAllBorrowers($con) {
+	$query = "select `id`, `fname`, `mname`, `lname`, `borrower_id`, `is_del`
+	from `borrowers` order by `lname` asc;";
+	
+	$stmt = $con->prepare($query);
+	try {
+		$stmt->execute();
+
+	} catch(PDOException $ex) {
+		echo $ex->getTraceAsString();
+		echo $ex->getMessage();
+		exit;
+	}
+
+	$data = '<option value=""></option>';
+
+	while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+			$fullname = $row['lname'].', '.$row['fname'].', '.$row['mname'];
+			$fullname = strtoupper($fullname);
+		if ($row['is_del'] == 0) {
+			$data = $data.'<option value="'.$row['id'].'">'.$fullname.' ('.$row['borrower_id'].')'.'</option>';
+		} else {
+			$data = $data.'<option value="'.$row['id'].'">'.$fullname.' ('.$row['borrower_id'].') '.' <i>[DELETED]</i></option>';
+		}
 	}
 
 	return $data;

@@ -136,10 +136,41 @@ include './config/sidebar.php';?>
 
               <div class="col-lg-1 col-md-12 col-sm-12 col-xs-2">
                 <label>&nbsp;</label>
-                <button type="submit" id="save_equipment" 
-                name="save_equipment" class="btn btn-primary btn-sm btn-flat btn-block">Save</button>
+                <!-- <button type="submit" id="save_equipment" name="save_equipment" class="btn btn-primary btn-sm btn-flat btn-block">Save</button> -->
+                <button type="button" class="btn btn-primary btn-sm btn-flat btn-block" data-toggle="modal" data-target="#exampleModal">
+                  Update
+                </button>
               </div>
             </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Warning!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <?php 
+                    $link = "unit:".str_replace(" ", "", $row['equipment']."—".strtoupper($row['brand']));
+                    $link = "equipment_inventory.php?search=Stock&tag=".$link;
+                  ?>
+                  <div class="modal-body">
+                    <i>Please be informed that this will affect the records of the ff:</i> <br>
+                    1. Borrowed equipment units with this type in <a href="borrower_history.php" target="_blank">Borrower History</a>. <br>
+                    2. Records with this type in <a href="<?php echo $link; ?>" target="_blank">Equipment Inventory</a>. <br><br>
+                    <h5>Do you want to proceed?</h5>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" id="save_equipment" name="save_equipment" class="btn btn-primary">Update</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </form>
         </div>
     

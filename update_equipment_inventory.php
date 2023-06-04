@@ -31,14 +31,14 @@ if (isset($_POST['submit'])) {
     }
   }
 
-  $query = "UPDATE `equipments`
+  $query0 = "UPDATE `equipments`
     SET `total_qty` = `total_qty` - $current_quantity
     WHERE `id` = '$equipment_id'  
   ;";
 
   $q_unavailable = ", `unavailable_since` = $unavailable_since, `unavailable_until` = $unavailable_until";
 
-  $query .= "UPDATE `equipment_details`
+  $query1 = "UPDATE `equipment_details`
       SET `equipment_id` = '$equipment_id',
       `status` = '$status',
       `state` = '$state',
@@ -47,7 +47,7 @@ if (isset($_POST['submit'])) {
       WHERE `id` = '$id';
   ";
 
-  $query .= "UPDATE `equipments`
+  $query2 = "UPDATE `equipments`
     SET `total_qty` = `total_qty` + $quantity
     WHERE `id` = '$equipment_id'  
   ;";
@@ -76,9 +76,15 @@ if (isset($_POST['submit'])) {
       $stmt_borrowed = $con->prepare($q_borrowed);
       $stmt_borrowed->execute();
     }
+
+    $stmt_equipment_details0 = $con->prepare($query0);
+    $stmt_equipment_details0->execute();
     
-    $stmt_equipment_details = $con->prepare($query);
-    $stmt_equipment_details->execute();
+    $stmt_equipment_details1 = $con->prepare($query1);
+    $stmt_equipment_details1->execute();
+
+    $stmt_equipment_details2 = $con->prepare($query2);
+    $stmt_equipment_details2->execute();
 
     $con->commit();
     $message = "Equipment Unit Successfully Updated.";

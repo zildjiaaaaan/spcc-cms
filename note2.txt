@@ -71,22 +71,22 @@ Recovery (Notes):
 ----------
 
 If a Equipment deleted,
-- will not appear in Dashboard 'Total Equipment', 'Recently Added Equipment'
-- rows with said Equipment will not appear in Borrow Equipment
-- will not appear in Equipment
-- will not appear in Add Equipment Details 'Select Equipment'
-- will not appear in Update Equipment Details 'Select Equipment'
-- rows with said Equipment will not appear in Equipment Inventory **GIVE WARNING**
-- will appear in Borrower History as "(item deleted)"
-- will appear in Dashboard 'Deleted Items'
-- will appear in Trash 'Equipment'
+• - will not appear in Dashboard 'Total Equipment', 'Recently Added Equipment'
+• - rows with said Equipment will not appear in Borrow Equipment
+• - will not appear in Equipment
+• - will not appear in Add Equipment Details 'Select Equipment'
+• - will not appear in Update Equipment Details 'Select Equipment'
+• - rows with said Equipment will not appear in Equipment Inventory **GIVE WARNING**
+• - will appear in Dashboard 'Deleted Items'
+• - will appear in Trash 'Equipment'
+• - will decrease total quantity by total of equipments unit deleted too
 
 Input Validation (Duplicate):
-- ADD: check Inventory or Trash
-- UPDATE: check Inventory or Trash
+• - ADD: check Inventory or Trash
+• - UPDATE: check Inventory or Trash
 
 Recovery (Notes):
-- will not recover Equipment Details with said Equipment
+• - will not recover Equipment Details with said Equipment
 
 ----------
 

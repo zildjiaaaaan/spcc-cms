@@ -2,7 +2,7 @@
 include './config/connection.php';
 include './common_service/common_functions.php';
 
-$borrowers = getActiveBorrowers($con);
+$borrowers = getAllBorrowers($con);
 
 ?>
 <!DOCTYPE html>

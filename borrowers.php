@@ -65,7 +65,11 @@ $query = "SELECT *
 
   <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
   <title>Borrowers  - SPCC Caloocan Clinic</title>
-
+  <style>
+    #a-Borrowed {
+      cursor: not-allowed;
+    }
+  </style>
 </head>
 <body class="hold-transition sidebar-mini dark-mode layout-fixed layout-navbar-fixed">
 <!-- Site wrapper -->
@@ -187,7 +191,16 @@ include './config/sidebar.php';?>
                   <?php 
                   $count = 0;
                   while($row =$stmt->fetch(PDO::FETCH_ASSOC)){
+                    $id = $row['id'];
                     $count++;
+                    $q_check = "SELECT COUNT(*) AS `borrowed` FROM `borrowed` 
+                        WHERE `borrower_id` = '$id' AND `is_returned` = '0'
+                      ;";
+                    $stmt_check = $con->prepare($q_check);
+                    $stmt_check->execute();
+                    $row_check = $stmt_check->fetch(PDO::FETCH_ASSOC);
+                    $isBorrowed = $row_check['borrowed'] > 0;
+
                   ?>
                   <tr>
                     <td><?php echo $count; ?></td>
@@ -202,10 +215,14 @@ include './config/sidebar.php';?>
                       <a href="update_borrower.php?id=<?php echo $row['id'];?>" class = "btn btn-primary btn-sm btn-flat">
                         <i class="fa fa-edit"></i>
                       </a>
-                      </a>
-                      <a href="del_borrower.php?id=<?php echo $row['id'];?>" class="btn btn-danger btn-sm btn-flat">
+
+                      <a <?php echo ($isBorrowed) ? 'id="a-Borrowed" ': ''; ?> <?php echo ($isBorrowed) ? 'style="opacity: 50% !important;"': ''; ?>
+                      href="<?php echo (!$isBorrowed) ? "del_borrower.php?id=".$row['id'] : "#";?>"
+                      class="btn btn-danger btn-sm btn-flat"
+                      <?php echo ($isBorrowed) ? "Title='Borrowers with unreturned items cannot be&#10;deleted until returned.'": ''; ?>>
                         <i class="fa fa-trash"></i>
                       </a>
+
                     </td>
                    
                   </tr>

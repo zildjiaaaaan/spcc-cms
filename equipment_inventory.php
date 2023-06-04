@@ -163,9 +163,10 @@ include './config/sidebar.php';?>
                       class = "btn btn-primary btn-sm btn-flat">
                       <i class="fa fa-edit"></i>
                       </a>
-                      <a id="a-<?php echo $row['state']; ?>"
+                      <a id="a-<?php echo $row['state']; ?>" <?php echo ($row['state'] == "Borrowed") ? 'style="opacity: 50% !important;"': ''; ?>
                       href="<?php echo ($row['state'] != "Borrowed") ? "del_equipment.php?delId=".$row['id']."&qty=".$row['quantity']."&id=".$row['equipment_id'] : "#";?>"
-                      class="btn btn-danger btn-sm btn-flat">
+                      class="btn btn-danger btn-sm btn-flat"
+                      <?php echo ($row['state'] == "Borrowed") ? "Title='Borrowed items cannot be&#10;deleted until returned'": ''; ?>>
                         <i class="fa fa-trash"></i>
                       </a>
                     </td>
