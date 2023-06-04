@@ -272,7 +272,6 @@ function getActiveEquipments($con, $equipmentId = 0) {
 	WHERE `ED`.`equipment_id` = `E`.`id`
 		AND `status` = 'Available'
 		AND `state` = 'Active'
-		AND `E`.`is_del` = '0'
 		AND `ED`.`is_del` = '0'
 		AND `quantity` > '0'
 	;";

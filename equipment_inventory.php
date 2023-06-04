@@ -178,6 +178,19 @@ include './config/sidebar.php';?>
                           echo $row['unavailable_since']." - ".$row['unavailable_until'];
                           echo " ";
                           echo "Date Acquired: ".$row['date_acquired'];
+                          echo " ";
+                          echo "unit:".str_replace(" ", "", $row['equipment']."—".strtoupper($row['brand']));
+                          echo " ";
+
+                          $digit_id = $row['id'];
+                          $digit_id_Length = strlen($digit_id);
+                          $f_id = ($digit_id_Length < 5) ? str_pad($digit_id, 5, '0', STR_PAD_LEFT) : (string)$digit_id;
+
+                          $digit_eid = $row['equipment_id'];
+                          $digit_eid_Length = strlen($digit_eid);
+                          $f_eid = ($digit_eid_Length < 5) ? str_pad($digit_eid, 5, '0', STR_PAD_LEFT) : (string)$digit_eid;
+
+                          echo "EquipDetId:".$f_id."-".$f_eid;
                       ?>
                     </td>
                    
@@ -231,10 +244,10 @@ if(isset($_GET['message'])) {
     var tag = url.searchParams.get("tag");
 
     const dataTableOptions = {
-      'order': [[0, 'asc']],
-      'responsive': true,
-      'lengthChange': false,
-      'autoWidth': false,
+      order: [[0, 'asc']],
+      responsive: true,
+      lengthChange: false,
+      autoWidth: false,
       'columnDefs': [{
         'targets': 7,
         'visible': false
@@ -279,8 +292,8 @@ if(isset($_GET['message'])) {
       "colvis"
     ];
 
-    if (search === "Borrowed" || search === "Defective" || search === "Stock") {
-      search = (tag != '') ? tag : search;
+    if (search === "Borrowed" || search === "Defective" || search === "Stock" || search === "Item") {
+      search = (tag != '' && tag != null) ? tag : search;
       dataTableOptions.search = {
         search: search
       };

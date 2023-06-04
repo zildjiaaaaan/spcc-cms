@@ -249,6 +249,7 @@ include './config/sidebar.php';?>
                             $message .= $i.".) ";
                             $message .= "".$r['packing']."&nbsp;&nbsp;&nbsp; — &nbsp;&nbsp;&nbsp;Exp. Date: ".$r['exp_date'];
                             $message .= "&nbsp;&nbsp;&nbsp; — &nbsp;&nbsp;&nbsp;Qty: ".$r['quantity']."<br>";
+                            $i++;
                           }
                         }
                         echo "<p style='margin-top:20px;'>".$message."</p>";                      

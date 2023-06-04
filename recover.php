@@ -33,6 +33,7 @@ if (isset($_GET['patient_id'])) {
 } else if (isset($_GET['equipmentdetails_id']) && isset($_GET['equipment_id'])) {
     $id = $_GET['equipmentdetails_id'];
     $e_id = $_GET['equipment_id'];
+    $qty = $_GET['qty'];
 
     $q_check = "SELECT * FROM `equipments` WHERE `id` = '$e_id' AND `is_del` = '0';";
     $stmtcheck = $con->prepare($q_check);
@@ -42,6 +43,12 @@ if (isset($_GET['patient_id'])) {
     }
 
     $message = 'The `Equipment Type` of this item was deleted. Please recover it first.';
+
+    $q_update_qty = "UPDATE `equipments`
+        SET `total_qty` = `total_qty` + $qty
+        WHERE `id` = '$e_id'
+    ;";
+
     $query = "UPDATE `equipment_details` set `is_del` = '0' where `id`= $id";
     $location = "equipment_inventory";
 
@@ -62,6 +69,9 @@ if ($recover) {
     
         $stmtRecover = $con->prepare($query);
         $stmtRecover->execute();
+
+        $stmt_update_qty = $con->prepare($q_update_qty);
+        $stmt_update_qty->execute();
     
         $con->commit();
     

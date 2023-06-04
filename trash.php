@@ -395,7 +395,7 @@ include './config/sidebar.php';?>
                   <td><?php echo $row['remarks'];?></td>
                   
                   <td class="text-center">
-                    <a href="recover.php?equipmentdetails_id=<?php echo $row['id'];?>&equipment_id=<?php echo $row['equipment_id'];?>" class = "btn btn-success btn-sm btn-flat">
+                    <a href="recover.php?equipmentdetails_id=<?php echo $row['id'];?>&equipment_id=<?php echo $row['equipment_id'];?>&qty=<?php echo $row['quantity'];?>" class = "btn btn-success btn-sm btn-flat">
                     <i class="fa fa-recycle"></i>
                     </a>
                   </td>

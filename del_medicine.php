@@ -13,9 +13,7 @@ if (isset($_GET['id'])) {
 
     $stmt_checkMedDetails = $con->prepare($q_checkMedDetails);
     $stmt_checkMedDetails->execute();
-    $r = $stmt_checkMedDetails->fetch(PDO::FETCH_ASSOC);
-
-   
+    $r = $stmt_checkMedDetails->fetch(PDO::FETCH_ASSOC); 
 
     try {
 
@@ -26,7 +24,6 @@ if (isset($_GET['id'])) {
 
         foreach ($r as $row) {
             $id = $row['id'];
-            $medDetailsId = $r['id'];
             $q_delMedDetails = "UPDATE `medicine_details` SET `is_del` = '1' WHERE `id`= '$id';";
             $stmt_delMedDetails = $con->prepare($q_delMedDetails);
             $stmt_delMedDetails->execute();

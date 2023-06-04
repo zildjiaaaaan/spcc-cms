@@ -192,8 +192,17 @@ include './config/sidebar.php';?>
               <?php 
                 $serial = 0;
                 while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $serial++;
-                $searchName = $row['equipment']." — ".$row['brand'];
+                  $serial++;
+                  $id = $row['id'];
+                  $searchName = "unit:".str_replace(" ", "", $row['equipment']."—".strtoupper($row['brand']));
+                  $q_check = "SELECT COUNT(*) AS 'borrowed' FROM `equipment_details`
+                      WHERE `state` = 'Borrowed' AND `equipment_id` = '$id'
+                  ;";
+
+                  $stmt_check = $con->prepare($q_check);
+                  $stmt_check->execute();
+                  $row_check = $stmt_check->fetch(PDO::FETCH_ASSOC);
+                  $borrowed = $row_check['borrowed'];
               ?>
               <tr>
                 <td class="text-center"><?php echo $serial;?></td>
@@ -202,13 +211,26 @@ include './config/sidebar.php';?>
                 <td><?php echo $row['date_acquired'];?></td>
                 <td><?php echo (!is_null($row['total_qty'])) ? "<a href='equipment_inventory.php?search=Stock&tag=".$searchName."' target='_blank' class='cell-link'>".$row['total_qty']."</a>" : "<i>Not Set</i>" ;?></td>
                 <td class="text-center">
-                  <a href="update_equipment.php?id=<?php echo $row['id'];?>" class="btn btn-primary btn-sm btn-flat">
+                  <a href="update_equipment.php?id=<?php echo $id;?>" class="btn btn-primary btn-sm btn-flat">
                     <i class="fa fa-edit"></i>
                   </a>
                   <span>&nbsp;</span>
-                  <a href="del_equipment.php?id=<?php echo $row['id'];?>" class="btn btn-danger btn-sm btn-flat">
-                    <i class="fa fa-trash"></i>
-                  </a>
+                  <span <?php 
+                    $title = '';
+                    if ($borrowed > 0) {
+                      if ($borrowed > 1) {
+                        $title = 'Cannot be deleted. There are '.$borrowed.' items borrowed with this equipment type.';
+                      } else {
+                        $title = 'Cannot be deleted. There is '.$borrowed.' item borrowed with this equipment type.';
+                      }
+                      echo 'class="d-inline-block" tabindex="0" data-toggle="tooltip" data-placement="left" title="'.$title.'"';
+                    }                   
+                  ?>>
+                    <button type="button" class="btn btn-danger btn-sm btn-flat" data-toggle="modal" data-target="#exampleModal-<?php echo $id;?>"
+                    <?php echo ($borrowed > 0) ? 'style="cursor: not-allowed;" disabled' : ''; ?>>
+                      <i class="fa fa-trash"></i>
+                    </button>
+                  </span>
                 </td>
                 <td>
                   <?php
@@ -216,6 +238,60 @@ include './config/sidebar.php';?>
                   ?>
                 </td>
               </tr>
+
+              <div class="modal fade" id="exampleModal-<?php echo $id;?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Warning!</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <?php
+                        echo '<h5>Are you sure you want to delete this equipment type "'.$row["equipment"].' — '.strtoupper($row["brand"]).'"?</h5>';
+                        $q_checkEquipDetails = "SELECT * FROM `equipment_details`
+                            WHERE `equipment_id` = '$id' AND `state` <> 'Borrowed'
+                            AND `is_del` = '0'
+                        ;";
+
+                        $stmt_checkEquipDetails = $con->prepare($q_checkEquipDetails);
+                        $stmt_checkEquipDetails->execute();
+                        $rowCount = $stmt_checkEquipDetails->rowCount();
+                        $message = '';
+
+                        if ($rowCount > 0) {
+                          $message .= "The following Equipment Unit/s will be deleted too: <br>";
+                          $i = 1;                          
+                          while ($r = $stmt_checkEquipDetails->fetch(PDO::FETCH_ASSOC)) {
+                            $digit_id = $r['id'];
+                            $digit_id_Length = strlen($digit_id);
+                            $f_id = ($digit_id_Length < 5) ? str_pad($digit_id, 5, '0', STR_PAD_LEFT) : (string)$digit_id;
+  
+                            $digit_eid = $r['equipment_id'];
+                            $digit_eid_Length = strlen($digit_eid);
+                            $f_eid = ($digit_eid_Length < 5) ? str_pad($digit_eid, 5, '0', STR_PAD_LEFT) : (string)$digit_eid;
+
+
+                            $link = "equipment_inventory.php?search=Item&tag="."EquipDetId:".$f_id."-".$f_eid;;
+                            $message .= $i.".) Status: ";
+                            $message .= "<a href='".$link."' target='_blank'>".$r['status']."</a>&nbsp;&nbsp;&nbsp; — &nbsp;&nbsp;&nbsp;State: ".$r['state'];
+                            $message .= "&nbsp;&nbsp;&nbsp; — &nbsp;&nbsp;&nbsp;Qty: ".$r['quantity']."<br>";
+                            $i++;
+                          }
+                        }
+                        echo "<p style='margin-top:20px;'>".$message."</p>";                      
+                      ?>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                      <a href="del_equipment.php?id=<?php echo $row['id']."&qty=".$row['total_qty'];?>" class="btn btn-danger">Delete</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <?php } ?>
             </tbody>
           </table>
@@ -260,6 +336,9 @@ if(isset($_GET['message'])) {
   }
 
   $(function () {
+
+    $('[data-toggle="tooltip"]').tooltip();
+
     const url = new URL(window.location.href);
     var search = url.searchParams.get("search");
     var tag = url.searchParams.get("tag");
@@ -314,7 +393,7 @@ if(isset($_GET['message'])) {
     ];
 
     if (search === "is_recent") {
-      search = (tag != '' || tag != null) ? tag : '';
+      search = (tag != '' && tag != null) ? tag : '';
       dataTableOptions.search = {
         search: search
       };
