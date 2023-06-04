@@ -13,15 +13,22 @@ if (!isset($_SESSION['admin'])) {
 $message = '';
 
 if(isset($_POST['save_user'])) {
+
   $displayName = $_POST['display_name'];
   $userName = $_POST['user_name'];
-  $password = $_POST['password'];
+  $password = $_POST['user_name']."spcc-clinic";
   $access_lvl = $_POST['access_lvl'];
+  $img = 'none.jpeg';
+  if ($access_lvl == "Admin") {
+    $img = 'admin.png';
+  } else {
+    $img = 'clinic-staff.jpg';
+  }
 
   $encryptedPassword = md5($password);
 
 //$targetDir = "user_images/";
-$baseName = basename($_FILES["profile_picture"]["name"]);
+//$baseName = basename($_FILES["profile_picture"]["name"]);
 
 //time is a php function which gives unix time value.
 //unix time value is all seconds from 1970
@@ -33,22 +40,22 @@ $baseName = basename($_FILES["profile_picture"]["name"]);
 
 //$targetFile =  time(). '.'.$extension;
 
-$targetFile =  time().$baseName;
+//$targetFile =  time().$baseName;
 // 12312312312312312
 //abc.jpg
 //abc.jpg
 //244574700_322087779604661_8207402889226768946_n
 
-  $status = move_uploaded_file($_FILES["profile_picture"]["tmp_name"], 
-    'user_images/'.$targetFile);
+  //$status = move_uploaded_file($_FILES["profile_picture"]["tmp_name"], 'user_images/'.$targetFile);
 
-  if($status) {
-    try {
-      $con->beginTransaction();
+  $status = true;
+  
+  try {
+    $con->beginTransaction();
 
-          $query = "INSERT INTO `users`(`display_name`,
-`user_name`, `password`, `profile_picture`, `access_lvl`) 
-VALUES('$displayName', '$userName', '$encryptedPassword', '$targetFile', '$access_lvl');";
+    $query = "INSERT INTO `users`(`display_name`,
+    `user_name`, `password`, `profile_picture`, `access_lvl`) 
+    VALUES('$displayName', '$userName', '$encryptedPassword', '$img', '$access_lvl');";
 
     $stmtUser = $con->prepare($query);
     $stmtUser->execute();
@@ -57,22 +64,18 @@ VALUES('$displayName', '$userName', '$encryptedPassword', '$targetFile', '$acces
 
     $message = 'User Registered Successfully';    
 
-    } catch(PDOException $ex) {
-      $con->rollback();
-      echo $ex->getTraceAsString();
-      echo $ex->getMessage();
-      exit;
-    }
-
-  } else {
-    $message = 'a problem occured in image uploading.';
+  } catch(PDOException $ex) {
+    $con->rollback();
+    echo $ex->getTraceAsString();
+    echo $ex->getMessage();
+    exit;
   }
 
 header("location:congratulation.php?goto_page=users.php&message=$message");
 exit;
 }
   //https://www.w3schools.com/php/php_file_upload.asp
-/**
+/*
 we will save the user picture in a separate folder.
 and in database we will store the picture name only.
 
@@ -161,23 +164,23 @@ include './config/sidebar.php';?>
                 class="form-control form-control-sm rounded-0" />
               </div>
 
-              <div class="col-lg-4 col-md-4 col-sm-4 col-xs-10">
+              <!-- <div class="col-lg-4 col-md-4 col-sm-4 col-xs-10">
                 <label>Password</label>
                 <input type="password" id="password" 
                 name="password" required="required"
                 class="form-control form-control-sm rounded-0" />
-              </div>
+              </div> -->
 
-              <div class="col-lg-4 col-md-4 col-sm-12 col-xs-10">
+              <!-- <div class="col-lg-4 col-md-4 col-sm-12 col-xs-10">
                 <label>Picture</label>
                 <input type="file" id="profile_picture" 
                 name="profile_picture" required="required"
                 class="form-control form-control-sm rounded-0" />
-              </div>
+              </div> -->
 
-              <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+              <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
                 <label>Access</label>
-                <select id="access_lvl" name="access_lvl" class="form-control form-control-sm rounded-0">
+                <select id="access_lvl" name="access_lvl" class="form-control form-control-sm rounded-0" required>
                   <option value="">Select Role</option>
                   <option value="Admin">Admin</option>
                   <option value="Staff">Staff</option>
@@ -225,7 +228,7 @@ include './config/sidebar.php';?>
           </colgroup>
           <thead>
             <tr>
-             <th class="p-1 text-center">S.No</th>
+             <th class="p-1 text-center">#</th>
              <th class="p-1 text-center">Picture</th>
              <th class="p-1 text-center">Display Name</th>
              <th class="p-1 text-center">Username</th>
@@ -292,10 +295,16 @@ if(isset($_GET['message'])) {
 
   if(message !== '') {
     showCustomMessage(message);
-  }
-
+  } 
   
   $(document).ready(function() {
+
+    var dataTableOptions = {
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": ["copy", "colvis"]
+    };
+    
+    $("#all_users").DataTable(dataTableOptions).buttons().container().appendTo('#all_users_wrapper .col-md-6:eq(0)');
 
     $("#user_name").blur(function() {
       var userName = $(this).val().trim();
