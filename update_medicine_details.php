@@ -175,7 +175,7 @@ include './config/sidebar.php';?>
 
               <?php
                 // change
-                $filename = 'user_images\sample.jpg';
+                $filename = 'user_images/no-image.jpeg';
 
                 $exif = exif_read_data($filename, 'EXIF', true);
                 
@@ -191,8 +191,8 @@ include './config/sidebar.php';?>
                 $title = strtoupper($row['medicine_name'])." — ".$row['medicine_brand']." (".$row['packing'].") - ".$row['quantity']." pcs.";
               ?>
 
-                <a href="user_images\sample.jpg" data-toggle="lightbox" data-title="<?php echo $title; ?>" data-footer="Date Taken: <?php echo $dateTaken; ?>">
-                    <img src="user_images\sample.jpg" class="img-fluid">
+                <a href="user_images\no-image.jpeg" data-toggle="lightbox" data-title="<?php echo $title; ?>" data-footer="Date Taken: <?php echo $dateTaken; ?>">
+                    <img src="user_images\no-image.jpeg" class="img-fluid">
                 </a>
               </div>
             </div>
