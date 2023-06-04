@@ -14,29 +14,52 @@ if(isset($_POST['submit'])) {
   $expDateArr = explode("/", $_POST['expiry']);
   $expDate = $expDateArr[2].'-'.$expDateArr[0].'-'.$expDateArr[1];
 
-  $query = "UPDATE `medicine_details` 
-            SET `medicine_id` = $medicineId, `packing` = '$packing', `exp_date` = '$expDate', `quantity` = '$quantity'
-            WHERE `id` = '$medicineDetailId';
-            ";
+  $status = true;
+  $targetFile = $_POST['current_img'];
 
-  try {
+  if (!empty($_FILES["img_medicine"]["name"])) {
+      $allowedExtensions = array('png', 'jpg', 'jpeg');
+      $baseName = basename($_FILES["img_medicine"]["name"]);
+      $fileExtension = strtolower(pathinfo($baseName, PATHINFO_EXTENSION));
 
-    $con->beginTransaction();
-
-    $stmtUpdate = $con->prepare($query);
-    $stmtUpdate->execute();
-
-    $con->commit();
-
-    $message = 'Medicine Details Updated Successfully.';
-
-  }  catch(PDOException $ex) {
-    $con->rollback();
-
-    echo $ex->getMessage();
-    echo $ex->getTraceAsString();
-    exit;
+      // Check if the uploaded file has a valid extension
+      if (in_array($fileExtension, $allowedExtensions)) {
+          $targetFile = time() . $baseName;
+          $status = move_uploaded_file($_FILES["img_medicine"]["tmp_name"], 'user_images/meds/' . $targetFile);
+      } else {
+          // Invalid file format, handle the error as needed
+          $message = "Invalid file format. Only PNG, JPG, or JPEG files are allowed.";
+          $status = false;
+      }
   }
+
+  if ($status) {
+    try {
+
+      $query = "UPDATE `medicine_details` 
+          SET `medicine_id` = $medicineId, `packing` = '$packing',
+          `exp_date` = '$expDate', `quantity` = '$quantity', `img_name` = '$targetFile'
+          WHERE `id` = '$medicineDetailId';
+      ";
+  
+      $con->beginTransaction();
+  
+      $stmtUpdate = $con->prepare($query);
+      $stmtUpdate->execute();
+  
+      $con->commit();
+  
+      $message = 'Medicine Details Updated Successfully.';
+  
+    }  catch(PDOException $ex) {
+      $con->rollback();
+  
+      echo $ex->getMessage();
+      echo $ex->getTraceAsString();
+      exit;
+    }
+  }
+
   header("location:congratulation.php?goto_page=medicine_details.php&message=$message");
   exit;
 }
@@ -47,9 +70,9 @@ $packing = $_GET['packing'];
 
 $medicines = getUniqueMedicines($con, $medicineId);
 
-try {
-  $query = "SELECT `medicine_name`, `medicine_brand`, `packing`, date_format(`exp_date`, '%m/%d/%Y') AS `exp_date`,
-            `quantity`, `img_name`
+  try {
+    $query = "SELECT `medicine_name`, `medicine_brand`, `packing`,
+          date_format(`exp_date`, '%m/%d/%Y') AS `exp_date`, `quantity`, `img_name`
             FROM `medicine_details`, `medicines` WHERE `medicine_details`.`id` = '$medicineDetailId';";
   
     $stmtMedDetails = $con->prepare($query);
@@ -113,25 +136,25 @@ include './config/sidebar.php';?>
             </div>
           </div>
           <div class="card-body">
-            <form method="post">
+            <form method="post" enctype="multipart/form-data">
 
-              <input type="hidden" name="hidden_id" 
-              value="<?php echo $medicineDetailId;?>" />
+              <input type="hidden" name="hidden_id" value="<?php echo $medicineDetailId;?>" />
+              <input type="hidden" name="current_img" id="current_img" value="<?php echo $row['img_name'];?>" />
 
               <div class="row">
-                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 select-select2">
+                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 select-select2">
                   <label>Medicine Brand</label>
                   <select id="medicine" name="medicine" class="form-control form-control-sm rounded-0 select2" required="required">
                     <?php echo $medicines;?>
                   </select>
                 </div>
 
-                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
                   <label>Unit Type</label>
                   <input id="packing" name="packing" class="form-control form-control-sm rounded-0" required="required" value="<?php echo $packing; ?>"/>
                 </div>
 
-                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-10">
+                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-10">
                   <div class="form-group">
                     <label>Expiration Date</label>
                     <div class="input-group date" id="expiry" 
@@ -146,9 +169,14 @@ include './config/sidebar.php';?>
                   </div>
                 </div>
 
-                <div class="col-lg-2 col-md-6 col-sm-6 col-xs-12">
+                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <label>Quantity</label>
                   <input type="number" min="1" value="<?php echo $quantity?>" id="quantity" name="quantity" class="form-control form-control-sm rounded-0"  required="required"/>
+                </div>
+
+                <div class="col-lg-5 col-md-12 col-sm-12 col-xs-10">
+                  <label>Picture (Optional)</label>
+                  <input type="file" id="img_medicine" name="img_medicine" class="form-control form-control-sm rounded-0" />
                 </div>
 
                 <div class="col-lg-1 col-md-12 col-sm-12 col-xs-12">
@@ -162,18 +190,18 @@ include './config/sidebar.php';?>
           <!-- /.card-body -->
 
           <div class="card-body">
-            <h6><b>Photo Uploaded</b></h6>
+            <h6><b>Last Uploaded Photo</b></h6>
             <div class="row d-flex justify-content-center">  
               <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
 
               <?php
                 // change
-                $filename = 'user_images/no-image.jpeg';
+                $dateTaken = "No date found.";
+                $filename = "user_images/meds/".$row['img_name'];
 
                 $exif = exif_read_data($filename, 'EXIF', true);
-                
                 $timestamp = strtotime($exif['EXIF']['DateTimeOriginal']);
-                $dateTaken = "No date found.";
+                
                 if (isset($exif['EXIF']['DateTimeOriginal'])) {
                   $formattedDate = date("F d, Y", $timestamp);
                   $formattedTime = date("h:ia", $timestamp);
@@ -184,8 +212,8 @@ include './config/sidebar.php';?>
                 $title = strtoupper($row['medicine_name'])." — ".$row['medicine_brand']." (".$row['packing'].") - ".$row['quantity']." pcs.";
               ?>
 
-                <a href="user_images\no-image.jpeg" data-toggle="lightbox" data-title="<?php echo $title; ?>" data-footer="Date Taken: <?php echo $dateTaken; ?>">
-                    <img src="user_images\no-image.jpeg" class="img-fluid">
+                <a href="<?php echo $filename; ?>" data-toggle="lightbox" data-title="<?php echo $title; ?>" data-footer="Date Taken: <?php echo $dateTaken; ?>">
+                    <img src="<?php echo $filename; ?>" class="img-fluid">
                 </a>
               </div>
             </div>

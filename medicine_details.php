@@ -12,37 +12,61 @@ if(isset($_POST['submit'])) {
   $expDateArr = explode("/", $_POST['expiry']);
   $expDate = $expDateArr[2].'-'.$expDateArr[0].'-'.$expDateArr[1];
 
-  //12/18/2000
+  $status = true;
+  $targetFile = "none.jpeg";
+
+  if (!empty($_FILES["img_medicine"]["name"])) {
+      $allowedExtensions = array('png', 'jpg', 'jpeg');
+      $baseName = basename($_FILES["img_medicine"]["name"]);
+      $fileExtension = strtolower(pathinfo($baseName, PATHINFO_EXTENSION));
+
+      // Check if the uploaded file has a valid extension
+      if (in_array($fileExtension, $allowedExtensions)) {
+          $targetFile = time() . $baseName;
+          $status = move_uploaded_file($_FILES["img_medicine"]["tmp_name"], 'user_images/meds/' . $targetFile);
+      } else {
+          // Invalid file format, handle the error as needed
+          $message = "Invalid file format. Only PNG, JPG, or JPEG files are allowed.";
+          $status = false;
+      }
+  }
+
+  if ($status) {
+    try {
+
+      $query = "INSERT INTO `medicine_details`
+          (`medicine_id`, `packing`, `exp_date`, `quantity`, `img_name`)
+          VALUES ('$medicineId', '$packing', '$expDate', '$quantity', '$targetFile')
+      ;";
   
+      $con->beginTransaction();
+      
+      $stmtDetails = $con->prepare($query);
+      $stmtDetails->execute();
+  
+      $con->commit();
+  
+      $message = 'Medicine Unit Saved Successfully.';
+  
+    } catch(PDOException $ex) {
+  
+     $con->rollback();
+  
+     echo $ex->getMessage();
+     echo $ex->getTraceAsString();
+     exit;
+    }
+  }
 
-  $query = "insert into `medicine_details` (`medicine_id`, `packing`, `exp_date`, `quantity`) values('$medicineId', '$packing', '$expDate', '$quantity');";
-  try {
-
-    $con->beginTransaction();
-    
-    $stmtDetails = $con->prepare($query);
-    $stmtDetails->execute();
-
-    $con->commit();
-
-    $message = 'Medicine Unit Saved Successfully.';
-
-  } catch(PDOException $ex) {
-
-   $con->rollback();
-
-   echo $ex->getMessage();
-   echo $ex->getTraceAsString();
-   exit;
- }
- header("location:congratulation.php?goto_page=medicine_details.php&message=$message");
- exit;
+  header("location:congratulation.php?goto_page=medicine_details.php&message=$message");
+  exit;
 }
 
 
 $medicines = getUniqueMedicines($con);
 
-$query = "SELECT `m`.`medicine_name`, `m`.`medicine_brand`, `md`.`id`, `md`.`packing`,  `md`.`medicine_id`, `md`.`exp_date`, `md`.`quantity`
+$query = "SELECT `m`.`medicine_name`, `m`.`medicine_brand`, `md`.`id`, `md`.`packing`, 
+            `md`.`medicine_id`, `md`.`exp_date`, `md`.`quantity`, `md`.`img_name`
           FROM `medicines` as `m`, `medicine_details` as `md` 
           WHERE `m`.`id` = `md`.`medicine_id`
             AND `m`.`is_del` = '0'
@@ -107,28 +131,22 @@ include './config/sidebar.php';?>
             </div>
           </div>
           <div class="card-body">
-            <form method="post">
+            <form method="post" enctype="multipart/form-data">
               <div class="row">
-                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 select-select2">
+
+                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 select-select2">
                   <label>Medicine Brand</label>
                   <select id="medicine" name="medicine" class="form-control form-control-sm rounded-0 select2" required="required">
                     <?php echo $medicines;?>
                   </select>
                 </div>
 
-                <!-- <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                  <label>Select Brand</label>
-                  <select id="brand" name="brand" class="form-control form-control-sm rounded-0" required="required">
-                    
-                  </select>
-                </div> -->
-
-                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
                   <label>Unit Type</label>
                   <input id="packing" name="packing" class="form-control form-control-sm rounded-0"  required="required" placeholder="e.g. Tablet, Capsule, Syrup, etc."/>
                 </div>
 
-                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-10">
+                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-10">
                   <div class="form-group">
                     <label>Expiration Date</label>
                     <div class="input-group date" id="expiry" 
@@ -143,9 +161,14 @@ include './config/sidebar.php';?>
                   </div>
                 </div>
 
-                <div class="col-lg-2 col-md-6 col-sm-6 col-xs-12">
+                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <label>Quantity</label>
                   <input type="number" placeholder="Enter Quantity" min="1" id="quantity" name="quantity" class="form-control form-control-sm rounded-0"  required="required"/>
+                </div>
+
+                <div class="col-lg-5 col-md-12 col-sm-12 col-xs-10">
+                  <label>Picture (Optional)</label>
+                  <input type="file" id="img_medicine" name="img_medicine" class="form-control form-control-sm rounded-0" />
                 </div>
 
                 <div class="col-lg-1 col-md-12 col-sm-12 col-xs-12">
