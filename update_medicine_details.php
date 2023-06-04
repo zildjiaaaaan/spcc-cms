@@ -16,6 +16,7 @@ if(isset($_POST['submit'])) {
 
   $status = true;
   $targetFile = $_POST['current_img'];
+  $oldFile = '';
 
   if (!empty($_FILES["img_medicine"]["name"])) {
       $allowedExtensions = array('png', 'jpg', 'jpeg');
@@ -24,8 +25,12 @@ if(isset($_POST['submit'])) {
 
       // Check if the uploaded file has a valid extension
       if (in_array($fileExtension, $allowedExtensions)) {
+          $oldFile = 'user_images/meds/'.$targetFile;
           $targetFile = time() . $baseName;
           $status = move_uploaded_file($_FILES["img_medicine"]["tmp_name"], 'user_images/meds/' . $targetFile);
+
+          $filePath = 'path/to/file.txt'; // Replace with the actual file path
+
       } else {
           // Invalid file format, handle the error as needed
           $message = "Invalid file format. Only PNG, JPG, or JPEG files are allowed.";
@@ -48,6 +53,10 @@ if(isset($_POST['submit'])) {
       $stmtUpdate->execute();
   
       $con->commit();
+
+      if (file_exists($oldFile) && $oldFile != 'user_images/meds/none.jpeg') {
+        unlink($oldFile);
+      }
   
       $message = 'Medicine Details Updated Successfully.';
   
@@ -199,14 +208,16 @@ include './config/sidebar.php';?>
                 $dateTaken = "No date found.";
                 $filename = "user_images/meds/".$row['img_name'];
 
-                $exif = exif_read_data($filename, 'EXIF', true);
-                $timestamp = strtotime($exif['EXIF']['DateTimeOriginal']);
-                
-                if (isset($exif['EXIF']['DateTimeOriginal'])) {
-                  $formattedDate = date("F d, Y", $timestamp);
-                  $formattedTime = date("h:ia", $timestamp);
+                if (substr($filename, -4) !== ".png") {
+                  $exif = exif_read_data($filename, 'EXIF', true);
+                  $timestamp = strtotime($exif['EXIF']['DateTimeOriginal']);
                   
-                  $dateTaken = "$formattedDate at $formattedTime";
+                  if (isset($exif['EXIF']['DateTimeOriginal'])) {
+                    $formattedDate = date("F d, Y", $timestamp);
+                    $formattedTime = date("h:ia", $timestamp);
+                    
+                    $dateTaken = "$formattedDate at $formattedTime";
+                  }
                 }
                 
                 $title = strtoupper($row['medicine_name'])." — ".$row['medicine_brand']." (".$row['packing'].") - ".$row['quantity']." pcs.";

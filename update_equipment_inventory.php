@@ -33,6 +33,7 @@ if (isset($_POST['submit'])) {
   }
 
   $file_status = true;
+  $oldFile = '';
 
   if (!empty($_FILES["img_equipment"]["name"])) {
       $allowedExtensions = array('png', 'jpg', 'jpeg');
@@ -41,6 +42,7 @@ if (isset($_POST['submit'])) {
 
       // Check if the uploaded file has a valid extension
       if (in_array($fileExtension, $allowedExtensions)) {
+          $oldFile = 'user_images/equipments/'.$targetFile;
           $targetFile = time() . $baseName;
           $file_status = move_uploaded_file($_FILES["img_equipment"]["tmp_name"], 'user_images/equipments/' . $targetFile);
       } else {
@@ -106,6 +108,10 @@ if (isset($_POST['submit'])) {
   
       $stmt_equipment_details2 = $con->prepare($query2);
       $stmt_equipment_details2->execute();
+
+      if (file_exists($oldFile) && $oldFile != 'user_images/equipments/none.jpeg') {
+        unlink($oldFile);
+      }
   
       $con->commit();
       $message = "Equipment Unit Successfully Updated.";
@@ -413,7 +419,7 @@ include './config/sidebar.php';?>
               
               $dateTaken = "$formattedDate at $formattedTime";
             }
-          }          
+          }
           
           $title = strtoupper($row['equipment'])." — ".$row['brand']." (".$row['status']."-".$row['state'].") - ".$row['quantity']." pcs.";
         ?>
