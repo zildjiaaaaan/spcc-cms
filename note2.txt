@@ -91,20 +91,20 @@ Recovery (Notes):
 ----------
 
 If a Borrower deleted,
-- will not appear in Dashboard 'Borrowed Equipment'
-- will not appear in Borrow Equipment 'Select Borrower'
-- will not appear in Borrower
-- rows with said Borrower will not appear in Equipment Inventory **GIVE WARNING**
-- will not appear in Borrower History
-- will appear in Dashboard 'Deleted Items'
-- will appear in Trash 'Borrower'
+-- will not appear in Dashboard 'Borrowed Equipment'
+• - will not appear in Borrow Equipment 'Select Borrower'
+• - will not appear in Borrower
+-- rows with said Borrower will not appear in Equipment Inventory **GIVE WARNING**
+• - will appear in Borrower History marked as deleted
+• - will appear in Dashboard 'Deleted Items'
+• - will appear in Trash 'Borrower'
 
 Input Validation (Duplicate):
-- ADD: check Inventory or Trash
-- UPDATE: check Inventory or Trash
+• - ADD: check Inventory or Trash
+• - UPDATE: check Inventory or Trash
 
 Recovery (Notes):
-- will recover Equipment Details with said Borrower
+-- will recover Equipment Details with said Borrower
 
 
 

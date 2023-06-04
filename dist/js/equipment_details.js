@@ -161,7 +161,7 @@ $(function() {
                         equipment.qty += parseInt(quantity);
                         hasNoId = false;
                         addCell = false;
-                        console.log("Added a cell: "+addCell);
+                        //console.log("Added a cell: "+addCell);
                         return; // Break out of the loop early
                     }
                 });

@@ -210,7 +210,7 @@ include './config/sidebar.php';?>
       
       <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
         <label>Weight (in kg)</label>
-        <input type="number" id="weight" name="weight" class="form-control form-control-sm rounded-0" required="required" placeholder="e.g. 50 kg" min="1"/>
+        <input type="number" id="weight" name="weight" class="form-control form-control-sm rounded-0" required="required" placeholder="e.g. 50" min="1"/>
       </div>
 
       <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12">

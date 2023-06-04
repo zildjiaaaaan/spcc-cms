@@ -17,7 +17,7 @@
     <li class="nav-item">
       <div class="custom-control custom-switch" style="padding-bottom: 10px;">
         <input type="checkbox" class="custom-control-input" id="customSwitch1" <?php echo ($_SESSION['dark_mode'] != "1") ? "checked" : ""; ?>>
-        <label class="custom-control-label" for="customSwitch1">&nbsp;</label>
+        <label class="custom-control-label" for="customSwitch1" style="cursor: pointer;">&nbsp;</label>
       </div>
     </li>
   </ul>
