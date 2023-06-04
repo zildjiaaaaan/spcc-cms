@@ -11,7 +11,7 @@ $(function () {
     });    
 
     // Set the height of the quantity input
-    $("#quantity").css("height", "52px");
+    //$("#quantity").css("height", "52px");
 
     // Disable '_' in the remarks input
     $("#remarks").keypress(function(e) {

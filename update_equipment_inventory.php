@@ -9,6 +9,7 @@ if (isset($_POST['submit'])) {
   $id = $_POST['hidden_id'];
   $current_borrower_id = $_POST['current_borrower_id'];
   $current_quantity = $_POST['current_quantity'];
+  $targetFile = $_POST['current_img'];
 
   $equipment_id = $_POST['equipment'];
   $status = $_POST['status'];
@@ -31,6 +32,24 @@ if (isset($_POST['submit'])) {
     }
   }
 
+  $file_status = true;
+
+  if (!empty($_FILES["img_equipment"]["name"])) {
+      $allowedExtensions = array('png', 'jpg', 'jpeg');
+      $baseName = basename($_FILES["img_equipment"]["name"]);
+      $fileExtension = strtolower(pathinfo($baseName, PATHINFO_EXTENSION));
+
+      // Check if the uploaded file has a valid extension
+      if (in_array($fileExtension, $allowedExtensions)) {
+          $targetFile = time() . $baseName;
+          $file_status = move_uploaded_file($_FILES["img_equipment"]["tmp_name"], 'user_images/equipments/' . $targetFile);
+      } else {
+          // Invalid file format, handle the error as needed
+          $message = "Invalid file format. Only PNG, JPG, or JPEG files are allowed.";
+          $file_status = false;
+      }
+  }
+
   $query0 = "UPDATE `equipments`
     SET `total_qty` = `total_qty` - $current_quantity
     WHERE `id` = '$equipment_id'  
@@ -40,6 +59,7 @@ if (isset($_POST['submit'])) {
 
   $query1 = "UPDATE `equipment_details`
       SET `equipment_id` = '$equipment_id',
+      `img_name` = '$targetFile',
       `status` = '$status',
       `state` = '$state',
       `quantity` = '$quantity',
@@ -52,48 +72,50 @@ if (isset($_POST['submit'])) {
     WHERE `id` = '$equipment_id'  
   ;";
 
-  try {
+  if ($file_status) {
+    try {
 
-    $con->beginTransaction();
-
-    $q_borrowed = "";
-    if ($state == "Borrowed") {
-      if ($current_borrower_id != '') {
-        $q_borrowed = "UPDATE `borrowed`
-          SET `equipment_details_id` = '$id',
-          `borrower_id` = '$borrower_id'
-          WHERE `borrower_id` = '$current_borrower_id';";
+      $con->beginTransaction();
+  
+      $q_borrowed = "";
+      if ($state == "Borrowed") {
+        if ($current_borrower_id != '') {
+          $q_borrowed = "UPDATE `borrowed`
+            SET `equipment_details_id` = '$id',
+            `borrower_id` = '$borrower_id'
+            WHERE `borrower_id` = '$current_borrower_id';";
+        } else {
+          $q_borrowed = "INSERT INTO `borrowed` (`equipment_details_id`, `borrower_id`) VALUES ('$id', '$borrower_id');";
+        }
       } else {
-        $q_borrowed = "INSERT INTO `borrowed` (`equipment_details_id`, `borrower_id`) VALUES ('$id', '$borrower_id');";
+        if ($current_borrower_id != '') {
+          $q_borrowed = "DELETE FROM `borrowed` WHERE `borrower_id` = '$current_borrower_id';";
+        }
       }
-    } else {
-      if ($current_borrower_id != '') {
-        $q_borrowed = "DELETE FROM `borrowed` WHERE `borrower_id` = '$current_borrower_id';";
+        
+      if ($q_borrowed != '') {
+        $stmt_borrowed = $con->prepare($q_borrowed);
+        $stmt_borrowed->execute();
       }
-    }
+  
+      $stmt_equipment_details0 = $con->prepare($query0);
+      $stmt_equipment_details0->execute();
       
-    if ($q_borrowed != '') {
-      $stmt_borrowed = $con->prepare($q_borrowed);
-      $stmt_borrowed->execute();
+      $stmt_equipment_details1 = $con->prepare($query1);
+      $stmt_equipment_details1->execute();
+  
+      $stmt_equipment_details2 = $con->prepare($query2);
+      $stmt_equipment_details2->execute();
+  
+      $con->commit();
+      $message = "Equipment Unit Successfully Updated.";
+  
+    } catch (PDOException $ex) {
+      $con->rollback();
+      echo $ex->getTraceAsString();
+      echo $ex->getMessage();
+      exit;
     }
-
-    $stmt_equipment_details0 = $con->prepare($query0);
-    $stmt_equipment_details0->execute();
-    
-    $stmt_equipment_details1 = $con->prepare($query1);
-    $stmt_equipment_details1->execute();
-
-    $stmt_equipment_details2 = $con->prepare($query2);
-    $stmt_equipment_details2->execute();
-
-    $con->commit();
-    $message = "Equipment Unit Successfully Updated.";
-
-  } catch (PDOException $ex) {
-    $con->rollback();
-    echo $ex->getTraceAsString();
-    echo $ex->getMessage();
-    exit;
   }
 
   header("Location: equipment_inventory.php?message=$message");
@@ -157,9 +179,11 @@ $equipments = getUniqueEquipments($con, $equipment_id);
 $borrowers = getUniqueBorrowers($con, $_GET['b_id']);
 
 try {
-    $query = "SELECT *, DATE_FORMAT(`unavailable_since`, '%m/%d/%Y') AS `unavailable_since`, DATE_FORMAT(`unavailable_until`, '%m/%d/%Y') AS `unavailable_until`
-                FROM `equipment_details`
-                WHERE `id` = '$id'
+    $query = "SELECT `equipment_details`.*, DATE_FORMAT(`unavailable_since`, '%m/%d/%Y') AS `unavailable_since`,
+              DATE_FORMAT(`unavailable_until`, '%m/%d/%Y') AS `unavailable_until`, `equipments`.*
+                FROM `equipment_details`, `equipments`
+                WHERE `equipment_details`.`id` = '$id'
+                AND `equipment_id` = `equipments`.`id`
                 AND `equipment_id` = '$equipment_id';";
 
     $stmt = $con->prepare($query);
@@ -184,6 +208,7 @@ try {
  <?php include './config/site_css_links.php' ?>
 
  <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+ <link rel="stylesheet" href="plugins/ekko-lightbox/ekko-lightbox.css">
  <title>Update Equipment Unit - SPCC Caloocan Clinic</title>
  <style>
   #unavailableUntil {
@@ -232,11 +257,13 @@ include './config/sidebar.php';?>
           </div>
           <div class="card-body">
             <!-- best practices-->
-            <form method="post">
+            <form method="post" enctype="multipart/form-data">
               <div class="row">
                 <input type="hidden" id="update_id" name="hidden_id" value="<?php echo $equipment_details_id;?>" />
                 <input type="hidden" id="current_quantity" name="current_quantity" value="<?php echo $row['quantity'];?>" />
                 <input type="hidden" id="current_borrower_id" name="current_borrower_id" value="<?php echo !empty($_GET['b_id']) ? $_GET['b_id'] : "";?>" />
+                <input type="hidden" name="current_img" id="current_img" value="<?php echo $row['img_name'];?>" />
+
                 <?php
                   if ($row['state'] == "Borrowed") {
                     $unavailable_sinceArr = explode("/", $unavailable_since);
@@ -273,16 +300,21 @@ include './config/sidebar.php';?>
                 </div>
 
                 <div class="clearfix">&nbsp;</div>
-                
-                <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
-                  <label>Remarks</label>
-                  <textarea id="remarks" name="remarks" class="form-control form-control-sm rounded-0"><?php echo $row['remarks']; ?></textarea>
+
+                <div class="col-lg-8 col-md-12 col-sm-12 col-xs-10">
+                  <label>Picture (Optional)</label>
+                  <input type="file" id="img_equipment" name="img_equipment" class="form-control form-control-sm rounded-0" />
                 </div>
-                
+
                 <div class="col-lg-3 col-md-2 col-sm-6 col-xs-12">
                   <label>Quantity Available</label>
                   <input type="number" value="<?php echo $row['quantity']; ?>" id="quantity" name="quantity" class="form-control form-control-sm rounded-0" min="1" required>
                 </div>
+                
+                <div class="col-lg-11 col-md-12 col-sm-12 col-xs-12">
+                  <label>Remarks</label>
+                  <textarea id="remarks" name="remarks" class="form-control form-control-sm rounded-0"><?php echo $row['remarks']; ?></textarea>
+                </div>              
 
                 <div class="clearfix unavailable">&nbsp;</div>
 
@@ -361,6 +393,41 @@ include './config/sidebar.php';?>
         </form>
     </div>
 
+    <div class="card-body">
+      <h6><b>Last Uploaded Photo</b></h6>
+      <div class="row d-flex justify-content-center">  
+        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+
+        <?php
+          // change
+          $dateTaken = "No date found.";
+          $filename = "user_images/equipments/".$row['img_name'];
+
+          if (substr($filename, -4) !== ".png") {
+            $exif = exif_read_data($filename, 'EXIF', true);
+            $timestamp = strtotime($exif['EXIF']['DateTimeOriginal']);
+            
+            if (isset($exif['EXIF']['DateTimeOriginal'])) {
+              $formattedDate = date("F d, Y", $timestamp);
+              $formattedTime = date("h:ia", $timestamp);
+              
+              $dateTaken = "$formattedDate at $formattedTime";
+            }
+          }          
+          
+          $title = strtoupper($row['equipment'])." — ".$row['brand']." (".$row['status']."-".$row['state'].") - ".$row['quantity']." pcs.";
+        ?>
+
+          <a href="<?php echo $filename; ?>" data-toggle="lightbox" data-title="<?php echo $title; ?>" data-footer="Date Taken: <?php echo $dateTaken; ?>">
+              <img src="<?php echo $filename; ?>" class="img-fluid">
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="clearfix">&nbsp;</div>
+    <div class="clearfix">&nbsp;</div>
+
 </div>
 <!-- /.card -->
 
@@ -385,6 +452,9 @@ if(isset($_GET['message'])) {
 <script src="plugins/moment/moment.min.js"></script>
 <script src="plugins/daterangepicker/daterangepicker.js"></script>
 <script src="plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+
+<script src="plugins/ekko-lightbox/ekko-lightbox.min.js"></script>
+<script src="plugins/ekko-lightbox/ekko-lightbox.js"></script>
 <script>
 
   var serial = 1;
@@ -397,6 +467,12 @@ if(isset($_GET['message'])) {
   }
 
   $(function(){
+
+    $(document).on('click', '[data-toggle="lightbox"]', function(event) {
+        event.preventDefault();
+        $(this).ekkoLightbox();
+    });
+
     var status = "<?php echo $row['status']; ?>";
     var state = "<?php echo $row['state']; ?>";
 
