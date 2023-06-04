@@ -35,10 +35,14 @@ $query = "SELECT `equipment_details`.*, `equipment`, `brand`, `date_acquired`
  <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
  <title>Equipment Inventory - SPCC Caloocan Clinic</title>
  <style>
-   .cell-link {
-     color: white;
-     /* text-decoration: none; */
-   }
+    .cell-link {
+      color: white;
+      /* text-decoration: none; */
+    }
+    #a-Borrowed {
+      cursor: not-allowed;
+    }
+    
   </style>
 </head>
 <body class="hold-transition sidebar-mini dark-mode layout-fixed layout-navbar-fixed">
@@ -147,7 +151,9 @@ include './config/sidebar.php';?>
                       <?php echo $row['status']; ?>
                       </a></td>
                     <td>
-                      <a class="cell-link" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="<?php echo (!empty($rowBorrowed)) ? "Borrowed by: ".$rowBorrowed['borrower_id']." - ".strtoupper($rowBorrowed['lname']) : "";?>"><?php echo $row['state'];?></a>
+                      <a class="cell-link" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="<?php echo (!empty($rowBorrowed)) ? "Borrowed by: ".$rowBorrowed['borrower_id']." - ".strtoupper($rowBorrowed['lname']) : "";?>">
+                        <?php echo $row['state'];?>
+                      </a>
                     </td>
                     <td><?php echo $row['quantity'];?></td>
                     <td><?php echo (!empty($row['remarks'])) ? $row['remarks'] : "<i>No Remarks</i>" ;?></td>
@@ -157,7 +163,9 @@ include './config/sidebar.php';?>
                       class = "btn btn-primary btn-sm btn-flat">
                       <i class="fa fa-edit"></i>
                       </a>
-                      <a href="del_equipment.php?delId=<?php echo $row['id'];?>" class="btn btn-danger btn-sm btn-flat">
+                      <a id="a-<?php echo $row['state']; ?>"
+                      href="<?php echo ($row['state'] != "Borrowed") ? "del_equipment.php?delId=".$row['id']."&qty=".$row['quantity']."&id=".$row['equipment_id'] : "#";?>"
+                      class="btn btn-danger btn-sm btn-flat">
                         <i class="fa fa-trash"></i>
                       </a>
                     </td>

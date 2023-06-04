@@ -181,3 +181,14 @@ solution: remove link if returned
 when adding
 when updating
 when deleting
+
+----
+
+add the Trash link in alerts
+delete e.type -> delete e.unit except borrowed items
+-active
+-non-borrowable
+-used
+-missing
+-borrowed
+-defective

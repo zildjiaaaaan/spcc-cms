@@ -14,11 +14,11 @@ if (isset($_GET['patient_id'])) {
     $id = $_GET['meddetails_id'];
     $med_id = $_GET['med_id'];
 
-    $checkMed = "SELECT * FROM `medicines` WHERE `id` = '$med_id' AND `is_del` = '0';";
+    $q_check = "SELECT * FROM `medicines` WHERE `id` = '$med_id' AND `is_del` = '0';";
 
-    $stmtcheckMed = $con->prepare($checkMed);
-    $stmtcheckMed->execute();
-    if (empty($stmtcheckMed->fetch(PDO::FETCH_ASSOC))) {
+    $stmtcheck = $con->prepare($q_check);
+    $stmtcheck->execute();
+    if (empty($stmtcheck->fetch(PDO::FETCH_ASSOC))) {
         $recover = false;
     }
 
@@ -30,15 +30,26 @@ if (isset($_GET['patient_id'])) {
     $id = $_GET['med_id'];
     $query = "UPDATE `medicines` set `is_del` = '0' where `id`= $id";
     $location = "medicine";
-}  else if (isset($_GET['equipment_id'])) {
+} else if (isset($_GET['equipmentdetails_id']) && isset($_GET['equipment_id'])) {
+    $id = $_GET['equipmentdetails_id'];
+    $e_id = $_GET['equipment_id'];
+
+    $q_check = "SELECT * FROM `equipments` WHERE `id` = '$e_id' AND `is_del` = '0';";
+    $stmtcheck = $con->prepare($q_check);
+    $stmtcheck->execute();
+    if (empty($stmtcheck->fetch(PDO::FETCH_ASSOC))) {
+        $recover = false;
+    }
+
+    $message = 'The `Equipment Type` of this item was deleted. Please recover it first.';
+    $query = "UPDATE `equipment_details` set `is_del` = '0' where `id`= $id";
+    $location = "equipment_inventory";
+
+} else if (isset($_GET['equipment_id'])) {
     $id = $_GET['equipment_id'];
     $query = "UPDATE `equipments` set `is_del` = '0' where `id`= $id";
     $location = "equipments";
-} else if (isset($_GET['equipmentdetails_id'])) {
-    $id = $_GET['equipmentdetails_id'];
-    $query = "UPDATE `equipment_details` set `is_del` = '0' where `id`= $id";
-    $location = "equipment_details";
-} else if (isset($_GET['borrower_id'])) {
+}  else if (isset($_GET['borrower_id'])) {
     $id = $_GET['borrower_id'];
     $query = "UPDATE `borrowers` set `is_del` = '0' where `id`= $id";
     $location = "borrower";

@@ -76,7 +76,7 @@ if (isset($_GET['recover'])) {
       exit;  
     }
   } else if ($_GET['recover'] == "equipment_inventory") {
-    $rec = "Equipment Inventory";
+    $rec = "Equipment Unit Inventory";
     $menuSelected = "#mi_trash_equipmentinventory";
 
     try {
@@ -354,7 +354,7 @@ include './config/sidebar.php';?>
               </table>
 <!------------------------------------------------------------------ EQUIPMENTS DETAILS ---------------------------------------------------------------->
               <?php
-                } else if ($rec == "Equipment Inventory") {
+                } else if ($rec == "Equipment Unit Inventory") {
               ?>
               <table id="all_equipment_details" class="table table-striped dataTable table-bordered dtr-inline" role="grid" aria-describedby="all_equipment_details_info">
 
@@ -371,7 +371,7 @@ include './config/sidebar.php';?>
               <thead>
                 <tr>
                   <th class="text-center">#</th>
-                  <th>Equipment</th>
+                  <th>Equipment Type</th>
                   <th>Status</th>
                   <th>State</th>
                   <th>Qty</th>
@@ -395,7 +395,7 @@ include './config/sidebar.php';?>
                   <td><?php echo $row['remarks'];?></td>
                   
                   <td class="text-center">
-                    <a href="recover.php?equipmentdetails_id=<?php echo $row['id'];?>" class = "btn btn-success btn-sm btn-flat">
+                    <a href="recover.php?equipmentdetails_id=<?php echo $row['id'];?>&equipment_id=<?php echo $row['equipment_id'];?>" class = "btn btn-success btn-sm btn-flat">
                     <i class="fa fa-recycle"></i>
                     </a>
                   </td>

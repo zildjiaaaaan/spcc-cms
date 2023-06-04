@@ -92,7 +92,7 @@ if(isset($_POST['submit'])) {
     }
   }
 
-  $message = ($isSuccess) ? "Equipment Details Successfully Added." : "Failed to Add Equipment Details.";
+  $message = ($isSuccess) ? "Equipment Unit Successfully Added." : "Failed to Add Equipment Details.";
 
   header("Location: equipment_details.php?message=$message");
   exit;
