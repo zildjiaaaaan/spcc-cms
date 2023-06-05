@@ -16,13 +16,13 @@ if(isset($_POST['save_user'])) {
 
   $displayName = $_POST['display_name'];
   $userName = $_POST['user_name'];
-  $password = $_POST['user_name']."spcc-clinic";
+  $password = $_POST['user_name']."_spcc-clinic"; // Password is the username + _spcc-clinic
   $access_lvl = $_POST['access_lvl'];
   $img = 'none.jpeg';
   if ($access_lvl == "Admin") {
     $img = 'admin.png';
   } else {
-    $img = 'clinic-staff.jpg';
+    $img = 'clinic-staff.png';
   }
 
   $encryptedPassword = md5($password);
@@ -54,8 +54,9 @@ if(isset($_POST['save_user'])) {
     $con->beginTransaction();
 
     $query = "INSERT INTO `users`(`display_name`,
-    `user_name`, `password`, `profile_picture`, `access_lvl`) 
-    VALUES('$displayName', '$userName', '$encryptedPassword', '$img', '$access_lvl');";
+      `user_name`, `password`, `profile_picture`, `access_lvl`) 
+      VALUES('$displayName', '$userName', '$encryptedPassword', '$img', '$access_lvl')
+    ;";
 
     $stmtUser = $con->prepare($query);
     $stmtUser->execute();
@@ -73,6 +74,7 @@ if(isset($_POST['save_user'])) {
 
 header("location:congratulation.php?goto_page=users.php&message=$message");
 exit;
+
 }
   //https://www.w3schools.com/php/php_file_upload.asp
 /*

@@ -29,8 +29,6 @@ if(isset($_POST['submit'])) {
           $targetFile = time() . $baseName;
           $status = move_uploaded_file($_FILES["img_medicine"]["tmp_name"], 'user_images/meds/' . $targetFile);
 
-          $filePath = 'path/to/file.txt'; // Replace with the actual file path
-
       } else {
           // Invalid file format, handle the error as needed
           $message = "Invalid file format. Only PNG, JPG, or JPEG files are allowed.";

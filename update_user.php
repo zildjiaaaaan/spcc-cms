@@ -4,9 +4,7 @@ include './common_service/common_functions.php';
 $message = '';
 $user_id = $_GET['user_id'];
 
-$query = "SELECT `id`, `display_name`, `user_name` from `users`
-where `id` = $user_id;";
-
+$query = "SELECT * from `users` where `id` = '$user_id';";
 
 try {
   $stmtUpdateUser = $con->prepare($query);
@@ -19,52 +17,76 @@ try {
 }
 
 if (isset($_POST['save_user'])) {
-  $displayName = trim($_POST['display_name']);
-  $userName = trim($_POST['username']);
-  $password = $_POST['password'];
+  // current_display
+  // current_user
+  // current_lvl
+  // current_img
+  $displayName = ($_POST['display_name'] != '') ? trim($_POST['display_name']) : $_POST['current_display'];
+  $userName = ($_POST['username'] != '') ? trim($_POST['username']) : $_POST['current_user'];
+  $accessLvl = (isset($_POST['access_lvl'])) ? $_POST['access_lvl'] : $_POST['current_lvl'];
+  $password = ($_POST['password'] != '') ? md5($_POST['password']) : '';
   $hiddenId = $_POST['hidden_id'];
+  $targetFile = $_POST['current_img'];
 
-  $profilePicture = basename($_FILES["profile_picture"]["name"]);
-  $targetFile =  time(). $profilePicture;
-  $status = move_uploaded_file($_FILES["profile_picture"]["tmp_name"],
-    'user_images/'.$targetFile);
+  $status = true;
+  $oldFile = '';
 
+  if (!empty($_FILES["profile_picture"]["name"])) {
+      $allowedExtensions = array('png', 'jpg', 'jpeg');
+      $baseName = basename($_FILES["profile_picture"]["name"]);
+      $fileExtension = strtolower(pathinfo($baseName, PATHINFO_EXTENSION));
 
-  $encryptedPassword = md5($password);
-  if($displayName !='' && $userName !='' && $password !='' && $status !='') {
+      // Check if the uploaded file has a valid extension
+      if (in_array($fileExtension, $allowedExtensions)) {
+          $oldFile = 'user_images/'.$targetFile;
+          $targetFile = time() . $baseName;
+          $status = move_uploaded_file($_FILES["profile_picture"]["tmp_name"], 'user_images/' . $targetFile);
 
-    $updateUserQuery = "UPDATE `users` set `display_name` = '$displayName' ,`user_name` = '$userName', `password` = 
-    '$encryptedPassword' , `profile_picture` = '$targetFile'
-    where `id` = $hiddenId";
-
-  } elseif ($displayName !=='' && $userName !=='' && $password !==''){
-
-    $updateUserQuery = "UPDATE `users` set `display_name` = '$displayName' ,`user_name` = '$userName' , `password` = 
-    '$encryptedPassword' 
-    where `id` = $hiddenId";
-
-  } elseif ($displayName !=='' && $userName !=='' && $status !=='') {
-
-    $updateUserQuery = "UPDATE `users` set `display_name` = '$displayName' , `user_name` = '$userName' , `profile_picture` = '$targetFile ' 
-    where `id` = $hiddenId";
-  } else {
-    // showCustomMessage("please fill");
-    $message = 'Please fill all fields.';
+      } else {
+          // Invalid file format, handle the error as needed
+          $message = "Invalid file format. Only PNG, JPG, or JPEG files are allowed.";
+          $status = false;
+      }
   }
 
-  try {
-    $con->beginTransaction();
-    $stmtUpdateUser = $con->prepare($updateUserQuery);
-    $stmtUpdateUser->execute();
-    $message = "User Info Updated Successfully";
-    $con->commit();
+  if ($status) {
+    try {
+      $updateUserQuery = "UPDATE `users`
+          SET `display_name` = '$displayName',
+          `user_name` = '$userName',
+          ";
 
-  } catch(PDOException $ex) {
-    $con->rollback();
-    echo $ex->getTraceAsString();
-    echo $ex->getMessage();
-    exit;
+      if ($password != '') {
+          $updateUserQuery .= "`password` = '$password', ";
+      }
+
+      $updateUserQuery .= "`profile_picture` = '$targetFile',
+          `access_lvl` = '$accessLvl'
+          WHERE `id` = '$hiddenId';";
+
+      $con->beginTransaction();
+      $stmtUpdateUser = $con->prepare($updateUserQuery);
+      $stmtUpdateUser->execute();
+
+      $con->commit();
+
+      if (file_exists($oldFile) && $oldFile != 'user_images/admin.png' && $oldFile != 'user_images/clinic-staff.png') {
+        unlink($oldFile);        
+      }
+
+      $message = "User Info Updated Successfully";
+
+      $_SESSION['profile_picture'] = $targetFile;
+  
+    } catch(PDOException $ex) {
+      $con->rollback();
+      echo $ex->getTraceAsString();
+      echo $ex->getMessage();
+      exit;
+    }
   }
+
+  
 
   header("Location:congratulation.php?goto_page=users.php&message=$message");
   exit;
@@ -117,8 +139,12 @@ include './config/sidebar.php';?>
           </div>
           <div class="card-body">
             <form method="post" enctype="multipart/form-data">
-              <input type="hidden" name="hidden_id" 
-               value="<?php echo $user_id;?>">
+              <input type="hidden" name="hidden_id" value="<?php echo $user_id;?>">
+              <input type="hidden" name="current_display" id="current_display" value="<?php echo $row['display_name'];?>" />
+              <input type="hidden" name="current_user" id="current_user" value="<?php echo $row['user_name'];?>" />
+              <input type="hidden" name="current_lvl" id="current_lvl" value="<?php echo $row['access_lvl'];?>" />
+              <input type="hidden" name="current_img" id="current_img" value="<?php echo $row['profile_picture'];?>" />
+
               <div class="row">
                 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-10">
                   <label>Display Name</label>
@@ -135,9 +161,7 @@ include './config/sidebar.php';?>
                 </div>
                 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-10">
                   <label>Password</label> 
-                  <input type="password" id="password" name="password" 
-                  class="form-control form-control-sm rounded-0"/>
-
+                  <input type="password" id="password" name="password" class="form-control form-control-sm rounded-0"/>
                 </div>
                 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-10">
                   <label>Profile picture</label>
@@ -151,8 +175,8 @@ include './config/sidebar.php';?>
                   <label>Access</label>
                   <select id="access_lvl" name="access_lvl" class="form-control form-control-sm rounded-0" required>
                     <option value="">Select Role</option>
-                    <option value="Admin">Admin</option>
-                    <option value="Staff">Staff</option>
+                    <option <?php echo ($row['access_lvl'] == "Admin") ? "selected": ""; ?> value="Admin">Admin</option>
+                    <option <?php echo ($row['access_lvl'] == "Staff") ? "selected": ""; ?> value="Staff">Staff</option>
                   </select>
                 </div>
                 <?php } ?>
