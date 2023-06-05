@@ -125,9 +125,39 @@ include './config/sidebar.php';?>
   showMenuSelected("#mnu_reports", "#mi_reports");
 
   $(document).ready(function() {
-    $('#patients_from, #patients_to, #disease_from, #disease_to').datetimepicker({
-      format: 'L'
+
+    //Set linked datetimepicker format
+    $('#patients_from, #disease_from').datetimepicker({
+        format: 'L',
     });
+    $('#patients_to').datetimepicker({
+        format: 'L',
+        useCurrent: false
+    });
+    $('#disease_to').datetimepicker({
+        format: 'L',
+        useCurrent: false
+    });
+    // Patients
+    $("#patients_from").on("change.datetimepicker", function (e) {
+        $('#patients_to').datetimepicker('minDate', e.date);
+    });
+    $("#patients_to").on("change.datetimepicker", function (e) {
+        $('#patients_from').datetimepicker('maxDate', e.date);
+    });
+    // Disease
+    $("#disease_from").on("change.datetimepicker", function (e) {
+        $('#disease_to').datetimepicker('minDate', e.date);
+    });
+    $("#disease_to").on("change.datetimepicker", function (e) {
+        $('#disease_from').datetimepicker('maxDate', e.date);
+    });
+
+
+
+    // $('#disease_from, #disease_to').datetimepicker({
+    //   format: 'L'
+    // });
 
     $("#print_visits").click(function() {
       var from = $("#patients_from").val();

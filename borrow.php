@@ -308,7 +308,7 @@ include './config/sidebar.php';?>
     </div>
     <div class="clearfix">&nbsp;</div>
     <div class="clearfix">&nbsp;</div>
-    <p><i>Note: Equipment with <span class="text-warning">this background</span> means it has already been borrowed with identical details. Instead of creating a new record, the quantity will be increased. You can check it in <a href="borrower_history.php" target="_blank">Borrower History</a>.</i></p>
+    <p><i>Note: Equipment with <span class="text-warning">this background</span> has already been borrowed with identical details. Instead of creating a new record, the quantity will be increased. You can check it in <a href="borrower_history.php" target="_blank">Borrower History</a>.</i></p>
 
     <div class="row">
       <div class="col-md-10">&nbsp;</div>
