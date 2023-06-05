@@ -11,8 +11,27 @@ if (isset($_POST['save_borrower'])) {
     $position = ucwords(strtolower(trim($_POST['position'])));
     $borrower_id = trim($_POST['borrower_id']);
     $contact_no = trim($_POST['contact_no']);
+
+    // Check if the item already exists
+    $insert = true;
+    $query = "SELECT COUNT(*) AS `duplicate` FROM `borrowers`
+      WHERE `borrower_id` = '$borrower_id'
+        OR (
+          `fname` = '$borrowerName'
+          AND `mname` = '$borrowerMName'
+          AND `lname` = '$borrowerSName'
+        )
+    ;";
+
+    $stmtBorrowers = $con->prepare($query);
+    $stmtBorrowers->execute();
+    $row = $stmtBorrowers->fetch(PDO::FETCH_ASSOC);
+
+    if ($row['duplicate'] > 0) {
+      $insert = false;
+    }
     
-  if ($borrowerName != '' && $borrowerSName != '' && $position != '' && $borrower_id != '' && $contact_no != '') {
+  if ($borrowerName != '' && $borrowerSName != '' && $position != '' && $borrower_id != '' && $contact_no != '' && $insert) {
       $query = "INSERT INTO `borrowers`(`fname`, `mname`, `lname`, `position`, `borrower_id`, `contact_no`, `is_del`)
                 VALUES('$borrowerName', '$borrowerMName', '$borrowerSName', '$position', '$borrower_id', '$contact_no', '0');";
     try {
@@ -34,6 +53,11 @@ if (isset($_POST['save_borrower'])) {
       exit;
     }
   }
+
+  if (!$insert) {
+    $message = 'This borrower is already existing! Please check records or the Trash.';
+  }
+
   header("Location:congratulation.php?goto_page=borrowers.php&message=$message");
   exit;
 }

@@ -1,31 +1,29 @@
 <IfModule mod_rewrite.c>
-RewriteEngine on
+    RewriteEngine on
 
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME}.php -f
-RewriteRule ^(.*)$ $1.php
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME}.php -f
+    RewriteRule ^(.*)$ $1.php
 
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME}.html -f
+    RewriteRule ^(.*)$ $1.html
 
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME}.html -f
-RewriteRule ^(.*)$ $1.html
+    RewriteCond %{REQUEST_FILENAME} !favicon.ico
 
-RewriteCond %{REQUEST_FILENAME} !favicon.ico
+    # Custom 404 Page
+    ErrorDocument 404 /3rd_year/spcc-cms/404.php
 
-
- # 1 WEEK
-    <filesMatch "\.(flv|jpg|jpeg|png|gif|js|swf)$">
+    # Set Cache-Control Headers
+    <FilesMatch "\.(flv|jpg|jpeg|png|gif|js|swf)$">
         Header set Cache-Control "max-age=604800, public"
-    </filesMatch>
+    </FilesMatch>
 
-    # 1 WEEK
-    <filesMatch "\.(css)$">
+    <FilesMatch "\.(css)$">
         Header set Cache-Control "max-age=604800, public, must-revalidate"
-    </filesMatch>
+    </FilesMatch>
 
-    # 1 WEEK
-    <filesMatch "\.(xml|txt)$">
+    <FilesMatch "\.(xml|txt)$">
         Header set Cache-Control "max-age=604800, public, must-revalidate"
-</filesMatch>
-
+    </FilesMatch>
 </IfModule>

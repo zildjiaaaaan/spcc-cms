@@ -5,43 +5,70 @@ include './common_service/common_functions.php';
 $message = '';
 if (isset($_POST['save_borrower'])) {
   
-    $hiddenId = $_POST['hidden_id'];
+  $hiddenId = $_POST['hidden_id'];
 
-    $borrowerName = ucwords(strtolower(trim($_POST['borrower_name'])));
-    $borrowerMName = ucwords(strtolower(trim($_POST['borrower_mname'])));
-    $borrowerSName = ucwords(strtolower(trim($_POST['borrower_sname'])));
-    $position = ucwords(strtolower(trim($_POST['position'])));
-    $borrower_id = trim($_POST['borrower_id']);
-    $contact_no = trim($_POST['contact_no']);
+  $borrowerName = ucwords(strtolower(trim($_POST['borrower_name'])));
+  $borrowerMName = ucwords(strtolower(trim($_POST['borrower_mname'])));
+  $borrowerSName = ucwords(strtolower(trim($_POST['borrower_sname'])));
+  $position = ucwords(strtolower(trim($_POST['position'])));
+  $borrower_id = trim($_POST['borrower_id']);
+  $contact_no = trim($_POST['contact_no']);
 
-    if ($borrowerName != '' && $borrowerSName != '' && $position != '' && $borrower_id != '' && $contact_no != '') {
-        $query = "UPDATE `borrowers` 
-                SET `fname` = '$borrowerName',
-                    `mname` = '$borrowerMName', 
-                    `lname` = '$borrowerSName',
-                    `position` = '$position',
-                    `borrower_id` = '$borrower_id',
-                    `contact_no` = '$contact_no'
-                WHERE `id` = $hiddenId;";
-  try {
+  // Check if the item already exists
+  $insert = true;
+  $query = "SELECT COUNT(*) AS `duplicate` FROM `borrowers`
+    WHERE `id` <> '$hiddenId' 
+      AND (`borrower_id` = '$borrower_id'
+      OR (
+        `fname` = '$borrowerName'
+        AND `mname` = '$borrowerMName'
+        AND `lname` = '$borrowerSName'
+        )
+      )
+  ;";
 
-    $con->beginTransaction();
+  $stmtBorrowers = $con->prepare($query);
+  $stmtBorrowers->execute();
+  $row = $stmtBorrowers->fetch(PDO::FETCH_ASSOC);
 
-    $stmtBorrower = $con->prepare($query);
-    $stmtBorrower->execute();
-
-    $con->commit();
-
-    $message = 'Borrower Info Updated Successfully.';
-
-  } catch(PDOException $ex) {
-    $con->rollback();
-
-    echo $ex->getMessage();
-    echo $ex->getTraceAsString();
-    exit;
+  if ($row['duplicate'] > 0) {
+    $insert = false;
   }
-}
+
+  if ($borrowerName != '' && $borrowerSName != '' && $position != '' && $borrower_id != '' && $contact_no != '' && $insert) {
+    $query = "UPDATE `borrowers` 
+        SET `fname` = '$borrowerName',
+          `mname` = '$borrowerMName', 
+          `lname` = '$borrowerSName',
+          `position` = '$position',
+          `borrower_id` = '$borrower_id',
+          `contact_no` = '$contact_no'
+        WHERE `id` = $hiddenId
+    ;";
+
+    try {
+
+      $con->beginTransaction();
+
+      $stmtBorrower = $con->prepare($query);
+      $stmtBorrower->execute();
+
+      $con->commit();
+
+      $message = 'Borrower Info Updated Successfully.';
+
+    } catch(PDOException $ex) {
+      $con->rollback();
+
+      echo $ex->getMessage();
+      echo $ex->getTraceAsString();
+      exit;
+    }
+  }
+  if (!$insert) {
+    $message = 'This borrower is already existing! Please check records or the Trash.';
+  }
+
   header("Location:congratulation.php?goto_page=borrowers.php&message=$message");
   exit;
 }
@@ -291,6 +318,13 @@ include './config/sidebar.php';?>
       
     
    $(function () {
+
+    $('form').on('keydown', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+        }
+    });
+    
     $("#all_patients").DataTable({
       "responsive": true, "lengthChange": false, "autoWidth": false,
       "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
