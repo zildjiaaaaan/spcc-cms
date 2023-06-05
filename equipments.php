@@ -16,40 +16,60 @@ if(isset($_POST['save_equipment'])) {
 
   $total_qty = "NULL";
 
-  if ($equipmentName != '' && $equipmentBrand != '' && $acquiredDate != '') {
-   $query = "INSERT INTO `equipments`(`equipment`, `brand`, `date_acquired`, `total_qty`)
-   VALUES('$equipmentName', '$equipmentBrand', '$acquiredDate', $total_qty);";
+  // Check if the item already exists
+  $insert = true;
+  $query = "SELECT COUNT(*) AS `duplicate` FROM `equipments`
+    WHERE `equipment` = '$equipmentName'
+      AND `brand` = '$equipmentBrand'
+  ;";
+
+  $stmtEquipment = $con->prepare($query);
+  $stmtEquipment->execute();
+  $row = $stmtEquipment->fetch(PDO::FETCH_ASSOC);
+
+  if ($row['duplicate'] > 0) {
+    $insert = false;
+  }
+
+  if ($equipmentName != '' && $equipmentBrand != '' && $acquiredDate != '' && $insert) {
+
+    $query = "INSERT INTO `equipments`(`equipment`, `brand`, `date_acquired`, `total_qty`)
+    VALUES('$equipmentName', '$equipmentBrand', '$acquiredDate', $total_qty);";
    
-   try {
+    try {
 
-    $con->beginTransaction();
+      $con->beginTransaction();
 
-    $stmtEquipment = $con->prepare($query);
-    $stmtEquipment->execute();
+      $stmtEquipment = $con->prepare($query);
+      $stmtEquipment->execute();
 
-    $con->commit();
+      $con->commit();
 
-    $message = 'Equipment Added Successfully.';
-  } catch(PDOException $ex) {
-   $con->rollback();
-
-   echo $ex->getMessage();
-   echo $ex->getTraceAsString();
-   exit;
- }
+      $message = 'Equipment Added Successfully.';
+    } catch(PDOException $ex) {
+      $con->rollback();
+      echo $ex->getMessage();
+      echo $ex->getTraceAsString();
+      exit;
+    }
 
   } else {
-  $message = 'Empty form can not be submitted.';
+    $message = 'Empty form can not be submitted.';
   }
-header("Location:congratulation.php?goto_page=equipments.php&message=$message");
-exit;
+
+  if (!$insert) {
+    $message = 'This equipment type has already been stored. Please check inventory or the Trash.';
+  }
+
+  header("Location:congratulation.php?goto_page=equipments.php&message=$message");
+  exit;
 }
 
 try {
   $query = "SELECT `id`, `equipment`, `brand`, `date_acquired`, `total_qty`
-            FROM `equipments`
-            WHERE `is_del` = '0'
-            ORDER BY `equipment` ASC;";
+      FROM `equipments` WHERE `is_del` = '0' ORDER BY `equipment` ASC
+  ;";
+
   $stmt = $con->prepare($query);
   $stmt->execute();
 
@@ -438,7 +458,7 @@ if(isset($_GET['message'])) {
           async:false,
           success: function (count, status, xhr) {
             if(count > 0) {
-              showCustomMessage("This equipment has already been stored. Please check inventory or the Trash.");
+              showCustomMessage("This equipment type has already been stored. Please check inventory or the Trash.");
               $("#save_equipment").attr("disabled", "disabled");
             } else {
               $("#save_equipment").removeAttr("disabled");

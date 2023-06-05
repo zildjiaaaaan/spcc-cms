@@ -3,13 +3,29 @@ include './config/connection.php';
 
  $message = '';
 if(isset($_POST['save_medicine'])) {
+    $id = $_POST['hidden_id'];
     $medicineName = trim($_POST['medicine_name']);
     $medicineName = ucwords(strtolower($medicineName));
     $medicineBrand = trim($_POST['medicine_brand']);
     $medicineBrand = ucwords(strtolower($medicineBrand));
-   
-   $id = $_POST['hidden_id'];
-    if($medicineName !== '') {
+
+    // Check if the item already exists
+    $insert = true;
+    $query = "SELECT COUNT(*) AS `duplicate` FROM `medicines`
+    WHERE `medicine_name` = '$medicineName'
+      AND `medicine_brand` = '$medicineBrand'
+      AND `id` <> '$id'
+    ;";
+
+    $stmtMedicine = $con->prepare($query);
+    $stmtMedicine->execute();
+    $row = $stmtMedicine->fetch(PDO::FETCH_ASSOC);
+
+    if ($row['duplicate'] > 0) {
+      $insert = false;
+    }
+      
+    if($medicineName !== '' && $insert) {
       
         $query = "UPDATE `medicines` 
         set `medicine_name` ='$medicineName', `medicine_brand` ='$medicineBrand'
@@ -32,6 +48,11 @@ if(isset($_POST['save_medicine'])) {
     }
 
 }
+
+if (!$insert) {
+  $message = 'This brand already exists. Check the list below or the Trash.';
+}
+
 header("Location:congratulation.php?goto_page=medicines.php&message=$message");
 exit;
 }
@@ -99,8 +120,7 @@ include './config/sidebar.php';?>
         <div class="card-body">
           <form method="post">
           	<div class="row">
-              <input type="hidden" name="hidden_id" 
-              id="hidden_id" value="<?php echo $id;?>" />
+              <input type="hidden" name="hidden_id" id="hidden_id" value="<?php echo $id;?>" />
 
           		<div class="col-lg-4 col-md-4 col-sm-4 col-xs-10">
                 <label>Medicine Name</label>
@@ -116,7 +136,7 @@ include './config/sidebar.php';?>
 
           		<div class="col-lg-1 col-md-2 col-sm-2 col-xs-2">
                 <label>&nbsp;</label>
-                <button type="button" class="btn btn-primary btn-sm btn-flat btn-block" data-toggle="modal" data-target="#exampleModal">
+                <button type="button" id="saveModal" class="btn btn-primary btn-sm btn-flat btn-block" data-toggle="modal" data-target="#exampleModal">
                   Update
                 </button>
           			<!-- <button type="submit" id="save_medicine" name="save_medicine" class="btn btn-primary btn-sm btn-flat btn-block">Update</button> -->
@@ -209,9 +229,9 @@ $("#medicine_brand").blur(function() {
       success: function (count, status, xhr) {
         if(count > 0) {
           showCustomMessage("This medicine name has already been stored. Please check inventory or the Trash.");
-          $("#save_medicine").attr("disabled", "disabled");
+          $("#saveModal").attr("disabled", "disabled");
         } else {
-          $("#save_medicine").removeAttr("disabled");
+          $("#saveModal").removeAttr("disabled");
         }
       },
       error: function (jqXhr, textStatus, errorMessage) {
@@ -242,9 +262,9 @@ $("#medicine_name").blur(function() {
       success: function (count, status, xhr) {
         if(count > 0) {
           showCustomMessage("This medicine name has already been stored. Please check inventory or the Trash.");
-          $("#save_medicine").attr("disabled", "disabled");
+          $("#saveModal").attr("disabled", "disabled");
         } else {
-          $("#save_medicine").removeAttr("disabled");
+          $("#saveModal").removeAttr("disabled");
         }
       },
       error: function (jqXhr, textStatus, errorMessage) {

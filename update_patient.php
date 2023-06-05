@@ -29,8 +29,23 @@ if (isset($_POST['save_Patient'])) {
     $address = ucwords(strtolower($address));
 
     $gender = $_POST['gender'];
-if ($patientName != '' && $address != '' && 
-  $cnic != '' && $dateBirth != '' && $phoneNumber != '' && $gender != '') {
+
+    // Check if the item already exists
+    $insert = true;
+    $query = "SELECT COUNT(*) AS `duplicate` FROM `patients`
+      WHERE `id` <> '$hiddenId' 
+        AND (`cnic` = '$cnic' OR (`patient_name` = '$patientFullName' AND `date_of_birth` = '$dateBirth'))
+    ;";
+
+    $stmtPatients = $con->prepare($query);
+    $stmtPatients->execute();
+    $row = $stmtPatients->fetch(PDO::FETCH_ASSOC);
+
+    if ($row['duplicate'] > 0) {
+      $insert = false;
+    }
+
+  if ($patientName != '' && $address != '' && $cnic != '' && $dateBirth != '' && $phoneNumber != '' && $gender != '' && $insert) {
       $query = "UPDATE `patients` 
                 SET `patient_name` = '$patientFullName', 
                     `address` = '$address', 
@@ -53,14 +68,19 @@ if ($patientName != '' && $address != '' &&
 
     $message = 'Patient Updated Successfully.';
 
-  } catch(PDOException $ex) {
-    $con->rollback();
+    } catch(PDOException $ex) {
+      $con->rollback();
 
-    echo $ex->getMessage();
-    echo $ex->getTraceAsString();
-    exit;
+      echo $ex->getMessage();
+      echo $ex->getTraceAsString();
+      exit;
+    }
   }
-}
+
+  if (!$insert) {
+    $message = 'This patient is already existing! Please check records or the Trash.';
+  }
+
   header("Location:congratulation.php?goto_page=patients.php&message=$message");
   exit;
 }
@@ -361,6 +381,7 @@ include './config/sidebar.php';?>
             'patient_name': patientName,
             'patient_mname': patientMName,
             'patient_sname': patientSName,
+            'cnic': studentID,
             'update_id': <?php echo $row['id']; ?>
           },
           cache:false,

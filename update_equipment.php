@@ -12,13 +12,31 @@ if(isset($_POST['save_equipment'])) {
     $acquiredDate = $acquiredDateArr[2].'-'.$acquiredDateArr[0].'-'.$acquiredDateArr[1];
    
    $id = $_POST['hidden_id'];
-    if($equipmentName !== '' && $equipmentBrand !== '' && $acquiredDate !== '') {
+
+   // Check if the item already exists
+    $insert = true;
+    $query = "SELECT COUNT(*) AS `duplicate` FROM `equipments`
+      WHERE `equipment` = '$equipmentName'
+        AND `brand` = '$equipmentBrand'
+        AND `id` <> '$id'
+    ;";
+
+    $stmtEquipment = $con->prepare($query);
+    $stmtEquipment->execute();
+    $row = $stmtEquipment->fetch(PDO::FETCH_ASSOC);
+
+    if ($row['duplicate'] > 0) {
+      $insert = false;
+    }
+
+    if($equipmentName !== '' && $equipmentBrand !== '' && $acquiredDate !== '' && $insert) {
       
       $query = "UPDATE `equipments` 
-                SET `equipment` ='$equipmentName',
-                  `brand` ='$equipmentBrand',
-                  `date_acquired` ='$acquiredDate'
-                WHERE `id`= $id";
+          SET `equipment` ='$equipmentName',
+            `brand` ='$equipmentBrand',
+            `date_acquired` ='$acquiredDate'
+          WHERE `id`= $id
+      ;";
     try{
     	$con->beginTransaction();
 
@@ -36,9 +54,14 @@ if(isset($_POST['save_equipment'])) {
       exit;
     }
 
-}
-header("Location:congratulation.php?goto_page=equipments.php&message=$message");
-exit;
+  }
+
+  if (!$insert) {
+    $message = 'This equipment type has already been stored. Please check inventory or the Trash.';
+  }
+
+  header("Location:congratulation.php?goto_page=equipments.php&message=$message");
+  exit;
 }
 
 try {
@@ -137,7 +160,7 @@ include './config/sidebar.php';?>
               <div class="col-lg-1 col-md-12 col-sm-12 col-xs-2">
                 <label>&nbsp;</label>
                 <!-- <button type="submit" id="save_equipment" name="save_equipment" class="btn btn-primary btn-sm btn-flat btn-block">Save</button> -->
-                <button type="button" class="btn btn-primary btn-sm btn-flat btn-block" data-toggle="modal" data-target="#exampleModal">
+                <button type="button" id="saveModal" class="btn btn-primary btn-sm btn-flat btn-block" data-toggle="modal" data-target="#exampleModal">
                   Update
                 </button>
               </div>
@@ -240,9 +263,9 @@ $(document).ready(function() {
         success: function (count, status, xhr) {
           if(count > 0) {
             showCustomMessage("This equipment has already been stored. Please check inventory or the Trash.");
-            $("#save_equipment").attr("disabled", "disabled");
+            $("#saveModal").attr("disabled", "disabled");
           } else {
-            $("#save_equipment").removeAttr("disabled");
+            $("#saveModal").removeAttr("disabled");
           }
         },
         error: function (jqXhr, textStatus, errorMessage) {

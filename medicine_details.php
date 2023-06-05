@@ -6,7 +6,7 @@ $message = '';
 
 if(isset($_POST['submit'])) {
   $medicineId = $_POST['medicine'];
-  $packing = $_POST['packing'];
+  $packing = ucwords(strtolower(trim($_POST['packing'])));
   $quantity = $_POST['quantity'];
 
   $expDateArr = explode("/", $_POST['expiry']);
@@ -16,22 +16,38 @@ if(isset($_POST['submit'])) {
   $targetFile = "none.jpeg";
 
   if (!empty($_FILES["img_medicine"]["name"])) {
-      $allowedExtensions = array('png', 'jpg', 'jpeg');
-      $baseName = basename($_FILES["img_medicine"]["name"]);
-      $fileExtension = strtolower(pathinfo($baseName, PATHINFO_EXTENSION));
+    $allowedExtensions = array('png', 'jpg', 'jpeg');
+    $baseName = basename($_FILES["img_medicine"]["name"]);
+    $fileExtension = strtolower(pathinfo($baseName, PATHINFO_EXTENSION));
 
-      // Check if the uploaded file has a valid extension
-      if (in_array($fileExtension, $allowedExtensions)) {
-          $targetFile = time() . $baseName;
-          $status = move_uploaded_file($_FILES["img_medicine"]["tmp_name"], 'user_images/meds/' . $targetFile);
-      } else {
-          // Invalid file format, handle the error as needed
-          $message = "Invalid file format. Only PNG, JPG, or JPEG files are allowed.";
-          $status = false;
-      }
+    // Check if the uploaded file has a valid extension
+    if (in_array($fileExtension, $allowedExtensions)) {
+        $targetFile = time() . $baseName;
+        $status = move_uploaded_file($_FILES["img_medicine"]["tmp_name"], 'user_images/meds/' . $targetFile);
+    } else {
+        // Invalid file format, handle the error as needed
+        $message = "Invalid file format. Only PNG, JPG, or JPEG files are allowed.";
+        $status = false;
+    }
   }
 
-  if ($status) {
+  // Check if the item already exists
+  $insert = true;
+  $query = "SELECT COUNT(*) AS `duplicate` FROM `medicine_details`
+    WHERE `medicine_id` = '$medicineId'
+      AND `packing` = '$packing'
+      AND `exp_date` = '$expDate'
+  ;";
+
+  $stmtMedicineDetails = $con->prepare($query);
+  $stmtMedicineDetails->execute();
+  $row = $stmtMedicineDetails->fetch(PDO::FETCH_ASSOC);
+
+  if ($row['duplicate'] > 0) {
+    $insert = false;
+  }
+
+  if ($status && $insert) {
     try {
 
       $query = "INSERT INTO `medicine_details`
@@ -46,7 +62,7 @@ if(isset($_POST['submit'])) {
   
       $con->commit();
   
-      $message = 'Medicine Unit Saved Successfully.';
+      $message = 'Medicine Item Saved Successfully.';
   
     } catch(PDOException $ex) {
   
@@ -56,6 +72,10 @@ if(isset($_POST['submit'])) {
      echo $ex->getTraceAsString();
      exit;
     }
+  }
+
+  if (!$insert) {
+    $message = 'This medicine item already exists. Check the list below or the Trash.';
   }
 
   header("location:congratulation.php?goto_page=medicine_details.php&message=$message");
@@ -121,7 +141,7 @@ include './config/sidebar.php';?>
         <!-- Default box -->
         <div class="card card-outline card-primary rounded-0 shadow">
           <div class="card-header">
-            <h3 class="card-title">Add Medicine Unit</h3>
+            <h3 class="card-title">Add Medicine Item</h3>
 
             <div class="card-tools">
               <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
@@ -418,7 +438,7 @@ if(isset($_GET['message'])) {
         async: false,
         success: function(count, status, xhr) {
           if (count > 0) {
-            showCustomMessage("This medicine unit has already been stored. Please check inventory or the <a href='trash.php?recover=medicine_details' target='_blank'>Trash</a>.");
+            showCustomMessage("This medicine item has already been stored. Please check inventory or the <a href='trash.php?recover=medicine_details' target='_blank'>Trash</a>.");
             $("#save_medicine").attr("disabled", "disabled");
           } else {
             $("#save_medicine").removeAttr("disabled");

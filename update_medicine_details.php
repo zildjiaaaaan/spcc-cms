@@ -36,7 +36,24 @@ if(isset($_POST['submit'])) {
       }
   }
 
-  if ($status) {
+  // Check if the item already exists
+  $insert = true;
+  $query = "SELECT COUNT(*) AS `duplicate` FROM `medicine_details`
+    WHERE `medicine_id` = '$medicineId'
+      AND `packing` = '$packing'
+      AND `exp_date` = '$expDate'
+      AND `id` <> '$medicineDetailId'
+  ;";
+
+  $stmtMedicineDetails = $con->prepare($query);
+  $stmtMedicineDetails->execute();
+  $row = $stmtMedicineDetails->fetch(PDO::FETCH_ASSOC);
+
+  if ($row['duplicate'] > 0) {
+    $insert = false;
+  }
+
+  if ($status && $insert) {
     try {
 
       $query = "UPDATE `medicine_details` 
@@ -65,6 +82,10 @@ if(isset($_POST['submit'])) {
       echo $ex->getTraceAsString();
       exit;
     }
+  }
+
+  if (!$insert) {
+    $message = 'This medicine item already exists. Check the list below or the Trash.';
   }
 
   header("location:congratulation.php?goto_page=medicine_details.php&message=$message");

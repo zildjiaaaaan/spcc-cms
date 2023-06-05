@@ -265,7 +265,7 @@ include './config/sidebar.php';?>
             <!-- best practices-->
             <form method="post" enctype="multipart/form-data">
               <div class="row">
-                <input type="hidden" id="update_id" name="hidden_id" value="<?php echo $equipment_details_id;?>" />
+                <input type="hidden" id="update_id" name="hidden_id" value="<?php echo $id;?>" />
                 <input type="hidden" id="current_quantity" name="current_quantity" value="<?php echo $row['quantity'];?>" />
                 <input type="hidden" id="current_borrower_id" name="current_borrower_id" value="<?php echo !empty($_GET['b_id']) ? $_GET['b_id'] : "";?>" />
                 <input type="hidden" name="current_img" id="current_img" value="<?php echo $row['img_name'];?>" />

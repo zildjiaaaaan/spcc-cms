@@ -365,7 +365,8 @@ if(isset($_GET['message'])) {
     
     $("#all_medicines").DataTable(dataTableOptions).buttons().container().appendTo('#all_medicines_wrapper .col-md-6:eq(0)');
 
-    $("#medicine_brand").on("keyup blur", function(event) {
+    // $("#medicine_brand").on("keyup blur", function(event) {
+    $("#medicine_brand").blur(function() {
       var medicineBrand = $(this).val().trim();
       var medicineName = $("#medicine_name").val().trim();
       $(this).val(medicineBrand);
@@ -394,10 +395,9 @@ if(isset($_GET['message'])) {
           }
         });
       }
-
     });
 
-    $("#medicine_name").on("keyup blur", function(event) {
+    $("#medicine_name").blur(function() {
       var medicineName = $(this).val().trim();
       var medicineBrand = $("#medicine_brand").val().trim();
       $(this).val(medicineName);
@@ -406,7 +406,7 @@ if(isset($_GET['message'])) {
       if(medicineName !== '') {
         $.ajax({
           url: "ajax/check_medicine_name.php",
-          type: 'GET', 
+          type: 'GET',
           data: {
             'medicine_name': medicineName,
             'medicine_brand': medicineBrand

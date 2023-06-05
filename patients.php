@@ -10,7 +10,7 @@ if (isset($_POST['save_Patient'])) {
     $patientMName = strtoupper(trim($_POST['patient_mname']));
     $patientSName = strtoupper(trim($_POST['patient_sname']));
 
-    $patientFullName = $patientSName.", ".$patientName.", ".$patientMName;
+    $patientFullName = $patientSName.", ".$patientName.", ".$patientMName; // Surname, Name, Middle Name
 
     $address = trim($_POST['address']);
     $cnic = trim($_POST['cnic']);
@@ -28,10 +28,33 @@ if (isset($_POST['save_Patient'])) {
     $address = ucwords(strtolower($address));
 
     $gender = $_POST['gender'];
+
+    // Check if the item already exists
+    $insert = true;
+    $query = "SELECT COUNT(*) AS `duplicate` FROM `patients`
+      WHERE `cnic` = '$cnic'
+        OR (
+          `patient_name` = '$patientFullName'
+          AND `date_of_birth` = '$dateBirth'
+        )
+    ;";
+
+    $stmtPatients = $con->prepare($query);
+    $stmtPatients->execute();
+    $row = $stmtPatients->fetch(PDO::FETCH_ASSOC);
+
+    if ($row['duplicate'] > 0) {
+      $insert = false;
+    }
     
-  if ($patientFullName != '' && $address != '' && $cnic != '' && $dateBirth != '' && $phoneNumber != '' && $gender != '') {
-      $query = "INSERT INTO `patients`(`patient_name`, `address`, `cnic`, `date_of_birth`, `phone_number`, `gender`, `contact_person`, `relationship`, `contact_person_no`, `is_del`)
-                VALUES('$patientFullName', '$address', '$cnic', '$dateBirth', '$phoneNumber', '$gender', '$contactPerson', '$relationship', '$contactPersonNo', '0');";
+  if ($patientFullName != '' && $address != '' && $cnic != '' && $dateBirth != '' && $phoneNumber != '' && $gender != '' && $insert) {
+    $query = "INSERT INTO `patients`(`patient_name`, `address`, `cnic`,
+        `date_of_birth`, `phone_number`, `gender`, `contact_person`,
+        `relationship`, `contact_person_no`, `is_del`)
+        VALUES ('$patientFullName', '$address', '$cnic', '$dateBirth', '$phoneNumber',
+        '$gender', '$contactPerson', '$relationship', '$contactPersonNo', '0')
+    ;";
+
     try {
 
       $con->beginTransaction();
@@ -51,15 +74,18 @@ if (isset($_POST['save_Patient'])) {
       exit;
     }
   }
+
+  if (!$insert) {
+    $message = 'This patient is already existing! Please check records or the Trash.';
+  }
+
   header("Location:congratulation.php?goto_page=patients.php&message=$message");
   exit;
 }
 
-
-
 try {
 
-$query = "SELECT `id`, `patient_name`, `address`, `cnic`, date_format(`date_of_birth`, '%d %b %Y')
+  $query = "SELECT `id`, `patient_name`, `address`, `cnic`, date_format(`date_of_birth`, '%d %b %Y')
           AS `date_of_birth`, `phone_number`, `gender`
           FROM `patients`
           WHERE `is_del` = '0'
@@ -415,7 +441,8 @@ include './config/sidebar.php';?>
           data: {
             'patient_name': patientName,
             'patient_mname': patientMName,
-            'patient_sname': patientSName
+            'patient_sname': patientSName,
+            'cnic': studentID
           },
           cache:false,
           async:false,

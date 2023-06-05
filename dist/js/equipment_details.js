@@ -2,6 +2,12 @@ var equipmentDetailsArr = [];
 
 $(function() {
 
+    $('form').on('keydown', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+        }
+    });
+
     $("#equipment").select2({
         width: 'resolve',
         placeholder: "Select Equipment Type"

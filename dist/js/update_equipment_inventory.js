@@ -1,5 +1,11 @@
 $(function () {
 
+    $('form').on('keydown', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+        }
+    });
+
     $("#equipment").select2({
         width: 'resolve',
         placeholder: "Select Equipment"
@@ -152,10 +158,10 @@ function handleBlurEvent() {
                 if(count > 0) {
                     showCustomMessage("This equipment has already been stored previously. Please check inventory or the Trash.");
                     $("#submit").attr("disabled", "disabled");
-                    //console.log(count);
+                    console.log(count);
                 } else {
                     $("#submit").removeAttr("disabled");
-                    //console.log(count);
+                    console.log(count);
                 }
             },
         })

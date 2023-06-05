@@ -49,11 +49,11 @@ if(isset($_POST['submit'])) {
 
     $q_equipment_details = "INSERT INTO `equipment_details` (
         `equipment_id`, `status`, `state`, `unavailable_since`,
-        `unavailable_until`, `quantity`, `remarks`, `is_del`
+        `unavailable_until`, `quantity`, `remarks`, `img_name`, `is_del`
       ) VALUES (
         '$equipmentId', '$status', '$state',
         $unavailableSince, $unavailableUntil, '$quantity',
-        '$remark', '0'
+        '$remark', 'none.jpeg', '0'
       );";
 
     $q_select_equipment = "SELECT * FROM `equipments` WHERE `id` = '$equipmentId';";
