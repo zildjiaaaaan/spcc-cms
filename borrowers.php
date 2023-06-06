@@ -322,7 +322,7 @@ include './config/sidebar.php';?>
         $("#borrower_id").val(borrowerID);
         $("#contact_no").val(borrowerContact);
 
-        if ((borrowerName !== '' && !/^[a-zA-Z]+$/.test(borrowerName)) || (borrowerMName !== '' && !/^[a-zA-Z]+$/.test(borrowerMName)) || (borrowerSName !== '' && !/^[a-zA-Z]+$/.test(borrowerSName))) {
+        if ((borrowerName !== '' && !/^[a-zA-Z\s]+$/.test(borrowerName)) || (borrowerMName !== '' && !/^[a-zA-Z\s]+$/.test(borrowerMName)) || (borrowerSName !== '' && !/^[a-zA-Z\s]+$/.test(borrowerSName))) {
             showCustomMessage("Invalid characters in Name fields.");
             $("#save_borrower").attr("disabled", "disabled");
             borrowerID_disabled = true;

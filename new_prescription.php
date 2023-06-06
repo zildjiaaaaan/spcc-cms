@@ -210,7 +210,7 @@ include './config/sidebar.php';?>
       
       <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
         <label>Weight (in kg)</label>
-        <input type="number" id="weight" name="weight" class="form-control form-control-sm rounded-0" required="required" placeholder="e.g. 50" min="1"/>
+        <input type="number" id="weight" name="weight" class="form-control form-control-sm rounded-0" required="required" placeholder="e.g. 50" min="1" max="200"/>
       </div>
 
       <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12">
@@ -344,6 +344,25 @@ if(isset($_GET['message'])) {
 
   $(document).ready(function() {
 
+    $('#weight').keypress(function(event) {
+      var keyCode = event.which;
+
+      // Check if the pressed key is not a number (0-9)
+      // if (keyCode < 48 || keyCode > 57) {
+      //   event.preventDefault();
+      // }
+
+      var keyCode = event.which;
+      var currentValue = $(this).val();
+      var newValue = currentValue + String.fromCharCode(keyCode);
+
+      // Check if the new value is a valid number within the desired range
+      if (!/^\d+$/.test(newValue) || newValue < 0 || newValue > 200) {
+        event.preventDefault();
+      }
+
+    });
+
     $("#patient").select2({
       width: 'resolve',
       placeholder: "Select Patient"
@@ -457,6 +476,7 @@ if(isset($_GET['message'])) {
 
 
     $("#add_to_list").click(function() {
+      
       var medicineId = $("#medicine").val();
       var medicineName = $("#medicine option:selected").text();
       
