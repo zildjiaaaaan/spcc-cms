@@ -27,24 +27,24 @@ if(isset($_POST['save_user'])) {
 
   $encryptedPassword = md5($password);
 
-//$targetDir = "user_images/";
-//$baseName = basename($_FILES["profile_picture"]["name"]);
+  //$targetDir = "user_images/";
+  //$baseName = basename($_FILES["profile_picture"]["name"]);
 
-//time is a php function which gives unix time value.
-//unix time value is all seconds from 1970
+  //time is a php function which gives unix time value.
+  //unix time value is all seconds from 1970
 
-//abc.x.y.z.png
+  //abc.x.y.z.png
 
-// $extArr = explode(".", $baseName);
-// $extension = end($extArr);
+  // $extArr = explode(".", $baseName);
+  // $extension = end($extArr);
 
-//$targetFile =  time(). '.'.$extension;
+  //$targetFile =  time(). '.'.$extension;
 
-//$targetFile =  time().$baseName;
-// 12312312312312312
-//abc.jpg
-//abc.jpg
-//244574700_322087779604661_8207402889226768946_n
+  //$targetFile =  time().$baseName;
+  // 12312312312312312
+  //abc.jpg
+  //abc.jpg
+  //244574700_322087779604661_8207402889226768946_n
 
   //$status = move_uploaded_file($_FILES["profile_picture"]["tmp_name"], 'user_images/'.$targetFile);
 
