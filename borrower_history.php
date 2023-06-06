@@ -129,8 +129,8 @@ include './config/footer.php';
     var search = url.searchParams.get("search");
     var tag = url.searchParams.get("tag");
 
-    if (search === "is_recent") {
-      search = (tag !== '' && tag !== null) ? tag : '';
+    if (search === "is_recent" || search === "all") {
+      search = (tag !== '' && tag !== null) ? tag : search;
       $("#borrower").val(search);
 
       if (search !== '') {

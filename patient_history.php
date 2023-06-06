@@ -70,6 +70,7 @@ include './config/sidebar.php';?>
                   <colgroup>
                     <col width="1%">
                     <col width="6%">
+                    <col width="6%">
                     <col width="8%">
                     <col width="15%">
                     <col width="1%">
@@ -81,6 +82,7 @@ include './config/sidebar.php';?>
                   <thead>
                     <tr class="bg-gradient-primary text-light">
                       <th class="p-1 text-center">#</th>
+                      <th class="p-1 text-center">Patient</th>
                       <th class="p-1 text-center">Visit Date</th>
                       <th class="p-1 text-center">Disease</th>
                       <th class="p-1 text-center">Prescribed Medicine</th>
@@ -131,8 +133,8 @@ include './config/footer.php';
     var search = url.searchParams.get("search");
     var tag = url.searchParams.get("tag");
 
-    if (search === "is_recent" || search === "is_deleted") {
-      search = (tag !== '' && tag !== null) ? tag : '';
+    if (search === "is_recent" || search === "is_deleted" || search === "all") {
+      search = (tag !== '' && tag !== null) ? tag : search;
       $("#patient").val(search);
 
       if (search !== '') {

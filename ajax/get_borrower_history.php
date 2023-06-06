@@ -2,6 +2,7 @@
 	include '../config/connection.php';
 
   	$borrowerId = $_GET['borrower_id'];
+    $q_all = ($borrowerId != "all") ? " `borrowed`.`borrower_id` = '$borrowerId' AND" : '';
 
     $data = '';
     /*
@@ -14,8 +15,7 @@
         `remarks`, `equipment`, `brand`, `equipments`.`id` as `equipment_id`,
         `contact_no`, `equipments`.`is_del` as `e_is_del`, `equipment_details`.`is_del` as `ed_is_del`
       FROM `borrowed`, `equipment_details`, `equipments`, `borrowers`
-      WHERE `borrowed`.`borrower_id` = '$borrowerId'
-        AND `borrowed`.`borrower_id` = `borrowers`.`id`
+      WHERE".$q_all."`borrowed`.`borrower_id` = `borrowers`.`id`
         AND `equipment_details_id` = `equipment_details`.`id`
         AND `equipment_id` = `equipments`.`id`
     ;";

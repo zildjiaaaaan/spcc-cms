@@ -81,7 +81,7 @@ if(!(isset($_SESSION['user_id']))) {
                 </a>
               </li>
               <li class="nav-item">
-                <a href="patient_history.php" class="nav-link" 
+                <a href="patient_history.php?search=all" class="nav-link" 
                 id="mi_patient_history">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Patient History</p>
@@ -171,7 +171,7 @@ if(!(isset($_SESSION['user_id']))) {
                 </a>
               </li>
               <li class="nav-item">
-                <a href="borrower_history.php" class="nav-link" 
+                <a href="borrower_history.php?search=all" class="nav-link" 
                 id="mi_borrower_history">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Borrower History</p>
