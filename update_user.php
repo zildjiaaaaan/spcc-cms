@@ -220,6 +220,8 @@ include './config/sidebar.php';?>
 
   <script>
 
+    //mnu_users
+    showMenuSelected("#mnu_users", "");
     var message = '<?php echo $message;?>';
 
     if(message !== '') {

@@ -52,12 +52,13 @@ if (isset($_POST['submit'])) {
     }
     $hasRecord = $hasRecords[$i];
 
-    $q_select_qty = "SELECT `quantity` AS `max` FROM `equipment_details` WHERE `id` = '$equipmentDetailsId';";
+    $q_select_qty = "SELECT `quantity` AS `max`, `img_name` FROM `equipment_details` WHERE `id` = '$equipmentDetailsId';";
     $stmt_select_qty = $con->prepare($q_select_qty);
     $stmt_select_qty->execute();
     $r = $stmt_select_qty->fetch(PDO::FETCH_ASSOC);
 
     $diff = $r['max'] - $quantity;
+    $cur_img_name = $r['img_name'];
 
     $q_update_active = '';
     $q_borrowed = '';
@@ -75,9 +76,9 @@ if (isset($_POST['submit'])) {
       if ($hasRecord == '') {
         $q_borrowed = "INSERT INTO `equipment_details`
           (`equipment_id`, `status`, `state`, `unavailable_since`,
-          `unavailable_until`, `quantity`, `remarks`, `is_del`)
+          `unavailable_until`, `quantity`, `remarks`, `img_name`, `is_del`)
           VALUES ('$equipmentId', 'Unavailable', 'Borrowed', '$unavailableSince',
-          '$unavailableUntil', '$quantity', '$remark', '0')
+          '$unavailableUntil', '$quantity', '$remark', '$cur_img_name', '0')
         ;";
         $newEquipment = true;
       } else {
