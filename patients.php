@@ -337,6 +337,7 @@ include './config/sidebar.php';?>
 <script>
   showMenuSelected("#mnu_patients", "#mi_patients");
 
+  // Show custom message
   var message = '<?php echo $message;?>';
 
   if(message !== '') {
@@ -344,20 +345,14 @@ include './config/sidebar.php';?>
   }
 
   $(document).ready(function() {
-
-    $("#customSwitch1").on("change", function(){
-        if($(this).prop("checked") == true){
-            $("body").removeClass("dark-mode");
-        } else {
-            $("body").addClass("dark-mode");
-        }
-    });
            
+    // Initialize Datetimepicker
     $('#date_of_birth').datetimepicker({
         format: 'L',
         maxDate:new Date()
     });
         
+    // Input validation
     $("form :input").blur(function() {
 
       var studentid_disabled = false;
@@ -378,11 +373,13 @@ include './config/sidebar.php';?>
       $("#contact_person_no").val(emergencyContact);
       $("#cnic").val(studentID);
 
+      // Check if name characters are valid
       $patientNameValid = (patientName !== '' && !/^[a-zA-Z\s]+$/.test(patientName));
       $patientMNameValid = (patientMName !== '' && !/^[a-zA-Z\s]+$/.test(patientMName));
       $patientSnameValid = (patientSName !== '' && !/^[a-zA-Z\s]+$/.test(patientSName));
       $contactPersonValid = (contactPerson !== '' && !/^[a-zA-Z\s]+$/.test(contactPerson));
 
+      // Check if name is valid
       if ($patientNameValid || $patientMNameValid || $patientSnameValid || $contactPersonValid) {
         showCustomMessage("Invalid characters in Name fields.");
         $("#save_Patient").attr("disabled", "disabled");
@@ -390,6 +387,7 @@ include './config/sidebar.php';?>
         name_disabled = true;
       }
            
+      // Check if student id is valid
       if ((studentID !== '' && !/^[a-zA-Z0-9]+$/.test(studentID))) {
         showCustomMessage("Invalid characters in Student ID / Employee ID field.");
         $("#save_Patient").attr("disabled", "disabled");
@@ -397,6 +395,7 @@ include './config/sidebar.php';?>
         name_disabled = true;
       }
       
+      // Check if phone number is valid
       if (patientContact !== '' && /\D/.test(patientContact)) {
         showCustomMessage("Invalid characters in Phone Number field.");
         $("#save_Patient").attr("disabled", "disabled");
@@ -404,6 +403,7 @@ include './config/sidebar.php';?>
         name_disabled = true;
       }
       
+      // Check if emergency contact is valid
       if (emergencyContact !== '' && /\D/.test(emergencyContact)) {
         showCustomMessage("Invalid characters in Contact Person Phone Number field.");
         $("#save_Patient").attr("disabled", "disabled");
@@ -411,6 +411,7 @@ include './config/sidebar.php';?>
         name_disabled = true;
       }
       
+      // Check if student id is already existing
       if (!studentid_disabled) {
         $.ajax({
           url: "ajax/check_patient.php",
@@ -433,7 +434,8 @@ include './config/sidebar.php';?>
           }
         });
       }
-
+      
+      // Check if patient name is already existing
       if(!name_disabled) {
         $.ajax({
           url: "ajax/check_patient.php",
@@ -461,8 +463,9 @@ include './config/sidebar.php';?>
       }
     });
   });      
-    
-   $(function () {
+  
+  // Initialize #all_patients datatable
+  $(function () {
     $("#all_patients").DataTable({
       "responsive": true, "lengthChange": false, "autoWidth": false,
       "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
