@@ -2,7 +2,6 @@
 include './config/connection.php';
 include './common_service/common_functions.php';
 
-
 $message = '';
 if (isset($_POST['save_Patient'])) {
 
